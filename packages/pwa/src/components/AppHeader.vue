@@ -1,3 +1,3 @@
 <template>
-    Heyo 🥐
+    Header
 </template>

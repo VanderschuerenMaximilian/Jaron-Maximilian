@@ -1,0 +1,3 @@
+<template>
+    Toon openingsuren
+</template>
