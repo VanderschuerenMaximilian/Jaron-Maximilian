@@ -15,14 +15,16 @@
     "packages/*"
   ],
   "prettier": {
-    "printWidth": 120,
+    "printWidth": 80,
     "tabWidth": 2,
-    "semi": false,
     "useTabs": false,
+    "semi": false,
     "singleQuote": true,
     "trailingComma": "all",
+    "bracketSpacing": true,
     "arrowParens": "avoid",
+    "proseWrap": "preserve",
     "htmlWhitespaceSensitivity": "css",
-    "endOfLine": "auto"
+    "endOfLine": "lf"
   }
 }
