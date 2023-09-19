@@ -1,0 +1,28 @@
+{
+  "name": "jaron-maximilian",
+  "version": "1.0.0",
+  "description": "Project Advanced Full Stack Developement",
+  "scripts": {
+    "dev": "todo"
+  },
+  "keywords": [],
+  "author": "Jaron Maximilian",
+  "bugs": {
+    "url": "https://github.com/VanderschuerenMaximilian/Jaron-Maximilian/issues"
+  },
+  "homepage": "https://github.com/VanderschuerenMaximilian/Jaron-Maximilian",
+  "workspaces": [
+    "packages/*"
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "semi": false,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "arrowParens": "avoid",
+    "htmlWhitespaceSensitivity": "css",
+    "endOfLine": "auto"
+  }
+}
