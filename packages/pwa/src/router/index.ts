@@ -49,7 +49,7 @@ const router = createRouter({
     },
     {
       path: '/auth',
-      component: AppWrapperVue,
+      component: import('../components/wrapper/AppWrapper.vue'),
       meta: { requiresAuth: true, showFooter: false },
       children: [
         {
