@@ -1,6 +1,12 @@
 import { ref } from 'vue'
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { 
+    getAuth, signInWithEmailAndPassword, 
+    setPersistence, browserLocalPersistence, 
+    onAuthStateChanged, signOut, 
+    createUserWithEmailAndPassword, updateProfile,
+    sendPasswordResetEmail,
+} from 'firebase/auth';
 
 const app = initializeApp({
     apiKey: import.meta.env.VITE_apiKey,
@@ -68,11 +74,24 @@ const register = async (name: string, email: string, password: string): Promise<
     })
 }
 
+const forgotPassword = async (email: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                resolve()
+            })
+            .catch((error) => {
+                reject(error.code, error.message)
+            });
+    })
+}
+
 export default () => {
     // voor elk composable
     return { 
         firebaseUser,
         
+        forgotPassword,
         login,
         register,
         restoreUser,
