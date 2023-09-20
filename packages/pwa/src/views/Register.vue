@@ -4,15 +4,15 @@
         <input type="text" name="name" id="name" v-model="newUser.name" placeholder="Name">
         <input type="email" name="email" id="email" v-model="newUser.email" placeholder="Email"/>
         <input type="password" name="password" id="password" v-model="newUser.password" placeholder="Password" />
-        <button type="submit">Register</button>
+        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded text-slate-100">Register</button>
     </form>
+    <RouterLink to="/login" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Login</RouterLink>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 import useFirebase from '../composables/useFirebase'
-// import router from '@/router'
 import router from '../router'
 
 export default {
