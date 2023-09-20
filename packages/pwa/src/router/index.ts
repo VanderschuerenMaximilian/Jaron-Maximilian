@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AppWrapperVue from '../components/wrapper/AppWrapper.vue'
+import useFirebase from '../composables/useFirebase'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,7 +65,7 @@ const router = createRouter({
               component: () => import('../views/auth/administratie/Dashboard.vue'),
             }
           ],
-        }
+        },
       ],
     },
     {
@@ -74,5 +74,16 @@ const router = createRouter({
     },
   ]
 })
+
+router.beforeEach(async (to, from, next) => {
+  const { firebaseUser } = useFirebase()
+
+  if (to.meta.requiresAuth && !firebaseUser.value) {
+    next('/login')
+  } else {
+    next()
+  }
+})
+
 
 export default router

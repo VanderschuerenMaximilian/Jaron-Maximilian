@@ -1,3 +1,53 @@
 <template>
-    Register
+    <p>{{ error }}</p>
+    <form @submit.prevent="handleRegister" class="flex flex-col items-center gap-4">
+        <input type="text" name="name" id="name" v-model="newUser.name" placeholder="Name">
+        <input type="email" name="email" id="email" v-model="newUser.email" placeholder="Email"/>
+        <input type="password" name="password" id="password" v-model="newUser.password" placeholder="Password" />
+        <button type="submit">Register</button>
+    </form>
 </template>
+
+<script lang="ts">
+import { ref } from 'vue'
+import { type AuthError } from 'firebase/auth'
+import useFirebase from '../composables/useFirebase'
+// import router from '@/router'
+import router from '../router'
+
+export default {
+    setup() {
+        const { register, login } = useFirebase()
+
+        const newUser = ref({
+            name: '',
+            email: '',
+            password: ''
+        })
+
+        const error = ref<AuthError | null>(null)
+
+        const handleRegister = () => {
+            register(newUser.value.name, newUser.value.email, newUser.value.password)
+                .then(() => {
+                    login(newUser.value.email, newUser.value.password)
+                        .then(()=>{
+                            router.push('/login')
+                        });
+                })
+                .catch((error) => {
+                    error.value = error
+                })
+        }
+
+        return {
+            newUser,
+            error,
+
+            handleRegister,
+        }
+    }
+}
+
+
+</script>
