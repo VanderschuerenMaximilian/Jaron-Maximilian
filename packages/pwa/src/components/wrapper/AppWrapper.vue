@@ -4,7 +4,6 @@
         <RouterView />
         <AppFooterVue />
     </div>
-    <!-- TODO: geeft de mogelijkheid om de header & footer aan of uit te zetten -->
 </template>
 
 <script lang="ts">

@@ -78,10 +78,20 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const { firebaseUser } = useFirebase()
 
-  if (to.meta.requiresAuth && !firebaseUser.value) {
-    next('/login')
+  if (to.path === '/login') {
+    if (firebaseUser.value) {
+      // TODO: verandert dit naar de gewenste pagina dat een ingelogde gebruiker 
+      // moet geridirect worden als die al ingelogd is
+      next()
+    } else {
+      next()
+    }
   } else {
-    next()
+    if (to.meta.requiresAuth && !firebaseUser.value) {
+      next('/login')
+    } else {
+      next()
+    }
   }
 })
 
