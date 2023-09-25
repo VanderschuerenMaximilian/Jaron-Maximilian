@@ -1,0 +1,44 @@
+<template>
+    <p class="max-w-2xl break-all text-xs">{{ firebaseUser }}</p>
+    <form @submit.prevent="handleLogin">
+        <div class="flex flex-col gap-4 items-center">
+            <input type="email" name="email" id="email" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.email">
+            <input type="password" name="password" id="password" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.password">
+            <button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-slate-100">Login</button>
+        </div>
+    </form>
+    <div class="flex justify-between w-20%">
+        <RouterLink to="/register" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Register</RouterLink>
+        <RouterLink to="/reset" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Forgot password</RouterLink>
+    </div>
+</template>
+
+<script lang="ts">
+import { ref } from 'vue'
+import useFirebase from '../composables/useFirebase'
+
+export default {
+    setup() {
+        const { login, firebaseUser } = useFirebase()
+
+        const loginCredentials = ref({
+            email: 'test@email.com',
+            password: 'test123'
+        })
+
+        const handleLogin = () => {
+            login(loginCredentials.value.email, loginCredentials.value.password)
+                .then(() => {
+                    // TODO: hier wordt naar database enzo gestuurd
+                })
+        }
+
+        return {
+            loginCredentials,
+            firebaseUser,
+
+            handleLogin
+        }
+    }
+}
+</script>
