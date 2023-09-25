@@ -80,9 +80,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.path === '/login') {
     if (firebaseUser.value) {
-      // TODO: verandert dit naar de gewenste pagina dat een ingelogde gebruiker 
-      // moet geridirect worden als die al ingelogd is
-      next()
+      next("/")
     } else {
       next()
     }
