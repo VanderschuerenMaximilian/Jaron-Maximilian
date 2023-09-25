@@ -44,7 +44,7 @@ const login = async (email: string, password: string): Promise<User> => {
                 resolve(userCredential.user)
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 };
@@ -55,7 +55,7 @@ const signOutUser = async () => {
             firebaseUser.value = null
             resolve(null)
         }).catch((error) => {
-            reject(error.code, error.message)
+            reject(error)
         });
     })
 }
@@ -69,7 +69,7 @@ const register = async (name: string, email: string, password: string): Promise<
                 resolve(userCredential.user)
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 }
@@ -81,7 +81,7 @@ const forgotPassword = async (email: string): Promise<void> => {
                 resolve()
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 }

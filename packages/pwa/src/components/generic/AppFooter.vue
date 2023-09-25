@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <section v-if="$route.meta.showFooter">
         <h1>Footer</h1>
-    </div>
+    </section>
 </template>
