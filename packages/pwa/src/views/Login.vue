@@ -4,7 +4,7 @@
         <div class="flex flex-col gap-4 items-center">
             <input type="email" name="email" id="email" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.email">
             <input type="password" name="password" id="password" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.password">
-            <button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-slate-100">Login</button>
+            <button class="bg-primary-green hover:bg-secondary-green px-4 py-2 rounded text-slate-100">Login</button>
         </div>
     </form>
     <div class="flex justify-between w-20%">

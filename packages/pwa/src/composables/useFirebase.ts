@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { 
     getAuth, signInWithEmailAndPassword, 
     setPersistence, browserLocalPersistence, 
-    onAuthStateChanged, signOut, 
+    onAuthStateChanged, signOut,
     createUserWithEmailAndPassword, updateProfile,
     sendPasswordResetEmail,
 } from 'firebase/auth';
@@ -53,6 +53,7 @@ const signOutUser = async () => {
     return new Promise((resolve, reject) => {
         signOut(auth).then(() => {
             firebaseUser.value = null
+            // if (firebaseUser.value === null) this.$router.push('/')
             resolve(null)
         }).catch((error) => {
             reject(error)
