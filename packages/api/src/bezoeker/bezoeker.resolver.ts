@@ -17,15 +17,7 @@ export class BezoekerResolver {
 
   @Query(() => [Bezoeker], { name: 'bezoekers' })
   getBirds() {
-    return [
-      {
-        id: '1',
-        name: 'John',
-        fullname: 'John Doe',
-        email: 'John.Doe@email.com',
-        createdAt: new Date(),
-      },
-    ]
+    return this.bezoekerService.findAll()
   }
 
   @Query(() => Bezoeker, { name: 'bezoeker' })

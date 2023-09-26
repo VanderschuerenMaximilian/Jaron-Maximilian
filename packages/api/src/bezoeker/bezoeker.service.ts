@@ -22,7 +22,7 @@ export class BezoekerService {
   }
 
   findAll() {
-    return `This action returns all bezoeker`
+    return this.bezoekerRepository.find()
   }
 
   findOne(id: number) {

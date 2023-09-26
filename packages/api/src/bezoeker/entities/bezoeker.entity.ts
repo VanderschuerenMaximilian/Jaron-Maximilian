@@ -19,8 +19,4 @@ export class Bezoeker {
   @Column()
   @Field()
   email: string
-
-  @Column()
-  @Field()
-  createdAt: Date
 }
