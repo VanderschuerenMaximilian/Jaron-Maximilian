@@ -2,6 +2,12 @@ import { InputType, Int, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateWerknemerInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field()
+  firstname: string;
+
+  @Field()
+  lastname: string;
+
+  @Field()
+  email: string;
 }

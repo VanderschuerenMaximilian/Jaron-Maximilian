@@ -14,8 +14,12 @@ export class WerknemerService {
   ) 
   {}
 
-  create(createWerknemerInput: CreateWerknemerInput) {
-    return 'This action adds a new werknemer';
+  create(createWerknemerInput: CreateWerknemerInput): Promise<Werknemer> {
+    const werknemer = new Werknemer();
+    werknemer.firstname = createWerknemerInput.firstname;
+    werknemer.lastname = createWerknemerInput.lastname;
+    werknemer.email = createWerknemerInput.email;
+    return this.werknemerRepository.save(werknemer);
   }
 
   findAll() {
