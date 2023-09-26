@@ -14,6 +14,15 @@ import { BezoekerModule } from './bezoeker/bezoeker.module';
       autoSchemaFile: true,
     }),
 
+    TypeOrmModule.forRoot({
+        type: 'mongodb',
+        url: 'mongodb://localhost:27027/api',
+        entities: [__dirname + '/**/*.entity.{js,ts}'],
+        synchronize: true, // Careful with this in production
+        useNewUrlParser: true,
+        useUnifiedTopology: true, // Disable deprecated warnings
+    }),
+    
     WerknemerModule,
 
     BezoekerModule,
