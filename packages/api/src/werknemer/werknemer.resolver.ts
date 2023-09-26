@@ -9,7 +9,7 @@ export class WerknemerResolver {
   constructor(private readonly werknemerService: WerknemerService) {}
 
   @Mutation(() => Werknemer)
-  createWerknemer(@Args('createWerknemerInput') createWerknemerInput: CreateWerknemerInput) {
+  createWerknemer(@Args('createWerknemerInput') createWerknemerInput: CreateWerknemerInput): Promise<Werknemer> {
     return this.werknemerService.create(createWerknemerInput);
   }
 

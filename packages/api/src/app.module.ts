@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WerknemerModule } from './werknemer/werknemer.module';
 import { BezoekerModule } from './bezoeker/bezoeker.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -26,6 +27,8 @@ import { BezoekerModule } from './bezoeker/bezoeker.module';
     WerknemerModule,
 
     BezoekerModule,
+
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
