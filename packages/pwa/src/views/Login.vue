@@ -37,7 +37,7 @@
 import { ref } from 'vue'
 import useFirebase from '../composables/useFirebase'
 import { Eye, EyeOff } from 'lucide-vue-next';
-
+import { useRouter } from 'vue-router'
 
 export default {
     components: {
@@ -51,7 +51,7 @@ export default {
             password: false
         
         })
-
+        const router = useRouter();
         const loginCredentials = ref({
             email: 'test@email.com',
             password: 'test123'
@@ -82,7 +82,7 @@ export default {
             else {
 
             
-            login(loginCredentials.value.email, loginCredentials.value.password)
+            login(loginCredentials.value.email, loginCredentials.value.password, router)
                 .then(() => {
                     // TODO: hier wordt naar database enzo gestuurd
                 })

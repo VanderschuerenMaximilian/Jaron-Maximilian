@@ -24,8 +24,6 @@ const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence)
 const firebaseUser = ref<User | null>(auth.currentUser)
 
-// const router = useRouter()
-
 const restoreUser = async () => {
     return new Promise((resolve, reject) => {
         onAuthStateChanged(auth, (user) => {
@@ -40,11 +38,20 @@ const restoreUser = async () => {
     })
 }
 
-const login = async (email: string, password: string): Promise<User> => {
+const login = async (email: string, password: string, router: Router): Promise<User> => {
     return new Promise((resolve, reject) => {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 firebaseUser.value = userCredential.user
+                const Useremail = firebaseUser.value?.email
+                const splitEmail = Useremail?.split("@")
+                if (splitEmail?.[1].includes("werknemer")) {
+                    console.log("werknemer")
+                    router.push("/auth/werknemer/" + firebaseUser.value?.uid)
+                } else if (splitEmail?.[1].includes("administratie")) {
+                    console.log("authenticatie")
+                    router.push("/auth/administratie/" + firebaseUser.value?.uid + "/dashboard")
+                }
                 resolve(userCredential.user)
             })
             .catch((error) => {
