@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WerknemerModule } from './werknemer/werknemer.module';
+import { BezoekerModule } from './bezoeker/bezoeker.module';
 
 @Module({
   imports: [
@@ -23,6 +24,8 @@ import { WerknemerModule } from './werknemer/werknemer.module';
     }),
     
     WerknemerModule,
+
+    BezoekerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
