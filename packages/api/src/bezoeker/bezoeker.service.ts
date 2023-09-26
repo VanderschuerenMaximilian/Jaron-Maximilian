@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Bezoeker } from './entities/bezoeker.entity';
 import { Repository } from 'typeorm';
 
+
 @Injectable()
 export class BezoekerService {
   constructor(
@@ -35,4 +36,13 @@ export class BezoekerService {
   remove(id: number) {
     return `This action removes a #${id} bezoeker`
   }
+
+  save(bezoeker: Bezoeker[]): Promise<Bezoeker[]> {
+    return this.bezoekerRepository.save(bezoeker)
+  }
+
+  truncate(): Promise<void> {
+    return this.bezoekerRepository.clear()
+  }
+
 }
