@@ -16,21 +16,19 @@
 <script lang="ts">
 import { ref } from 'vue'
 import useFirebase from '../composables/useFirebase'
+import { useRouter } from 'vue-router'
 
 export default {
     setup() {
         const { login, firebaseUser } = useFirebase()
-
+        const router = useRouter();
         const loginCredentials = ref({
             email: 'test@email.com',
             password: 'test123'
         })
 
         const handleLogin = () => {
-            login(loginCredentials.value.email, loginCredentials.value.password)
-                .then(() => {
-                    // TODO: hier wordt naar database enzo gestuurd
-                })
+            login(loginCredentials.value.email, loginCredentials.value.password, router)
         }
 
         return {
