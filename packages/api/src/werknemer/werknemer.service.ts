@@ -37,4 +37,14 @@ export class WerknemerService {
   remove(id: number) {
     return `This action removes a #${id} werknemer`;
   }
+
+  // seeding logic
+
+  saveAll(werknemers: Werknemer[]) {
+    return this.werknemerRepository.save(werknemers);
+  }
+
+  truncate() {
+    return this.werknemerRepository.clear();
+  }
 }
