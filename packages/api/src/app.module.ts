@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WerknemerModule } from './werknemer/werknemer.module';
 import { BezoekerModule } from './bezoeker/bezoeker.module';
 import { SeedModule } from './seed/seed.module';
+import { AdministratorsModule } from './administrators/administrators.module';
 
 @Module({
   imports: [
@@ -29,6 +30,8 @@ import { SeedModule } from './seed/seed.module';
     BezoekerModule,
 
     SeedModule,
+
+    AdministratorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
