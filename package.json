@@ -26,5 +26,9 @@
     "proseWrap": "preserve",
     "htmlWhitespaceSensitivity": "css",
     "endOfLine": "lf"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "lucide-vue-next": "^0.279.0"
   }
 }
