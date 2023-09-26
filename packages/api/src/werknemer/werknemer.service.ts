@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateWerknemerInput } from './dto/create-werknemer.input';
 import { UpdateWerknemerInput } from './dto/update-werknemer.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Werknemer } from './entities/werknemer.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class WerknemerService {
+
+  constructor(
+    @InjectRepository(Werknemer)
+    private werknemerRepository: Repository<Werknemer>,
+  ) 
+  {}
+
   create(createWerknemerInput: CreateWerknemerInput) {
     return 'This action adds a new werknemer';
   }
 
   findAll() {
-    // return `This action returns all werknemers`;
-    return [
-      {
-        id: 1,
-        firstname: 'John',
-        lastname: 'Doe',
-        email: 'john.doe@werknemer.bellewaerde.be',
-      }
-    ]
+    return this.werknemerRepository.find();
   }
 
   findOne(id: number) {

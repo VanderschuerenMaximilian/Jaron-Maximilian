@@ -13,6 +13,15 @@ import { WerknemerModule } from './werknemer/werknemer.module';
       autoSchemaFile: true,
     }),
 
+    TypeOrmModule.forRoot({
+        type: 'mongodb',
+        url: 'mongodb://localhost:27027/api',
+        entities: [__dirname + '/**/*.entity.{js,ts}'],
+        synchronize: true, // Careful with this in production
+        useNewUrlParser: true,
+        useUnifiedTopology: true, // Disable deprecated warnings
+    }),
+    
     WerknemerModule,
   ],
   controllers: [AppController],
