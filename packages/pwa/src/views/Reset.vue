@@ -1,14 +1,18 @@
 <template>
-    <div class="w-3/5 flex flex-col gap-4 items-center">
-        <h1>Forgot Password?</h1>
-        <p>Enter your email address and we will send you a link to reset your password.</p>
-        <form @submit.prevent="handleReset" class="flex flex-col items-center gap-6">
-            <input type="email" name="email" id="email" v-model="email" placeholder="Email" />
-            <button type="submit" class="px-4 py-2 bg-primary-green rounded text-white">Reset Password</button>
-        </form>
-        <div class="flex justify-between w-20%">
-            <RouterLink to="/login" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Login</RouterLink>
-            <RouterLink to="/register" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Register</RouterLink>
+    <div class="flex justify-center items-center min-h-screen mt-[-120px] drop-shadow-lg">
+        <div class="bg-white border-t-12 border-[#047143] rounded-md">
+            <h1 class="text-[30px] font-bold mt-[44px] flex justify-center ">Forgot Password?</h1>
+            <form @submit.prevent="handleReset" class="flex flex-col gap-[24px] mt-[40px] mx-[40px]">
+                <div class="flex flex-col gap-1">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" v-model="email" placeholder="Email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3  rounded-md" />
+                </div>
+                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Reset Password</button>
+            </form>
+            <div class="mt-[10px] flex justify-center gap-1 mb-[40px]">
+                <p>Remember Password?</p>
+                <RouterLink to="/login" class="color-[#047143] underline font-bold">Log in</RouterLink>
+            </div>
         </div>
     </div>
 </template>

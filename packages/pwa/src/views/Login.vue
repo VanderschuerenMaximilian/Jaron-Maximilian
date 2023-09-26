@@ -1,41 +1,126 @@
 <template>
-    <p class="max-w-2xl break-all text-xs">{{ firebaseUser }}</p>
-    <form @submit.prevent="handleLogin">
-        <div class="flex flex-col gap-4 items-center">
-            <input type="email" name="email" id="email" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.email">
-            <input type="password" name="password" id="password" class="py-2 px-1 border-1 border-slate-400" v-model="loginCredentials.password">
-            <button class="bg-primary-green hover:bg-secondary-green px-4 py-2 rounded text-slate-100">Login</button>
+    <div class="flex justify-center items-center min-h-screen mt-[-120px] drop-shadow-lg">
+        <div class="bg-white border-t-12 border-[#047143] rounded-md">
+            <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Login</h1>
+            <p v-show="dirties.account" class="absolute left-30 text-red-500">We herkennen dit email of wachtwoord niet.</p>
+            <form @submit.prevent="handleLogin" class="flex flex-col gap-[24px] mt-[40px] mx-[40px]">
+                
+                <div class="flex flex-col gap-1">
+                    <div class="flex justify-between">
+                        <label for="email">Email</label>
+                         <p v-show="dirties.email" class="text-red-500">Ongeldig e-mailadres</p>
+                    </div>
+                    <input type="email" name="email" id="email" v-model="loginCredentials.email" placeholder="Email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="flex justify-between">
+                            <label for="wachtwoord">Wachtwoord</label>
+                             <p v-show="dirties.password" class="text-red-500">Ongeldig Wachtwoord</p>
+                        </div>
+                    <div class="relative">
+                        <input type="password" name="wachtwoord" id="wachtwoord"
+                            class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
+                            placeholder="Wachtwoord" />
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                            @click="togglePasswordVisibility()">
+                            <Eye id="eye" class="select-none"/>
+                            <EyeOff id="eye-off" class="hidden select-none"/>
+                        </div>
+                    </div>
+                </div>
+                <RouterLink to="/reset" class="mt-[-20px] flex justify-end color-[#047143] underline">forgot your password?</RouterLink>
+                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Login</button>
+                <div class="mt-[-20px] flex justify-center gap-1 mb-[40px]">
+                    <p>Don't have an account?</p>
+                    <RouterLink to="/register" class=" color-[#047143] underline font-bold">Sign up</RouterLink>
+                </div>
+            </form>
         </div>
-    </form>
-    <div class="flex justify-between w-20%">
-        <RouterLink to="/register" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Register</RouterLink>
-        <RouterLink to="/reset" class="px-4 py-2 bg-blue-400 hover:bg-blue-500 text-slate-100 rounded">Forgot password</RouterLink>
     </div>
+    <p class="max-w-2xl break-all text-xs">{{ firebaseUser }}</p>
+
 </template>
 
 <script lang="ts">
 import { ref } from 'vue'
 import useFirebase from '../composables/useFirebase'
+import { Eye, EyeOff } from 'lucide-vue-next';
 import { useRouter } from 'vue-router'
 
 export default {
+    components: {
+        Eye,
+        EyeOff,
+    },
     setup() {
         const { login, firebaseUser } = useFirebase()
+        const dirties = ref({
+            email: false,
+            password: false,
+            account: false,
+        
+        })
         const router = useRouter();
         const loginCredentials = ref({
             email: 'test@email.com',
             password: 'test123'
         })
 
+        const togglePasswordVisibility = () => {
+            const passwordInput = document.getElementById('wachtwoord') as HTMLInputElement;
+            const eye = document.getElementById('eye') as HTMLInputElement;
+            const eye_off = document.getElementById('eye-off') as HTMLInputElement;
+            if (passwordInput) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eye.style.display = 'none';
+                    eye_off.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eye.style.display = 'block';
+                    eye_off.style.display = 'none';
+                }
+            }
+        }
+
         const handleLogin = () => {
-            login(loginCredentials.value.email, loginCredentials.value.password, router)
+            // Controleer of de ingevoerde e-mail een geldig formaat heeft
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!loginCredentials.value.email || !emailPattern.test(loginCredentials.value.email)) {
+                if (!loginCredentials.value.email) {
+                    dirties.value.email = true;
+                }
+                if (!emailPattern.test(loginCredentials.value.email)) {
+                    dirties.value.email = true; 
+                }
+            }
+            else dirties.value.email = false;
+            if (!loginCredentials.value.password || loginCredentials.value.password.length < 6) {
+                if (!loginCredentials.value.password) {
+                    dirties.value.password = true;
+                }
+                if (loginCredentials.value.password.length < 6) {
+                    dirties.value.password = true;
+                }
+            } else dirties.value.password = false;
+
+            if (!dirties.value.email && !dirties.value.password) {
+                login(loginCredentials.value.email, loginCredentials.value.password, router)
+                    .then(() => {
+                        // TODO: hier wordt naar database enzo gestuurd
+                    })
+                    .catch((error) => {
+                        dirties.value.account = true;
+                    });
+            }
         }
 
         return {
             loginCredentials,
             firebaseUser,
-
-            handleLogin
+            togglePasswordVisibility,
+            handleLogin,
+            dirties,
         }
     }
 }
