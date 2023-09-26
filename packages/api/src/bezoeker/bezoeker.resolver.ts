@@ -8,10 +8,10 @@ import { UpdateBezoekerInput } from './dto/update-bezoeker.input';
 export class BezoekerResolver {
   constructor(private readonly bezoekerService: BezoekerService) {}
 
-  @Mutation(() => Bezoeker)
+  @Mutation(() => Bezoeker, {description: 'Create a bezoeker using the DTO.'})
   createBezoeker(
     @Args('createBezoekerInput') createBezoekerInput: CreateBezoekerInput,
-  ) {
+  ): Promise<Bezoeker> {
     return this.bezoekerService.create(createBezoekerInput)
   }
 

@@ -1,20 +1,26 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
-@ObjectType({ description: 'bezoeker' })
+@Entity()
+@ObjectType({ description: 'bezoekers' })
 export class Bezoeker {
+  @ObjectIdColumn()
   @Field(() => ID)
   id: string
 
+  @Column()
   @Field()
   name: string
 
+  @Column()
   @Field()
   fullname: string
 
+  @Column()
   @Field()
   email: string
 
+  @Column()
   @Field()
   createdAt: Date
-
 }
