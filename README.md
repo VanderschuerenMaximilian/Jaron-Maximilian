@@ -1,5 +1,5 @@
 # Jaron-Maximilian
 Project Advanced Full Stack Developement
 
-# run code
+## Startup Command
 npm run dev -w pwa
