@@ -43,6 +43,7 @@
 <script lang="ts">
 import { RouterLink } from 'vue-router'
 import useFirebase from '@/composables/useFirebase'
+import { useRouter } from 'vue-router'
 
 export default {
     components: {
@@ -50,9 +51,10 @@ export default {
     },
     setup() {
         const { firebaseUser, signOutUser } = useFirebase()
+        const router = useRouter()
 
         const handleLogout = () => {
-            signOutUser()
+            signOutUser(router)
         }
 
         return {
