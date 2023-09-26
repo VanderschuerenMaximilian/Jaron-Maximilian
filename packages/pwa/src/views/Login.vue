@@ -2,13 +2,21 @@
     <div class="flex justify-center items-center min-h-screen mt-[-120px] drop-shadow-lg">
         <div class="bg-white border-t-12 border-[#047143] rounded-md">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Login</h1>
+            <p v-show="dirties.account" class="absolute left-30 text-red-500">We herkennen dit email of wachtwoord niet.</p>
             <form @submit.prevent="handleLogin" class="flex flex-col gap-[24px] mt-[40px] mx-[40px]">
+                
                 <div class="flex flex-col gap-1">
-                    <label for="email">Email</label>
+                    <div class="flex justify-between">
+                        <label for="email">Email</label>
+                         <p v-show="dirties.email" class="text-red-500">Ongeldig e-mailadres</p>
+                    </div>
                     <input type="email" name="email" id="email" v-model="loginCredentials.email" placeholder="Email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md">
                 </div>
                 <div class="flex flex-col gap-1">
-                    <label for="wachtwoord">Wachtwoord</label>
+                    <div class="flex justify-between">
+                            <label for="wachtwoord">Wachtwoord</label>
+                             <p v-show="dirties.password" class="text-red-500">Ongeldig Wachtwoord</p>
+                        </div>
                     <div class="relative">
                         <input type="password" name="wachtwoord" id="wachtwoord"
                             class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
@@ -48,7 +56,8 @@ export default {
         const { login, firebaseUser } = useFirebase()
         const dirties = ref({
             email: false,
-            password: false
+            password: false,
+            account: false,
         
         })
         const router = useRouter();
@@ -75,17 +84,34 @@ export default {
         }
 
         const handleLogin = () => {
-            if (!loginCredentials.value.email || !loginCredentials.value.password) {
-                console.log(loginCredentials.value.email)
-                console.log(loginCredentials.value.password)
+            // Controleer of de ingevoerde e-mail een geldig formaat heeft
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!loginCredentials.value.email || !emailPattern.test(loginCredentials.value.email)) {
+                if (!loginCredentials.value.email) {
+                    dirties.value.email = true;
+                }
+                if (!emailPattern.test(loginCredentials.value.email)) {
+                    dirties.value.email = true; 
+                }
             }
-            else {
+            else dirties.value.email = false;
+            if (!loginCredentials.value.password || loginCredentials.value.password.length < 6) {
+                if (!loginCredentials.value.password) {
+                    dirties.value.password = true;
+                }
+                if (loginCredentials.value.password.length < 6) {
+                    dirties.value.password = true;
+                }
+            } else dirties.value.password = false;
 
-            
-            login(loginCredentials.value.email, loginCredentials.value.password, router)
-                .then(() => {
-                    // TODO: hier wordt naar database enzo gestuurd
-                })
+            if (!dirties.value.email && !dirties.value.password) {
+                login(loginCredentials.value.email, loginCredentials.value.password, router)
+                    .then(() => {
+                        // TODO: hier wordt naar database enzo gestuurd
+                    })
+                    .catch((error) => {
+                        dirties.value.account = true;
+                    });
             }
         }
 
@@ -93,7 +119,8 @@ export default {
             loginCredentials,
             firebaseUser,
             togglePasswordVisibility,
-            handleLogin
+            handleLogin,
+            dirties,
         }
     }
 }
