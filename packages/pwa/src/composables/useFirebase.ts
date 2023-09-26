@@ -3,10 +3,12 @@ import { initializeApp } from 'firebase/app';
 import { 
     getAuth, signInWithEmailAndPassword, 
     setPersistence, browserLocalPersistence, 
-    onAuthStateChanged, signOut, 
+    onAuthStateChanged, signOut,
     createUserWithEmailAndPassword, updateProfile,
     sendPasswordResetEmail,
 } from 'firebase/auth';
+import type { User } from 'firebase/auth';
+import type { Router } from 'vue-router';
 
 const app = initializeApp({
     apiKey: import.meta.env.VITE_apiKey,
@@ -21,6 +23,8 @@ const auth = getAuth(app);
 // om te zorgen dat de gebruiker ingelogd blijft
 setPersistence(auth, browserLocalPersistence)
 const firebaseUser = ref<User | null>(auth.currentUser)
+
+// const router = useRouter()
 
 const restoreUser = async () => {
     return new Promise((resolve, reject) => {
@@ -44,18 +48,20 @@ const login = async (email: string, password: string): Promise<User> => {
                 resolve(userCredential.user)
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 };
 
-const signOutUser = async () => {
+const signOutUser = async (router: Router) => {
     return new Promise((resolve, reject) => {
         signOut(auth).then(() => {
             firebaseUser.value = null
+            router.push("/")
             resolve(null)
-        }).catch((error) => {
-            reject(error.code, error.message)
+        })
+        .catch((error) => {
+            reject(error)
         });
     })
 }
@@ -69,7 +75,7 @@ const register = async (name: string, email: string, password: string): Promise<
                 resolve(userCredential.user)
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 }
@@ -81,7 +87,7 @@ const forgotPassword = async (email: string): Promise<void> => {
                 resolve()
             })
             .catch((error) => {
-                reject(error.code, error.message)
+                reject(error)
             });
     })
 }
