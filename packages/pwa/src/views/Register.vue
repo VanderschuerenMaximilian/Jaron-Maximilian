@@ -30,7 +30,7 @@ export default {
         const handleRegister = () => {
             register(newUser.value.name, newUser.value.email, newUser.value.password)
                 .then(() => {
-                    login(newUser.value.email, newUser.value.password)
+                    login(newUser.value.email, newUser.value.password, router)
                         .then(()=>{
                             router.push('/login')
                         });

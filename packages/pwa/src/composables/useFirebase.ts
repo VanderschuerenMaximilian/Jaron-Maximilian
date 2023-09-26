@@ -45,12 +45,15 @@ const login = async (email: string, password: string, router: Router): Promise<U
                 firebaseUser.value = userCredential.user
                 const Useremail = firebaseUser.value?.email
                 const splitEmail = Useremail?.split("@")
-                if (splitEmail?.[1].includes("werknemer")) {
-                    console.log("werknemer")
-                    router.push("/auth/werknemer/" + firebaseUser.value?.uid)
-                } else if (splitEmail?.[1].includes("administratie")) {
-                    console.log("authenticatie")
-                    router.push("/auth/administratie/" + firebaseUser.value?.uid + "/dashboard")
+                if (firebaseUser.value?.email === "admin@admin.bellewaerde.be") {
+                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard")
+                }
+                else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
+                    router.push("/auth/employee/" + firebaseUser.value?.uid)
+                } else if (splitEmail?.[1].includes("administration.bellewaerde.be")) {
+                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard")
+                } else {
+                    router.push("/")
                 }
                 resolve(userCredential.user)
             })
@@ -64,7 +67,7 @@ const signOutUser = async (router: Router) => {
     return new Promise((resolve, reject) => {
         signOut(auth).then(() => {
             firebaseUser.value = null
-            router.push("/")
+            router.push("/login")
             resolve(null)
         })
         .catch((error) => {

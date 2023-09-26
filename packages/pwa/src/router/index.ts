@@ -30,16 +30,16 @@ const router = createRouter({
           component: () => import('../views/Map.vue'),
         },
         {
-          path: 'evenementen',
-          component: () => import('../views/Evenementen.vue'),
+          path: 'events',
+          component: () => import('../views/Events.vue'),
         },
         {
           path: 'contact',
           component: () => import('../views/Contact.vue'),
         },
         {
-          path: 'openingsuren',
-          component: () => import('../views/Openingsuren.vue'),
+          path: 'openinghours',
+          component: () => import('../views/Openingshours.vue'),
         },
         {
           path: 'tickets',
@@ -57,16 +57,16 @@ const router = createRouter({
       meta: { requiresAuth: true, showFooter: false },
       children: [
         {
-          path: 'werknemer/:id',
-          component: () => import('../views/auth/werknemer/Profile.vue'),
+          path: 'employee/:id',
+          component: () => import('../views/auth/employee/Profile.vue'),
         },
         {
-          path: 'administratie/:id',
+          path: 'administration/:id',
           component: () => import('../components/wrapper/DashboardWrapper.vue'),
           children: [
             {
               path: 'dashboard',
-              component: () => import('../views/auth/administratie/Dashboard.vue'),
+              component: () => import('../views/auth/administration/Dashboard.vue'),
             }
           ],
         },
@@ -82,13 +82,34 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const { firebaseUser } = useFirebase()
 
-  if (to.path === '/login') {
+  if (to.path === '/login' || to.path === '/register' || to.path === '/reset') {
     if (firebaseUser.value) {
       next("/")
     } else {
       next()
     }
-  } else {
+  }
+  else if (to.path.startsWith('/auth/employee/')) {
+    if (firebaseUser.value !== null && firebaseUser.value?.email !== null) {
+      const emailSplit: string[] = firebaseUser.value.email.split("@")
+      if (emailSplit[1].includes("employee.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
+        next()
+      } else {
+        next("/")
+      }
+    }
+  } 
+  else if (to.path.startsWith('/auth/administration/')) {
+    if (firebaseUser.value !== null && firebaseUser.value?.email !== null) {
+      const emailSplit: string[] = firebaseUser.value.email.split("@")
+      if (emailSplit[1].includes("administration.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
+        next()
+      } else {
+        next("/")
+      }
+    }
+  }
+  else {
     if (to.meta.requiresAuth && !firebaseUser.value) {
       next('/login')
     } else {
