@@ -24,8 +24,6 @@ const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence)
 const firebaseUser = ref<User | null>(auth.currentUser)
 
-// const router = useRouter()
-
 const restoreUser = async () => {
     return new Promise((resolve, reject) => {
         onAuthStateChanged(auth, (user) => {
@@ -40,11 +38,23 @@ const restoreUser = async () => {
     })
 }
 
-const login = async (email: string, password: string): Promise<User> => {
+const login = async (email: string, password: string, router: Router): Promise<User> => {
     return new Promise((resolve, reject) => {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 firebaseUser.value = userCredential.user
+                const Useremail = firebaseUser.value?.email
+                const splitEmail = Useremail?.split("@")
+                if (firebaseUser.value?.email === "admin@admin.bellewaerde.be") {
+                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard")
+                }
+                else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
+                    router.push("/auth/employee/" + firebaseUser.value?.uid)
+                } else if (splitEmail?.[1].includes("administration.bellewaerde.be")) {
+                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard")
+                } else {
+                    router.push("/")
+                }
                 resolve(userCredential.user)
             })
             .catch((error) => {
@@ -57,7 +67,7 @@ const signOutUser = async (router: Router) => {
     return new Promise((resolve, reject) => {
         signOut(auth).then(() => {
             firebaseUser.value = null
-            router.push("/")
+            router.push("/login")
             resolve(null)
         })
         .catch((error) => {
