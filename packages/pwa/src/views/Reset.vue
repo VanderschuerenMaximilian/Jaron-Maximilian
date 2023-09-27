@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center min-h-screen items-center items-center drop-shadow-lg">
+    <div class="flex justify-center min-h-screen items-center drop-shadow-lg">
         <div class="bg-white border-t-12 border-[#047143] rounded-md mt-[-120px]">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center ">Forgot Password?</h1>
             <form @submit.prevent="handleReset" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]">
@@ -36,17 +36,13 @@ export default {
         const handleReset = () => {
             const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
             if (email.value !== '' && emailPattern.test(email.value)) {
-                console.log('valid email')
                 dirties.value.email = false
             } else {
-                console.log('invalid email')
                 dirties.value.email = true
             }
 
             if(!dirties.value.email) {
-                forgotPassword(email.value).then(()=> {
-                    console.log('email sent')
-                })
+                forgotPassword(email.value)
             }
         }
 

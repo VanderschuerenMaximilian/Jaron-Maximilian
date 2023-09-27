@@ -157,18 +157,19 @@ export default {
             if(newUser.value.bevestigpassword !== newUser.value.password) {
                 dirties.value.bevestigpassword = true
             } else dirties.value.bevestigpassword = false
-
-            if (dirties.value.voornaam && dirties.value.achternaam && dirties.value.email && dirties.value.password && dirties.value.bevestigpassword) {
-            register(newUser.value.voornaam + ' ' + newUser.value.achternaam, newUser.value.email, newUser.value.password)
-                .then(() => {
-                    login(newUser.value.email, newUser.value.password, router)
-                        .then(()=>{
-                            router.push('/login')
-                        });
-                })
-                .catch((error) => {
-                    error.value = error
-                })
+            
+            if (!dirties.value.voornaam && !dirties.value.achternaam && !dirties.value.email && !dirties.value.password && !dirties.value.bevestigpassword) {
+                const name: string = newUser.value.voornaam + ' ' + newUser.value.achternaam
+                register(name, newUser.value.email, newUser.value.password)
+                    .then(() => {
+                        login(newUser.value.email, newUser.value.password, router)
+                            .then(()=>{
+                                router.push('/login')
+                            });
+                    })
+                    .catch((error) => {
+                        error.value = error
+                    })
             }
         }
 
