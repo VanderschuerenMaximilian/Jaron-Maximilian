@@ -3,34 +3,30 @@
         <div class="bg-white border-t-12 border-[#047143] mt-[-80px] rounded-md">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Login</h1>
             <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
-                <p class="text-center font-medium text-red-600">Je email of wachtwoord is niet correct</p>
+                <p class="text-center font-medium text-red-600">Je email of password is niet correct</p>
             </div>
-            <form @submit.prevent="handleLogin" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]">
+            <form @submit.prevent="handleLogin" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]" novalidate>
                 
                 <div class="flex flex-col gap-1">
-                    <div class="flex justify-between">
-                        <label for="email">Email</label>
-                         <p v-show="dirties.email" class="text-red-500">Ongeldig e-mailadres</p>
-                    </div>
+                    <label for="email">Email</label>
                     <input type="email" name="email" id="email" v-model="loginCredentials.email" placeholder="Email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md">
+                    <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid email</p>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <div class="flex justify-between">
-                            <label for="wachtwoord">Wachtwoord</label>
-                             <p v-show="dirties.password" class="text-red-500">Ongeldig Wachtwoord</p>
-                        </div>
+                    <label for="password">Password</label>
                     <div class="relative">
-                        <input type="password" name="wachtwoord" id="wachtwoord"
-                            class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
-                            placeholder="Wachtwoord" />
+                        <input type="password" name="password" id="password"
+                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
+                        placeholder="password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                            @click="togglePasswordVisibility()">
-                            <Eye id="eye" class="select-none"/>
-                            <EyeOff id="eye-off" class="hidden select-none"/>
-                        </div>
+                        @click="togglePasswordVisibility()">
+                        <Eye id="eye" class="select-none"/>
+                        <EyeOff id="eye-off" class="hidden select-none"/>
                     </div>
                 </div>
-                <RouterLink to="/reset" class="mt-[-10px] flex justify-end color-[#047143] underline">forgot your password?</RouterLink>
+                <p v-show="dirties.password" class="text-red-500 text-3 flex justify-end">Invalid password</p>
+                </div>
+                <RouterLink to="/reset" class="mt-[-10px] flex justify-end color-[#047143] underline">Forgot your password?</RouterLink>
                 <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Login</button>
                 <div class="mt-[-10px] flex justify-center gap-1 mb-[40px]">
                     <p>Don't have an account?</p>
@@ -69,7 +65,7 @@ export default {
         })
 
         const togglePasswordVisibility = () => {
-            const passwordInput = document.getElementById('wachtwoord') as HTMLInputElement;
+            const passwordInput = document.getElementById('password') as HTMLInputElement;
             const eye = document.getElementById('eye') as HTMLInputElement;
             const eye_off = document.getElementById('eye-off') as HTMLInputElement;
             if (passwordInput) {
