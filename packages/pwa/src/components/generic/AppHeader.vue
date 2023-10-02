@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$route.meta.showHeader" class="flex items-center justify-between w-full bg-slate-100 shadow-lg pr-8">
+    <header v-if="$route.meta.showHeader" class="flex items-center justify-between w-full bg-slate-100 shadow-lg pr-8">
         <div>
             <RouterLink to="/" class="overflow-hidden">
                 <picture>
@@ -8,7 +8,7 @@
             </RouterLink>
         </div>
         <!-- desktop menu -->
-        <section class="gap-4 md:flex hidden">
+        <nav class="gap-4 md:flex hidden">
             <ul class="flex lg:gap-x-4 gap-x-2 my-auto">
                 <li><RouterLink to="/" class="nav-link">Home</RouterLink></li>
                 <li><RouterLink to="/map" class="nav-link">Map</RouterLink></li>
@@ -37,7 +37,7 @@
                         <!-- TODO: afhankelijk van welk profiel plaats de juiste links -->
                         <RouterLink to="/" class="menu-link" @click="clickProfile">acc links</RouterLink>
                     </div>
-                    <div class="text-start">
+                    <section class="text-start">
                         <ul class="space-y-2">
                             <li><RouterLink to="/" class="menu-link" @click="clickProfile">Home</RouterLink></li>
                             <li><RouterLink to="/map" class="menu-link" @click="clickProfile">Map</RouterLink></li>
@@ -47,11 +47,11 @@
                             <li><RouterLink to="/tickets" class="menu-link" @click="clickProfile">Tickets</RouterLink></li>
                             <li><RouterLink to="/alerts" class="menu-link" @click="clickProfile">Alerts</RouterLink></li>
                         </ul>
-                    </div>
+                    </section>
                     <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">Uitloggen</button>
                 </section>
             </div>
-        </section>
+        </nav>
         <!-- mobile menu -->
         <section class="md:hidden block">
             <button class="h-full flex items-center justify-center" @click="clickProfile">
@@ -65,8 +65,8 @@
                     </button>
                 </div>
                 <section class="px-4 space-y-4">
-                    <h4 class="h5-white text-center">Account</h4>
                     <div class="border-b-2 pb-2" v-if="firebaseUser">
+                        <h4 class="h5-white text-center">Account</h4>
                         <div class="flex gap-4 items-center">
                             <div class="text-slate-100">
                                 <h3 class="font-bold m-0 text-start">{{ firebaseUser?.displayName }}</h3>
@@ -74,23 +74,28 @@
                             </div>
                         </div>
                     </div>
-                    <ul class="border-b-2 pb-4">
+                    <ul v-if="firebaseUser" class="border-b-2 pb-4">
                         <li><RouterLink to="/" class="menu-link" @click="clickProfile">acc links</RouterLink></li>
                     </ul>
-                    <ul class="flex flex-col gap-4 h-full">
+                    <ul class="flex flex-col gap-4 h-full border-b-2 pb-4">
                         <li><RouterLink to="/" class="menu-link" @click="clickProfile">Home</RouterLink></li>
                         <li><RouterLink to="/map" class="menu-link" @click="clickProfile">Map</RouterLink></li>
-                        <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Evenementen</RouterLink></li>
+                        <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Events</RouterLink></li>
                         <li><RouterLink to="/contact" class="menu-link" @click="clickProfile">Contact</RouterLink></li>
-                        <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">Openingsuren</RouterLink></li>
+                        <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">Openings Hours</RouterLink></li>
                         <li><RouterLink to="/tickets" class="menu-link" @click="clickProfile">Tickets</RouterLink></li>
                         <li><RouterLink to="/alerts" class="menu-link" @click="clickProfile">Alerts</RouterLink></li>
                     </ul>
-                    <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">Uitloggen</button>
+                    <button v-if="firebaseUser" @click="handleLogout" class="menu-link pb-4 w-full text-start">Log Out</button>
+                    <RouterLink to="/login" class="group" v-else="firebaseUser">
+                        <button @click="clickProfile" class="text-slate-100 py-4" >
+                            <span class="group-hover:underline">Log In</span>
+                        </button>
+                    </RouterLink>
                 </section>
             </div>
         </section>
-    </section>
+    </header>
 </template>
 
 <script lang="ts">

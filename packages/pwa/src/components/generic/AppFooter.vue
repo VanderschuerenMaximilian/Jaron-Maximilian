@@ -1,5 +1,5 @@
 <template>
-    <section v-if="$route.meta.showFooter" class="bg-primary-green text-slate-100 w-full flex md:flex-row flex-col md:justify-between justify-center md:items-start items-center md:gap-0 gap-4 sm:px-20 px-8 py-16">
+    <footer v-if="$route.meta.showFooter" class="bg-primary-green text-slate-100 w-full flex md:flex-row flex-col md:justify-between justify-center md:items-start items-center md:gap-0 gap-4 sm:px-20 px-8 py-16">
         <section class="max-w-md space-y-2">
             <h2 class="h2-white">Bellewaerde</h2>
             <p class="w-48">Waar avontuur en natuur samenkomen</p>
@@ -27,5 +27,5 @@
                 </RouterLink>
             </section>
         </section>
-    </section>
+    </footer>
 </template>
