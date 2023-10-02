@@ -4,7 +4,8 @@ import presetUno from '@unocss/preset-uno'
 export default defineConfig({
   shortcuts: {
     'nav-link':
-      'focus:font-bold focus:text-green-800 hover:text-green-800 hover:underline text-lg',
+      'hover:text-green-800 hover:underline text-lg',
+    'menu-link': 'text-slate-100 hover:underline',
     h1: 'text-h1 font-bold',
     'h1-green': 'text-h1 font-bold text-primary-green',
     'h1-white': 'text-h1 font-bold text-slate-100',
