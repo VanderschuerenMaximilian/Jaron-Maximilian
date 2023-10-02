@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../components/wrapper/AppWrapper.vue'),
-      meta: { requiresAuth: false, showFooter: true },
+      meta: { requiresAuth: false, showFooter: true, showHeader: true },
       children: [
         {
           path: '',
@@ -54,7 +54,7 @@ const router = createRouter({
     {
       path: '/auth',
       component: import('../components/wrapper/AppWrapper.vue'),
-      meta: { requiresAuth: true, showFooter: false },
+      meta: { requiresAuth: true, showFooter: false, showHeader: true },
       children: [
         {
           path: 'employee/:id',
@@ -63,6 +63,7 @@ const router = createRouter({
         {
           path: 'administration/:id',
           component: () => import('../components/wrapper/DashboardWrapper.vue'),
+          meta: { requiresAuth: true, showHeader: false },
           children: [
             {
               path: 'dashboard',

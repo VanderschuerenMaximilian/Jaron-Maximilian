@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import type { Router } from 'vue-router';
+import router from '@/router';
 
 const app = initializeApp({
     apiKey: import.meta.env.VITE_apiKey,
