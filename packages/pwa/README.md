@@ -38,3 +38,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### runnen
+npm run dev -w pwa

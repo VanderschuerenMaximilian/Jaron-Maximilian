@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-center items-center min-h-screen drop-shadow-lg">
-        <div class="bg-white border-t-12 border-[#047143] mt-[-80px] rounded-md">
+        <div class="bg-white border-t-12 border-[#047143] rounded-md">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Login</h1>
             <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
                 <p class="text-center font-medium text-red-600">Je email of wachtwoord is niet correct</p>

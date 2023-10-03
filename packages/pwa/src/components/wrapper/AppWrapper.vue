@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-8 items-center">
+    <div class="">
         <AppHeaderVue />
         <RouterView />
         <AppFooterVue />
