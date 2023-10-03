@@ -53,7 +53,7 @@ const router = createRouter({
     },
     {
       path: '/auth',
-      component: import('../components/wrapper/AppWrapper.vue'),
+      component: () => import('../components/wrapper/AppWrapper.vue'),
       meta: { requiresAuth: true, showFooter: false, showHeader: true },
       children: [
         {

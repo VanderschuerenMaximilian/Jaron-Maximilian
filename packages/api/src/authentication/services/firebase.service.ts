@@ -7,12 +7,11 @@ import { getAuth } from 'firebase-admin/auth'
 export class FirebaseService {
     private firebaseApp: App;
     
-    // TODO: in app.module.ts import nestjs/config package
-    // TODO: check path in .env file
     constructor() {
         this.firebaseApp = initializeApp({
             credential: applicationDefault(), // Looks at enviroment variables in .env => GOOGLE_APPLICATION_CREDENTIALS
         })
+        console.log('firebaseApp: ',this.firebaseApp);
     }
 
     getAuth = (): Auth => getAuth();
