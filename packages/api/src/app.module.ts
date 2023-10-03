@@ -10,6 +10,8 @@ import { SeedModule } from './seed/seed.module';
 import { AdministratorsModule } from './administrators/administrators.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule } from '@nestjs/config';
+import { VisitorsModule } from './visitors/visitors.module';
+import { PersonsModule } from './persons/persons.module';
 
 @Module({
   imports: [
@@ -38,6 +40,10 @@ import { ConfigModule } from '@nestjs/config';
     AdministratorsModule,
 
     AuthenticationModule,
+
+    VisitorsModule,
+
+    PersonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
