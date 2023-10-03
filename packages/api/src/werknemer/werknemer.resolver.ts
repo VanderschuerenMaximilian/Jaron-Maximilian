@@ -3,6 +3,10 @@ import { WerknemerService } from './werknemer.service';
 import { Werknemer } from './entities/werknemer.entity';
 import { CreateWerknemerInput } from './dto/create-werknemer.input';
 import { UpdateWerknemerInput } from './dto/update-werknemer.input';
+import { FirebaseUser } from '../authentication/decorators/user.decorator';
+import { UserRecord } from 'firebase-admin/auth';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
 
 @Resolver(() => Werknemer)
 export class WerknemerResolver {
@@ -13,8 +17,11 @@ export class WerknemerResolver {
     return this.werknemerService.create(createWerknemerInput);
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => [Werknemer], { name: 'werknemers' })
-  findAll() {
+  findAll(@FirebaseUser() currentUser: UserRecord) {
+  // findAll() {
+    console.log('currentUser: ',currentUser);
     return this.werknemerService.findAll();
   }
 

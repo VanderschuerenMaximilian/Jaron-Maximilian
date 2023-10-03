@@ -8,9 +8,13 @@ import { WerknemerModule } from './werknemer/werknemer.module';
 import { BezoekerModule } from './bezoeker/bezoeker.module';
 import { SeedModule } from './seed/seed.module';
 import { AdministratorsModule } from './administrators/administrators.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
+    
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
@@ -32,6 +36,8 @@ import { AdministratorsModule } from './administrators/administrators.module';
     SeedModule,
 
     AdministratorsModule,
+
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,6 +18,10 @@ const werknemer_service_1 = require("./werknemer.service");
 const werknemer_entity_1 = require("./entities/werknemer.entity");
 const create_werknemer_input_1 = require("./dto/create-werknemer.input");
 const update_werknemer_input_1 = require("./dto/update-werknemer.input");
+const user_decorator_1 = require("../authentication/decorators/user.decorator");
+const auth_1 = require("firebase-admin/auth");
+const common_1 = require("@nestjs/common");
+const firebase_guard_1 = require("../authentication/services/guards/firebase.guard");
 let WerknemerResolver = exports.WerknemerResolver = class WerknemerResolver {
     constructor(werknemerService) {
         this.werknemerService = werknemerService;
@@ -25,7 +29,8 @@ let WerknemerResolver = exports.WerknemerResolver = class WerknemerResolver {
     createWerknemer(createWerknemerInput) {
         return this.werknemerService.create(createWerknemerInput);
     }
-    findAll() {
+    findAll(currentUser) {
+        console.log('currentUser: ', currentUser);
         return this.werknemerService.findAll();
     }
     findOne(id) {
@@ -46,9 +51,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WerknemerResolver.prototype, "createWerknemer", null);
 __decorate([
+    (0, common_1.UseGuards)(firebase_guard_1.FirebaseGuard),
     (0, graphql_1.Query)(() => [werknemer_entity_1.Werknemer], { name: 'werknemers' }),
+    __param(0, (0, user_decorator_1.FirebaseUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [auth_1.UserRecord]),
     __metadata("design:returntype", void 0)
 ], WerknemerResolver.prototype, "findAll", null);
 __decorate([
