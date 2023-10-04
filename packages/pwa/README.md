@@ -41,3 +41,6 @@ npm run build
 
 ### runnen
 npm run dev -w pwa
+
+### dev pullen
+git pull origin dev
