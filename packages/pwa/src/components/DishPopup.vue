@@ -180,7 +180,6 @@ export default {
             };
 
             this.$emit('dish-submitted', soldDish);
-            console.log(soldDish);
             this.clearForm();
 
         },
