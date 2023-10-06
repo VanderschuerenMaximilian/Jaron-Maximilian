@@ -1,5 +1,5 @@
 <template>
-    <header v-if="$route.meta.showHeader" class="flex items-center justify-between w-full bg-slate-100 shadow-lg pr-8">
+    <header v-if="$route.meta.showHeader" class="flex absolute items-center justify-between w-full bg-slate-100 shadow-lg pr-8 z-99">
         <div>
             <RouterLink to="/" class="overflow-hidden">
                 <picture>

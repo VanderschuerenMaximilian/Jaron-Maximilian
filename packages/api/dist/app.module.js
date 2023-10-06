@@ -15,9 +15,7 @@ const apollo_1 = require("@nestjs/apollo");
 const typeorm_1 = require("@nestjs/typeorm");
 const persons_module_1 = require("./persons/persons.module");
 const seed_module_1 = require("./seed/seed.module");
-const authentication_module_1 = require("./authentication/authentication.module");
-const config_1 = require("@nestjs/config");
-const alerts_module_1 = require("./alerts/alerts.module");
+const administrators_module_1 = require("./administrators/administrators.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -37,9 +35,7 @@ exports.AppModule = AppModule = __decorate([
                 useUnifiedTopology: true,
             }),
             seed_module_1.SeedModule,
-            authentication_module_1.AuthenticationModule,
-            persons_module_1.PersonsModule,
-            alerts_module_1.AlertsModule,
+            administrators_module_1.AdministratorsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

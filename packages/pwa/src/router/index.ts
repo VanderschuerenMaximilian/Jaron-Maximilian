@@ -48,7 +48,7 @@ const router = createRouter({
         {
           path: 'alerts',
           component: () => import('../views/Alerts.vue'),
-        }
+        },
       ],
     },
     {
@@ -61,14 +61,25 @@ const router = createRouter({
           component: () => import('../views/auth/employee/Profile.vue'),
         },
         {
+          path: 'shops',
+          component: () => import('../views/auth/employee/Shop.vue'),
+        },
+        {
+          path: 'shop/:id',
+          component: () =>
+            import('../views/auth/employee/ShopDetail.vue'),
+        },
+
+        {
           path: 'administration/:id',
           component: () => import('../components/wrapper/DashboardWrapper.vue'),
           meta: { requiresAuth: true, showHeader: false },
           children: [
             {
               path: 'dashboard',
-              component: () => import('../views/auth/administration/Dashboard.vue'),
-            }
+              component: () =>
+                import('../views/auth/administration/Dashboard.vue'),
+            },
           ],
         },
       ],
@@ -77,7 +88,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       component: () => import('../views/NotFound.vue'),
     },
-  ]
+  ],
 })
 
 router.beforeEach(async (to, from, next) => {
