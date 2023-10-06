@@ -1,11 +1,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Column, Entity, ObjectIdColumn } from 'typeorm';
-
-enum JobType {
-  CLEANER = 'CLEANER',
-  SHOPKEEPER = 'SHOPKEEPER',
-  ATTRACTION_OPERATOR = 'ATTRACTION_OPERATOR',
-}
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { JobType as IJobType } from 'src/interfaces/IJobType';
 
 @Entity()
 @ObjectType()
@@ -15,7 +11,7 @@ export class Person {
   id: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   userId: string;
 
   @Column()
@@ -28,7 +24,27 @@ export class Person {
 
   @Column()
   @Field()
-  email: string;
+  fullName: string;
+
+  @Column()
+  @Field()
+  personalEmail: string;
+
+  @Column()
+  @Field({ nullable: true })
+  workEmail: string;
+
+  @Column()
+  @Field({ nullable: true })
+  phone: string;
+
+  @Column()
+  @Field()
+  personType: IPersonType;
+
+  @Column()
+  @Field({ nullable: true })
+  jobType: IJobType;
 
   @Column()
   @Field()
@@ -37,8 +53,4 @@ export class Person {
   @Column()
   @Field()
   updatedAt: Date;
-
-  @Column()
-  @Field()
-  jobType: JobType;
 }

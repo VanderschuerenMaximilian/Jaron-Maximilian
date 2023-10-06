@@ -4,14 +4,11 @@ import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WerknemerModule } from './werknemer/werknemer.module';
-import { BezoekerModule } from './bezoeker/bezoeker.module';
+import { PersonsModule } from './persons/persons.module';
 import { SeedModule } from './seed/seed.module';
-import { AdministratorsModule } from './administrators/administrators.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule } from '@nestjs/config';
-import { VisitorsModule } from './visitors/visitors.module';
-import { PersonsModule } from './persons/persons.module';
+import { AlertsModule } from './alerts/alerts.module';
 
 @Module({
   imports: [
@@ -31,19 +28,13 @@ import { PersonsModule } from './persons/persons.module';
         useUnifiedTopology: true, // Disable deprecated warnings
     }),
     
-    WerknemerModule,
-
-    BezoekerModule,
-
     SeedModule,
-
-    AdministratorsModule,
 
     AuthenticationModule,
 
-    VisitorsModule,
-
     PersonsModule,
+
+    AlertsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

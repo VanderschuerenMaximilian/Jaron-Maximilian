@@ -3,6 +3,11 @@ import { PersonsService } from './persons.service';
 import { Person } from './entities/person.entity';
 import { CreatePersonInput } from './dto/create-person.input';
 import { UpdatePersonInput } from './dto/update-person.input';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
+import { UserRecord } from 'firebase-admin/auth';
+import { PersonType } from 'src/interfaces/IPersonType';
 
 @Resolver(() => Person)
 export class PersonsResolver {
@@ -13,14 +18,28 @@ export class PersonsResolver {
     return this.personsService.create(createPersonInput);
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => [Person], { name: 'persons' })
-  findAll() {
+  getPersons(@FirebaseUser() currentUser: UserRecord) {
     return this.personsService.findAll();
   }
 
-  @Query(() => Person, { name: 'person' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.personsService.findOne(id);
+  @UseGuards(FirebaseGuard)
+  @Query(() => Person, { name: 'personById', nullable: true })
+  findOne(@Args('id') id: string): Promise<Person> {
+    return this.personsService.findOneById(id);
+  }
+
+  @UseGuards(FirebaseGuard)
+  @Query(() => [Person], { name: 'personsByPersonType', nullable: true })
+  findByPersonType(@Args('personType', { type: () => String }) personType: PersonType) {
+    return this.personsService.findByPersonType(personType);
+  }
+
+  @UseGuards(FirebaseGuard)
+  @Query(() => [Person], { name: 'personsBySearchString', nullable: true })
+  findBySearchString(@Args('searchString', { type: () => String }) searchString: string) {
+    return this.personsService.findBySearchString(searchString);
   }
 
   @Mutation(() => Person)
@@ -29,7 +48,7 @@ export class PersonsResolver {
   }
 
   @Mutation(() => Person)
-  removePerson(@Args('id', { type: () => Int }) id: number) {
+  removePerson(@Args('id', { type: () => String }) id: string) {
     return this.personsService.remove(id);
   }
 }

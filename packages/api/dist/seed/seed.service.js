@@ -11,49 +11,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeedService = void 0;
 const common_1 = require("@nestjs/common");
-const bezoeker_service_1 = require("../bezoeker/bezoeker.service");
-const werknemer_service_1 = require("../werknemer/werknemer.service");
-const bezoeker_entity_1 = require("../bezoeker/entities/bezoeker.entity");
-const bezoekers = require("./data/bezoekers.json");
-const werknemers = require("./data/werknemers.json");
-const werknemer_entity_1 = require("../werknemer/entities/werknemer.entity");
+const persons = require("./data/persons.json");
+const alerts = require("./data/alerts.json");
+const persons_service_1 = require("../persons/persons.service");
+const person_entity_1 = require("../persons/entities/person.entity");
+const alert_entity_1 = require("../alerts/entities/alert.entity");
+const alerts_service_1 = require("../alerts/alerts.service");
 let SeedService = exports.SeedService = class SeedService {
-    constructor(bezoekerService, werknemersService) {
-        this.bezoekerService = bezoekerService;
-        this.werknemersService = werknemersService;
+    constructor(personsService, alertsService) {
+        this.personsService = personsService;
+        this.alertsService = alertsService;
     }
-    async addBezoekersFromJson() {
-        let theBezoeker = [];
-        for (let bezoeker of bezoekers) {
-            const b = new bezoeker_entity_1.Bezoeker();
-            b.name = bezoeker.name;
-            b.fullname = bezoeker.fullname;
-            b.email = bezoeker.email;
-            theBezoeker.push(b);
+    async addPersonsFromJson() {
+        let thePersons = [];
+        for (let person of persons) {
+            const p = new person_entity_1.Person();
+            p.firstName = person.firstName;
+            p.lastName = person.lastName;
+            p.fullName = person.fullName;
+            p.workEmail = person.workEmail;
+            p.personalEmail = person.personalEmail;
+            p.phone = person.phone;
+            p.personType = person.personType;
+            p.createdAt = new Date();
+            p.updatedAt = new Date();
+            thePersons.push(p);
         }
-        return this.bezoekerService.save(theBezoeker);
+        return this.personsService.saveAllPersons(thePersons);
     }
-    async deleteAllBezoekers() {
-        return this.bezoekerService.truncate();
+    async deleteAllPersons() {
+        return this.personsService.truncate();
     }
-    async addWerknemersFromJson() {
-        let theWerknemer = [];
-        for (let werknemer of werknemers) {
-            const b = new werknemer_entity_1.Werknemer();
-            b.firstname = werknemer.firstname;
-            b.lastname = werknemer.lastname;
-            b.email = werknemer.email;
-            theWerknemer.push(b);
+    async addAlertsFromJson() {
+        let theAlerts = [];
+        for (let alert of alerts) {
+            const a = new alert_entity_1.Alert();
+            a.title = alert.title;
+            a.description = alert.description;
+            a.createdAt = new Date();
+            a.updatedAt = new Date();
+            theAlerts.push(a);
         }
-        return this.werknemersService.saveAll(theWerknemer);
+        return this.alertsService.saveAllAlerts(theAlerts);
     }
-    async deleteAllWerknemers() {
-        return this.werknemersService.truncate();
+    async deleteAllAlerts() {
+        return this.alertsService.truncate();
     }
 };
 exports.SeedService = SeedService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [bezoeker_service_1.BezoekerService,
-        werknemer_service_1.WerknemerService])
+    __metadata("design:paramtypes", [persons_service_1.PersonsService,
+        alerts_service_1.AlertsService])
 ], SeedService);
 //# sourceMappingURL=seed.service.js.map

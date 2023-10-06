@@ -1,0 +1,107 @@
+[
+    {
+        "firstName": "Jaron",
+        "lastName": "Vantomme",
+        "fullName": "Jaron Vantomme",
+        "personalEmail": "jaron.vantomme@email.com",
+        "workEmail": "jaron.vantomme@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "John",
+        "lastName": "Smith",
+        "fullName": "John Smith",
+        "personalEmail": "john.smith@email.com",
+        "workEmail": "john.smith@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Sarah",
+        "lastName": "Johnson",
+        "fullName": "Sarah Johnson",
+        "personalEmail": "sarah.johnson@email.com",
+        "workEmail": "sarah.johnson@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Michael",
+        "lastName": "Davis",
+        "fullName": "Michael Davis",
+        "personalEmail": "michael.davis@email.com",
+        "workEmail": "micheal.davis@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Emily",
+        "lastName": "Wilson",
+        "fullName": "Emily Wilson",
+        "personalEmail": "emily.wilson@email.com",
+        "workEmail": "emily.wilson@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "David",
+        "lastName": "Brown",
+        "fullName": "David Brown",
+        "personalEmail": "david.brown@email.com",
+        "workEmail": "david.brown@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Linda",
+        "lastName": "Taylor",
+        "fullName": "Linda Taylor",
+        "personalEmail": "linda.taylor@email.com",
+        "workEmail": "linda.taylor@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "James",
+        "lastName": "Anderson",
+        "fullName": "James Anderson",
+        "personalEmail": "james.anderson@email.com",
+        "workEmail": "james.anderson@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Mary",
+        "lastName": "White",
+        "fullName": "Mary White",
+        "personalEmail": "mary.white@email.com",
+        "workEmail": "mary.white@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Robert",
+        "lastName": "Johnson",
+        "fullName": "Robert Johnson",
+        "personalEmail": "robert.johnson@email.com",
+        "workEmail": "robert.johnson@employee.bellewaerde.be",
+        "phone": "0471 11 22 33",
+        "personType": "EMPLOYEE"
+    },
+    {
+        "firstName": "Maximilian",
+        "lastName": "Vanderschueren",
+        "fullName": "Maximilian Vanderschueren",
+        "personalEmail": "maximilian.vanderschueren@email.com",
+        "personType": "VISITOR"
+    },
+    {
+        "firstName": "John",
+        "lastName": "Doe",
+        "fullName": "John Doe",
+        "personalEmail": "john.doe@email.com",
+        "workEmail": "john.doe@administration.bellewaerde.be",
+        "personType": "ADMINISTRATION"
+    }
+]
