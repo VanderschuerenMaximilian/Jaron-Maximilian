@@ -16,11 +16,15 @@ const typeorm_1 = require("@nestjs/typeorm");
 const werknemer_module_1 = require("./werknemer/werknemer.module");
 const bezoeker_module_1 = require("./bezoeker/bezoeker.module");
 const seed_module_1 = require("./seed/seed.module");
+const administrators_module_1 = require("./administrators/administrators.module");
+const authentication_module_1 = require("./authentication/authentication.module");
+const config_1 = require("@nestjs/config");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule.forRoot(),
             graphql_1.GraphQLModule.forRoot({
                 driver: apollo_1.ApolloDriver,
                 autoSchemaFile: true,
@@ -36,6 +40,8 @@ exports.AppModule = AppModule = __decorate([
             werknemer_module_1.WerknemerModule,
             bezoeker_module_1.BezoekerModule,
             seed_module_1.SeedModule,
+            administrators_module_1.AdministratorsModule,
+            authentication_module_1.AuthenticationModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
