@@ -14,7 +14,7 @@ const authLink = setContext(async (_, { headers }) => ({
     headers: {
         ...headers,
         authorization: `Bearer ${await firebaseUser.value?.getIdToken()
-        .then(async (token) => {console.log(`{"Authorization":"Bearer ${await firebaseUser.value?.getIdToken()}"}`)})
+        // .then(async (token) => {console.log(`{"Authorization":"Bearer ${await firebaseUser.value?.getIdToken()}"}`)})
         }`
     }
 })

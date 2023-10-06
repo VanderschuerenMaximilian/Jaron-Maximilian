@@ -171,7 +171,6 @@ export default {
 
         const handleDishSubmitted = (dish : any) => {
             soldDishs.value.push(dish);
-            console.log(dishes.value);
             closePopup();
             calculateTotalPrice();
         };
