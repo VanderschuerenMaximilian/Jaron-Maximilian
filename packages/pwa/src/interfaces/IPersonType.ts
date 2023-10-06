@@ -1,0 +1,5 @@
+export enum PersonType {
+    ADMINISTRATOR = 'ADMINISTRATOR',
+    EMPLOYEE = 'EMPLOYEE',
+    VISITOR = 'VISITOR',
+}

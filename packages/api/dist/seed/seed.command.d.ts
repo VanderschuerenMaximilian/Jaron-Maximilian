@@ -2,8 +2,8 @@ import { SeedService } from './seed.service';
 export declare class DatabaseSeedCommand {
     private readonly seedService;
     constructor(seedService: SeedService);
-    seedBezoekers(): Promise<void>;
-    deleteBezoekers(): Promise<void>;
-    seedWerknemers(): Promise<void>;
-    deleteWerknemers(): Promise<void>;
+    seedPersons(): Promise<void>;
+    deletePersons(): Promise<void>;
+    seedAlerts(): Promise<void>;
+    deleteAlerts(): Promise<void>;
 }

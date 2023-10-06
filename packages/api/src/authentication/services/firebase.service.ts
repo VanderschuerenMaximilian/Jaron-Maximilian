@@ -11,7 +11,6 @@ export class FirebaseService {
         this.firebaseApp = initializeApp({
             credential: applicationDefault(), // Looks at enviroment variables in .env => GOOGLE_APPLICATION_CREDENTIALS
         })
-        console.log('firebaseApp: ',this.firebaseApp);
     }
 
     getAuth = (): Auth => getAuth();

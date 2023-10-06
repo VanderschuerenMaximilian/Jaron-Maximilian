@@ -13,12 +13,11 @@ const app_service_1 = require("./app.service");
 const graphql_1 = require("@nestjs/graphql");
 const apollo_1 = require("@nestjs/apollo");
 const typeorm_1 = require("@nestjs/typeorm");
-const werknemer_module_1 = require("./werknemer/werknemer.module");
-const bezoeker_module_1 = require("./bezoeker/bezoeker.module");
+const persons_module_1 = require("./persons/persons.module");
 const seed_module_1 = require("./seed/seed.module");
-const administrators_module_1 = require("./administrators/administrators.module");
 const authentication_module_1 = require("./authentication/authentication.module");
 const config_1 = require("@nestjs/config");
+const alerts_module_1 = require("./alerts/alerts.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -37,11 +36,10 @@ exports.AppModule = AppModule = __decorate([
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             }),
-            werknemer_module_1.WerknemerModule,
-            bezoeker_module_1.BezoekerModule,
             seed_module_1.SeedModule,
-            administrators_module_1.AdministratorsModule,
             authentication_module_1.AuthenticationModule,
+            persons_module_1.PersonsModule,
+            alerts_module_1.AlertsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
