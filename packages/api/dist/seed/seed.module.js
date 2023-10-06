@@ -9,15 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeedModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_command_1 = require("nestjs-command");
-const werknemer_module_1 = require("../werknemer/werknemer.module");
-const bezoeker_module_1 = require("../bezoeker/bezoeker.module");
+const persons_module_1 = require("../persons/persons.module");
 const seed_service_1 = require("./seed.service");
 const seed_command_1 = require("./seed.command");
+const alerts_module_1 = require("../alerts/alerts.module");
 let SeedModule = exports.SeedModule = class SeedModule {
 };
 exports.SeedModule = SeedModule = __decorate([
     (0, common_1.Module)({
-        imports: [werknemer_module_1.WerknemerModule, bezoeker_module_1.BezoekerModule, nestjs_command_1.CommandModule],
+        imports: [persons_module_1.PersonsModule, alerts_module_1.AlertsModule, nestjs_command_1.CommandModule],
         providers: [seed_command_1.DatabaseSeedCommand, seed_service_1.SeedService],
     })
 ], SeedModule);

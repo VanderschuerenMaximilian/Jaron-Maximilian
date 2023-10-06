@@ -1,52 +1,61 @@
 import { Injectable } from '@nestjs/common'
-import { BezoekerService } from 'src/bezoeker/bezoeker.service'
-import { WerknemerService } from 'src/werknemer/werknemer.service'
-import { Bezoeker } from 'src/bezoeker/entities/bezoeker.entity'
 
-import * as bezoekers from './data/bezoekers.json' // set  "resolveJsonModule": true in tsconfig.json
-import * as werknemers from './data/werknemers.json' // set  "resolveJsonModule": true in tsconfig.json
-import { Werknemer } from 'src/werknemer/entities/werknemer.entity'
+import * as persons from './data/persons.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as alerts from './data/alerts.json' // set  "resolveJsonModule": true in tsconfig.json
+import { PersonsService } from 'src/persons/persons.service'
+import { Person } from 'src/persons/entities/person.entity'
+import { PersonType } from 'src/interfaces/IPersonType'
+import { Alert } from 'src/alerts/entities/alert.entity'
+import { AlertsService } from 'src/alerts/alerts.service'
 
 @Injectable()
 export class SeedService {
   constructor(
-    private bezoekerService: BezoekerService,
-    private werknemersService: WerknemerService,
-  ) {}
+    private personsService: PersonsService,
+    private alertsService: AlertsService
+  ) {
+  }
 
-  async addBezoekersFromJson(): Promise<Bezoeker[]> {
-    let theBezoeker: Bezoeker[] = []
-    for (let bezoeker of bezoekers) {
-      const b = new Bezoeker()
-      b.name = bezoeker.name
-      b.fullname = bezoeker.fullname
-      b.email = bezoeker.email
+  async addPersonsFromJson(): Promise<Person[]> {
+    let thePersons: Person[] = []
+    for (let person of persons) {
+      const p = new Person()
+      p.firstName = person.firstName
+      p.lastName = person.lastName
+      p.fullName = person.fullName
+      p.workEmail = person.workEmail
+      p.personalEmail = person.personalEmail
+      p.phone = person.phone
+      p.personType = person.personType as PersonType
+      p.createdAt = new Date()
+      p.updatedAt = new Date()
 
-      theBezoeker.push(b)
+      thePersons.push(p)
     }
 
-    return this.bezoekerService.save(theBezoeker)
+    return this.personsService.saveAllPersons(thePersons)
   }
 
-  async deleteAllBezoekers(): Promise<void> {
-    return this.bezoekerService.truncate()
+  async deleteAllPersons(): Promise<void> {
+    return this.personsService.truncate()
   }
 
-  async addWerknemersFromJson(): Promise<Werknemer[]> {
-    let theWerknemer: Werknemer[] = []
-    for (let werknemer of werknemers) {
-      const b = new Werknemer()
-      b.firstname = werknemer.firstname
-      b.lastname = werknemer.lastname
-      b.email = werknemer.email
+  async addAlertsFromJson(): Promise<Alert[]> {
+    let theAlerts: Alert[] = []
+    for (let alert of alerts) {
+      const a = new Alert()
+      a.title = alert.title
+      a.description = alert.description
+      a.createdAt = new Date()
+      a.updatedAt = new Date()
 
-      theWerknemer.push(b)
+      theAlerts.push(a)
     }
 
-    return this.werknemersService.saveAll(theWerknemer)
+    return this.alertsService.saveAllAlerts(theAlerts)
   }
 
-  async deleteAllWerknemers(): Promise<void> {
-    return this.werknemersService.truncate()
+  async deleteAllAlerts(): Promise<void> {
+    return this.alertsService.truncate()
   }
 }

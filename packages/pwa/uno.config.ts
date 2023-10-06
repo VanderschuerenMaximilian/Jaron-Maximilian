@@ -5,6 +5,7 @@ export default defineConfig({
   shortcuts: {
     'nav-link': 'hover:text-green-800 hover:underline text-lg',
     'menu-link': 'text-slate-100 hover:underline',
+    'dashboard-link': 'text-slate-100 w-full flex justify-center hover:bg-secondary-green py-4 rounded-lg',
     h1: 'text-h1 font-bold',
     'h1-green': 'text-h1 font-bold text-primary-green',
     'h1-white': 'text-h1 font-bold text-slate-100',
