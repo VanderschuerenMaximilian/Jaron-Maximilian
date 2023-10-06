@@ -3,65 +3,58 @@
     <div class="flex justify-center items-center min-h-screen drop-shadow-lg">
         <div class="bg-white border-t-12 border-[#047143] mt-[-180px] rounded-md">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Sign up</h1>
-            <form @submit.prevent="handleRegister" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]">
+            <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
+                    <p class="text-center font-medium text-red-600">This account already exists.</p>
+                </div>
+            <form @submit.prevent="handleRegister" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]" novalidate>
                 <div class="flex justify-between">
                     <div class="flex flex-col gap-1">
-                        <div class="flex justify-between">
-                            <label for="voornaam">Voornaaam</label>
-                             <p v-show="dirties.voornaam" class="text-red-500 ">Ongeldige.</p>
-                        </div>
-                        <input type="text" name="voornaam" id="voornaam" class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
-                        v-model="newUser.voornaam" placeholder="Voornaam">
+                        <label for="First name">First name</label>
+                        <input type="text" name="FirstName" id="FirstName" class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
+                        v-model="newUser.FirstName" placeholder="First name">
+                        <p v-show="dirties.FirstName" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid first name</p>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <div class="flex justify-between">
-                            <label for="achternaam">Achternaam</label>
-                             <p v-show="dirties.achternaam" class="text-red-500">Ongeldig.</p>
-                        </div>
-                        <input type="text" name="achternaam" id="achternaam"
-                        class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md" v-model="newUser.achternaam"
-                        placeholder="Achternaam">
+                        <label for="LastName">Last name</label>
+                        <input type="text" name="LastName" id="LastName"
+                        class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md" v-model="newUser.LastName"
+                        placeholder="Last name">
+                        <p v-show="dirties.LastName" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid last name</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <div class="flex justify-between">
-                            <label for="email">Email</label>
-                             <p v-show="dirties.email" class="text-red-500">Ongeldig e-mailadres</p>
-                        </div>
+                    <label for="email">Email</label>
                     <input type="email" name="email" id="email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
                     v-model="newUser.email" placeholder="Email" />
+                    <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid email</p>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <div class="flex justify-between">
-                            <label for="wachtwoord">Wachtwoord</label>
-                             <p v-show="dirties.password" class="text-red-500">Het wachtwoord moet langer dan 5.</p>
-                        </div>
+                    <label for="password">Password</label>
                     <div class="relative">
-                        <input type="password" name="wachtwoord" id="wachtwoord"
-                            class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.password"
-                            placeholder="Wachtwoord" />
+                        <input type="password" name="password" id="password"
+                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.password"
+                        placeholder="Password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                            @click="togglePasswordVisibility()">
-                            <Eye id="eye" class="select-none"/>
-                            <EyeOff id="eye-off" class="hidden select-none"/>
-                        </div>
+                        @click="togglePasswordVisibility()">
+                        <Eye id="eye" class="select-none"/>
+                        <EyeOff id="eye-off" class="hidden select-none"/>
                     </div>
                 </div>
+                <p v-show="dirties.password" class="text-red-500 text-3 mb-[-28px] flex justify-end">The password must be longer than 5</p>
+                </div>
                 <div class="flex flex-col gap-1">
-                    <div class="flex justify-between">
-                            <label for="bevestigwachtwoord">Bevestig Wachtwoord</label>
-                             <p v-show="dirties.bevestigpassword" class="text-red-500">Niet gelijk aan wachtwoord.</p>
-                        </div>
+                    <label for="Confirmpassword">Confirm password</label>
                     <div class="relative">
-                        <input type="password" name="bevestigwachtwoord" id="bevestigwachtwoord"
-                            class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.bevestigpassword"
-                            placeholder="Bevestig wachtwoord" />
+                        <input type="password" name="Confirmpassword" id="Confirmpassword"
+                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.Confirmpassword"
+                        placeholder="Confirm password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                            @click="toggleBevestigPasswordVisibility()">
-                            <Eye id="eye2" class="select-none"/>
-                            <EyeOff id="eye2-off" class="hidden select-none"/>
-                        </div>
+                        @click="toggleConfirmPasswordVisibility()">
+                        <Eye id="eye2" class="select-none"/>
+                        <EyeOff id="eye2-off" class="hidden select-none"/>
                     </div>
+                </div>
+                <p v-show="dirties.Confirmpassword" class="text-red-500 text-3 flex justify-end">Not equal to password</p>
                 </div>
 
                 <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Register</button>
@@ -89,25 +82,26 @@ export default {
     setup() {
         const { register, login } = useFirebase()
         const dirties = ref({
-            voornaam: false,
-            achternaam: false,
+            FirstName: false,
+            LastName: false,
             email: false,
             password: false,
-            bevestigpassword: false,
+            Confirmpassword: false,
+            account: false,
         })
 
         const newUser = ref({
-            voornaam: '',
-            achternaam: '',
+            FirstName: '',
+            LastName: '',
             email: '',
             password: '',
-            bevestigpassword: ''
+            Confirmpassword: ''
         })
 
         const error = ref<AuthError | null>(null)
 
         const togglePasswordVisibility = () => {
-            const passwordInput = document.getElementById('wachtwoord') as HTMLInputElement;
+            const passwordInput = document.getElementById('password') as HTMLInputElement;
             const eye = document.getElementById('eye') as HTMLInputElement;
             const eye_off = document.getElementById('eye-off') as HTMLInputElement;
             if (passwordInput) {
@@ -123,8 +117,8 @@ export default {
             }
         }
 
-        const toggleBevestigPasswordVisibility = () => {
-            const passwordInput = document.getElementById('bevestigwachtwoord') as HTMLInputElement;
+        const toggleConfirmPasswordVisibility = () => {
+            const passwordInput = document.getElementById('Confirmpassword') as HTMLInputElement;
             const eye2 = document.getElementById('eye2') as HTMLInputElement;
             const eye2_off = document.getElementById('eye2-off') as HTMLInputElement;
             if (passwordInput) {
@@ -141,25 +135,31 @@ export default {
         }
 
         const handleRegister = () => {
-            if(newUser.value.voornaam === '') {
-                dirties.value.voornaam = true
-            } else dirties.value.voornaam = false
-            if(newUser.value.achternaam === '') {
-                dirties.value.achternaam = true
-            } else dirties.value.achternaam = false
-            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            if(newUser.value.email === '' || !emailPattern.test(newUser.value.email)) {
-                dirties.value.email = true
-            } else dirties.value.email = false
+            if(newUser.value.FirstName === '') {
+                dirties.value.FirstName = true
+            } else dirties.value.FirstName = false
+            if(newUser.value.LastName === '') {
+                dirties.value.LastName = true
+            } else dirties.value.LastName = false
+
+            const forbiddenDomains = ['admin', 'administration', 'employee'];
+            const emailPattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.[a-zA-Z]{2,4}$/;
+            const matches = newUser.value.email.match(emailPattern);
+            if (!matches || forbiddenDomains.includes(matches[1].toLowerCase())) {
+                dirties.value.email = true;
+            } else {
+                dirties.value.email = false;
+            }
+
             if(newUser.value.password === '' || newUser.value.password.length < 6) {
                 dirties.value.password = true
             } else dirties.value.password = false
-            if(newUser.value.bevestigpassword !== newUser.value.password) {
-                dirties.value.bevestigpassword = true
-            } else dirties.value.bevestigpassword = false
+            if(newUser.value.Confirmpassword !== newUser.value.password) {
+                dirties.value.Confirmpassword = true
+            } else dirties.value.Confirmpassword = false
             
-            if (!dirties.value.voornaam && !dirties.value.achternaam && !dirties.value.email && !dirties.value.password && !dirties.value.bevestigpassword) {
-                const name: string = newUser.value.voornaam + ' ' + newUser.value.achternaam
+            if (!dirties.value.FirstName && !dirties.value.LastName && !dirties.value.email && !dirties.value.password && !dirties.value.Confirmpassword) {
+                const name: string = newUser.value.FirstName + ' ' + newUser.value.LastName
                 register(name, newUser.value.email, newUser.value.password)
                     .then(() => {
                         login(newUser.value.email, newUser.value.password, router)
@@ -168,7 +168,7 @@ export default {
                             });
                     })
                     .catch((error) => {
-                        error.value = error
+                        dirties.value.account = true;
                     })
             }
         }
@@ -178,7 +178,7 @@ export default {
             error,
             dirties,
             togglePasswordVisibility,
-            toggleBevestigPasswordVisibility,
+            toggleConfirmPasswordVisibility,
             handleRegister,
 
         }
