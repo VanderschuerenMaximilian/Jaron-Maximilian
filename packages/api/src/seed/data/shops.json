@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Boomerang Snack",
+        "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-08/boomerang-snack_1.jpg?itok=Opke8azA",
+        "description": "Boomerang Snack is a snack bar located on Mexico Square. Here you can get a tasty snack, a soft drink or an ice cream.",
+        "dishes": ["1"],
+        "zone": "Mexico Square",
+        "category": ["1","2","3"],
+        "shopType": "Snack Bar"
+    }
+]

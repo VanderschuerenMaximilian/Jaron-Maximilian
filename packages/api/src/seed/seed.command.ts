@@ -6,6 +6,7 @@ import { SeedService } from './seed.service'
 export class DatabaseSeedCommand {
   constructor(private readonly seedService: SeedService) {}
 
+  // ------------ Person ------------
   @Command({
     command: 'seed:database:persons',
     describe: 'Seed the database with persons',
@@ -15,7 +16,6 @@ export class DatabaseSeedCommand {
     const persons = await this.seedService.addPersonsFromJson()
     console.info(`🧑 ${persons.length} persons are added`)
   }
-
   @Command({
     command: 'seed:reset:persons',
     describe: 'Delete all data from the persons table',
@@ -25,6 +25,8 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllPersons()
     console.info('❌ Removed persons')
   }
+
+  // ------------ Alert ------------
 
   @Command({
     command: 'seed:database:alerts',
@@ -44,6 +46,30 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting alerts')
     await this.seedService.deleteAllAlerts()
     console.info('❌ Removed alerts')
+  }
+
+  // ------------ Shop ------------
+  // npx nestjs-command seed:database:birds
+  // npx nestjs-command seed:reset:birds
+
+  @Command({
+    command: 'seed:database:shops',
+    describe: 'Seed the database with shops',
+  })
+  async seedShops() {
+    console.info('🪺 Start seeding of shops')
+    const shops = await this.seedService.addShopsFromJson()
+    console.info(`🛒 ${shops.length} Shops are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:shops',
+    describe: 'Delete all data from the shops table',
+  })
+  async deleteShops() {
+    console.info('🔪 Start deleting shops')
+    await this.seedService.deleteAllShops()
+    console.info('🪶 Removed shops')
   }
 }
 

@@ -9,6 +9,7 @@ import { SeedModule } from './seed/seed.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule } from '@nestjs/config';
 import { AlertsModule } from './alerts/alerts.module';
+import { ShopsModule } from './shops/shops.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { AlertsModule } from './alerts/alerts.module';
     PersonsModule,
 
     AlertsModule,
+
+    ShopsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
