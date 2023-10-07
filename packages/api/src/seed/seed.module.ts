@@ -5,9 +5,10 @@ import { SeedService } from './seed.service';
 import { DatabaseSeedCommand } from './seed.command';
 import { AlertsModule } from 'src/alerts/alerts.module';
 import { ShopsModule } from 'src/shops/shops.module';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
-    imports: [PersonsModule, AlertsModule, ShopsModule, CommandModule],
+    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, CommandModule],
     providers: [DatabaseSeedCommand, SeedService],
 })
 export class SeedModule {}

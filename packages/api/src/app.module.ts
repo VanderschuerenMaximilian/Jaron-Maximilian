@@ -10,6 +10,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule } from '@nestjs/config';
 import { AlertsModule } from './alerts/alerts.module';
 import { ShopsModule } from './shops/shops.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -38,6 +40,10 @@ import { ShopsModule } from './shops/shops.module';
     AlertsModule,
 
     ShopsModule,
+
+    CategoriesModule,
+
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

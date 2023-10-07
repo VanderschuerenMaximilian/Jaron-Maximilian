@@ -49,8 +49,8 @@ export class DatabaseSeedCommand {
   }
 
   // ------------ Shop ------------
-  // npx nestjs-command seed:database:birds
-  // npx nestjs-command seed:reset:birds
+  // npx nestjs-command seed:database:shops
+  // npx nestjs-command seed:reset:shops
 
   @Command({
     command: 'seed:database:shops',
@@ -70,6 +70,29 @@ export class DatabaseSeedCommand {
     console.info('🔪 Start deleting shops')
     await this.seedService.deleteAllShops()
     console.info('🪶 Removed shops')
+  }
+
+  // ------------ Category ------------
+  // npx nestjs-command seed:database:categories
+  // npx nestjs-command seed:reset:categories
+  @Command({
+    command: 'seed:database:categories',
+    describe: 'Seed the database with categories',
+  })
+  async seedCategories() {
+    console.info('🪺 Start seeding of categories')
+    const categories = await this.seedService.addCategoriesFromJson()
+    console.info(`🛒 ${categories.length} Categories are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:categories',
+    describe: 'Delete all data from the categrories table',
+  })
+  async deleteCategories() {
+    console.info('🔪 Start deleting categories')
+    await this.seedService.deleteAllCategories()
+    console.info('🪶 Removed categories')
   }
 }
 
