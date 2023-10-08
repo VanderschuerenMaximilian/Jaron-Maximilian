@@ -17,7 +17,10 @@ import { ShopsService } from 'src/shops/shops.service'
 import * as categories from './data/categories.json' // set  "resolveJsonModule": true in tsconfig.json
 import { Category } from 'src/categories/entities/category.entity'
 import { CategoriesService } from 'src/categories/categories.service'
-
+// Product
+import * as products from './data/products.json' // set  "resolveJsonModule": true in tsconfig.json
+import { Product } from 'src/products/entities/product.entity'
+import { ProductsService } from 'src/products/products.service'
 
 @Injectable()
 export class SeedService {
@@ -26,7 +29,8 @@ export class SeedService {
     private alertsService: AlertsService,
     private shopsService: ShopsService,
     private categoriesService: CategoriesService,
-  ) {}
+    private productsService: ProductsService,
+    ) {}
 
   // -------------------- Person --------------------
   async addPersonsFromJson(): Promise<Person[]> {
@@ -114,5 +118,29 @@ export class SeedService {
   async deleteAllCategories(): Promise<void> {
     return this.categoriesService.truncate()
   }
+
+  // -------------------- Product --------------------
+  async addProductsFromJson(): Promise<Product[]> {
+    let theProducts: Product[] = []
+    for (let product of products) {
+      const p = new Product()
+      p.name = product.name
+      p.description = product.description
+      p.image = product.image
+      p.price = product.price
+      p.category = product.category
+      p.size = product.size
+      p.sauce = product.sauce
+      p.extra = product.extra
+      p.removable = product.removable
+      p.ingredients = product.ingredients
+      p.shopType = product.shopType
+
+      theProducts.push(p)
+    }
+
+    return this.productsService.saveAllProducts(theProducts)
+  }
+  
 
 }

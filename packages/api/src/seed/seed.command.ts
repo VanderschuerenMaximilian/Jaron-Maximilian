@@ -94,5 +94,19 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllCategories()
     console.info('🪶 Removed categories')
   }
+
+  // ------------ Product ------------
+  // npx nestjs-command seed:database:products
+  // npx nestjs-command seed:reset:products
+  @Command({
+    command: 'seed:database:products',
+    describe: 'Seed the database with products',
+  })
+  async seedProducts() {
+    console.info('🪺 Start seeding of products')
+    const products = await this.seedService.addProductsFromJson()
+    console.info(`🛒 ${products.length} Products are added`)
+  }
+  
 }
 

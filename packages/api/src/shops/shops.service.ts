@@ -12,6 +12,10 @@ export class ShopsService {
     private readonly shopRepository: Repository<Shop>,
   ) {}
 
+  findAll() {
+    return this.shopRepository.find()
+  }
+
   create(createShopInput: CreateShopInput): Promise<Shop> {
     try {
       const s = new Shop()
@@ -27,10 +31,6 @@ export class ShopsService {
     } catch (error) {
       throw error
     }
-  }
-
-  findAll() {
-    return `This action returns all shops`
   }
 
   findOne(id: number) {

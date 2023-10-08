@@ -1,5 +1,5 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { Column, Entity, ObjectIdColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
