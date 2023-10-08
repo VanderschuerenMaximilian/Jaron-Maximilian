@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common'
 
 // Person
-import * as persons from './data/persons.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as persons from './data/persons.json'
 import { PersonsService } from 'src/persons/persons.service'
 import { Person } from 'src/persons/entities/person.entity'
 import { PersonType } from 'src/interfaces/IPersonType'
 // Alert
-import * as alerts from './data/alerts.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as alerts from './data/alerts.json'
 import { Alert } from 'src/alerts/entities/alert.entity'
 import { AlertsService } from 'src/alerts/alerts.service'
 // Shop
-import * as shops from './data/shops.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as shops from './data/shops.json'
 import { Shop } from 'src/shops/entities/shop.entity'
 import { ShopsService } from 'src/shops/shops.service'
 // Category
-import * as categories from './data/categories.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as categories from './data/categories.json'
 import { Category } from 'src/categories/entities/category.entity'
 import { CategoriesService } from 'src/categories/categories.service'
 // Product
-import * as products from './data/products.json' // set  "resolveJsonModule": true in tsconfig.json
+import * as products from './data/products.json' 
 import { Product } from 'src/products/entities/product.entity'
 import { ProductsService } from 'src/products/products.service'
+// Ingredient
+import * as ingredients from './data/ingredients.json'
+import { Ingredient } from 'src/ingredients/entities/ingredient.entity'
+import { IngredientsService } from 'src/ingredients/ingredients.service'
+
 
 @Injectable()
 export class SeedService {
@@ -30,7 +35,8 @@ export class SeedService {
     private shopsService: ShopsService,
     private categoriesService: CategoriesService,
     private productsService: ProductsService,
-    ) {}
+    private ingredientsService: IngredientsService,
+  ) {}
 
   // -------------------- Person --------------------
   async addPersonsFromJson(): Promise<Person[]> {
@@ -52,7 +58,6 @@ export class SeedService {
 
     return this.personsService.saveAllPersons(thePersons)
   }
-
   async deleteAllPersons(): Promise<void> {
     return this.personsService.truncate()
   }
@@ -72,7 +77,6 @@ export class SeedService {
 
     return this.alertsService.saveAllAlerts(theAlerts)
   }
-
   async deleteAllAlerts(): Promise<void> {
     return this.alertsService.truncate()
   }
@@ -89,14 +93,12 @@ export class SeedService {
       s.name = shop.name
       s.shopType = shop.shopType
       s.zone = shop.zone
-      
 
       theShops.push(s)
     }
 
     return this.shopsService.saveAllShops(theShops)
   }
-
   async deleteAllShops(): Promise<void> {
     return this.shopsService.truncate()
   }
@@ -114,7 +116,6 @@ export class SeedService {
 
     return this.categoriesService.saveAllCategories(theCategories)
   }
-
   async deleteAllCategories(): Promise<void> {
     return this.categoriesService.truncate()
   }
@@ -141,6 +142,27 @@ export class SeedService {
 
     return this.productsService.saveAllProducts(theProducts)
   }
-  
+  async deleteAllProducts(): Promise<void> {
+    return this.productsService.truncate()
+  }
 
+  // -------------------- Ingredient --------------------
+  async addIngredientsFromJson(): Promise<Ingredient[]> {
+    let theIngredient: Ingredient[] = []
+    for (let ingredient of ingredients) {
+      const i = new Ingredient()
+      i.maxStock = ingredient.maxStock,
+      i.minStock = ingredient.minStock,
+      i.name = ingredient.name,
+      i.price = ingredient.price,
+      i.stock = ingredient.stock,
+      i.unit = ingredient.unit,
+      theIngredient.push(i)
+    }
+
+    return this.ingredientsService.saveAllIngredients(theIngredient)
+  }
+  async deleteAllIngredients(): Promise<void> {
+    return this.ingredientsService.truncate()
+  }
 }

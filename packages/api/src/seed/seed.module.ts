@@ -7,9 +7,10 @@ import { AlertsModule } from 'src/alerts/alerts.module';
 import { ShopsModule } from 'src/shops/shops.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ProductsModule } from 'src/products/products.module';
+import { IngredientsModule } from 'src/ingredients/ingredients.module';
 
 @Module({
-    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, ProductsModule, CommandModule],
+    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, CommandModule],
     providers: [DatabaseSeedCommand, SeedService],
 })
 export class SeedModule {}
