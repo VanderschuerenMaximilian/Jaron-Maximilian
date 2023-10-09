@@ -7,5 +7,23 @@
         "zone": "Mexico Square",
         "category": ["1","2","3"],
         "shopType": "Snack Bar"
+    },
+    {
+        "name": "Canadian Burger",
+        "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-09/canadian-burger.jpg?itok=cNHZh3kO",
+        "description": "Canadian Burger is a snack bar located on Canada Square. Here you can get a tasty snack, a soft drink or an ice cream.",
+        "dishes": ["1", "2", "3"],
+        "zone": "Canada Square",
+        "category": ["1","2","3"],
+        "shopType": "Snack Bar"
+    },
+    {
+        "name": "Frituur",
+        "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-08/friterie.jpg?itok=_czIbAEl",
+        "description": "Frituur is a snack bar located on Kids Park. Here you can get a tasty snack, a soft drink.",
+        "dishes": ["1", "2"],
+        "zone": "Kids Park",
+        "category": ["1","3"],
+        "shopType": "Snack Bar"
     }
 ]

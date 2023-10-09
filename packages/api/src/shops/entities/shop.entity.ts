@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, Entity,  ObjectIdColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
@@ -21,7 +21,7 @@ export class Shop {
   description: string
 
   @Column()
-  @Field(() => [String]) // Assuming dishes is an array of strings
+  @Field(() => [String])
   dishes: string[]
 
   @Column()
@@ -29,7 +29,7 @@ export class Shop {
   zone: string
 
   @Column()
-  @Field(() => [String]) // Assuming category is an array of strings
+  @Field(() => [String])
   category: string[]
 
   @Column()

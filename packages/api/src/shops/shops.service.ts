@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShopInput } from './dto/create-shop.input';
 import { UpdateShopInput } from './dto/update-shop.input';
 import { ObjectId, Repository } from 'typeorm'
@@ -35,6 +35,16 @@ export class ShopsService {
 
   findOne(id: number) {
     return `This action returns a #${id} shop`
+  }
+
+  async findByName(name: string): Promise<Shop | null> {
+    const shop = await this.shopRepository.findOne({ where: { name } })
+
+    if (!shop) {
+      throw new NotFoundException(`Shop with name ${name} not found`)
+    }
+
+    return shop
   }
 
   update(id: number, updateShopInput: UpdateShopInput) {

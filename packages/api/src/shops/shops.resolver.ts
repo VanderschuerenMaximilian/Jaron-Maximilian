@@ -23,6 +23,11 @@ export class ShopsResolver {
     return this.shopsService.findOne(id)
   }
 
+  @Query(() => Shop, { name: 'shopByName' })
+  async getShopByName(@Args('name') name: string): Promise<Shop | null> {
+    return this.shopsService.findByName(name)
+  }
+
   @Mutation(() => Shop)
   updateShop(@Args('updateShopInput') updateShopInput: UpdateShopInput) {
     return this.shopsService.update(updateShopInput.id, updateShopInput)
@@ -32,5 +37,4 @@ export class ShopsResolver {
   removeShop(@Args('id', { type: () => Int }) id: number) {
     return this.shopsService.remove(id)
   }
-
 }
