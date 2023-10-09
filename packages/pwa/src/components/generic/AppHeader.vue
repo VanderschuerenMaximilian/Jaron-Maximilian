@@ -12,9 +12,9 @@
             <ul class="flex lg:gap-x-4 gap-x-2 my-auto">
                 <li><RouterLink to="/" class="nav-link">Home</RouterLink></li>
                 <li><RouterLink to="/map" class="nav-link">Map</RouterLink></li>
-                <li><RouterLink to="/events" class="nav-link">Evenementen</RouterLink></li>
+                <li><RouterLink to="/events" class="nav-link">Events</RouterLink></li>
                 <li><RouterLink to="/contact" class="nav-link">Contact</RouterLink></li>
-                <li><RouterLink to="/openinghours" class="nav-link">Openingsuren</RouterLink></li>
+                <li><RouterLink to="/openinghours" class="nav-link">Opening Hours</RouterLink></li>
                 <li><RouterLink to="/tickets" class="nav-link">Tickets</RouterLink></li>
                 <li><RouterLink to="/alerts" class="nav-link">Alerts</RouterLink></li>
             </ul>
@@ -41,14 +41,14 @@
                         <ul class="space-y-2">
                             <li><RouterLink to="/" class="menu-link" @click="clickProfile">Home</RouterLink></li>
                             <li><RouterLink to="/map" class="menu-link" @click="clickProfile">Map</RouterLink></li>
-                            <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Evenementen</RouterLink></li>
+                            <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Evets</RouterLink></li>
                             <li><RouterLink to="/contact" class="menu-link" @click="clickProfile">Contact</RouterLink></li>
-                            <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">Openingsuren</RouterLink></li>
+                            <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">Opening Hours</RouterLink></li>
                             <li><RouterLink to="/tickets" class="menu-link" @click="clickProfile">Tickets</RouterLink></li>
                             <li><RouterLink to="/alerts" class="menu-link" @click="clickProfile">Alerts</RouterLink></li>
                         </ul>
                     </section>
-                    <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">Uitloggen</button>
+                    <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">Log Out</button>
                 </section>
             </div>
         </nav>
