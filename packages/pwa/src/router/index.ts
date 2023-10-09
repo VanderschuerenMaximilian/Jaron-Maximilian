@@ -58,18 +58,22 @@ const router = createRouter({
       children: [
         {
           path: 'employee/:id',
-          component: () => import('../views/auth/employee/Profile.vue'),
+          children: [
+            {
+              path: 'profile',
+              component: () => import('../views/auth/employee/Profile.vue')
+            },
+            {
+              path: 'shops',
+              component: () => import('../views/auth/employee/Shop.vue'),
+            },
+            {
+              path: 'shop/:id',
+              component: () =>
+                import('../views/auth/employee/ShopDetail.vue'),
+            },
+          ]
         },
-        {
-          path: 'shops',
-          component: () => import('../views/auth/employee/Shop.vue'),
-        },
-        {
-          path: 'shop/:id',
-          component: () =>
-            import('../views/auth/employee/ShopDetail.vue'),
-        },
-
         {
           path: 'administration/:id',
           component: () => import('../components/wrapper/DashboardWrapper.vue'),
@@ -77,8 +81,40 @@ const router = createRouter({
           children: [
             {
               path: 'dashboard',
-              component: () =>
-                import('../views/auth/administration/Dashboard.vue'),
+              children: [
+                {
+                  path: 'alerts',
+                  component: import('../views/auth/administration/Alerts.vue'),
+                },
+                {
+                  path: 'attractions',
+                  component: import('../views/auth/administration/Attractions.vue'),
+                },
+                {
+                  path: 'employees',
+                  component: import('../views/auth/administration/Employees.vue'),
+                },
+                {
+                  path: 'finances',
+                  component: import('../views/auth/administration/Finances.vue'),
+                },
+                {
+                  path: 'overview',
+                  component: import('../views/auth/administration/Overview.vue'),
+                },
+                {
+                  path: 'shops',
+                  component: import('../views/auth/administration/Shops.vue'),
+                },
+                {
+                  path: 'stock',
+                  component: import('../views/auth/administration/Stock.vue'),
+                },
+                {
+                  path: 'visitors',
+                  component: import('../views/auth/administration/Visitors.vue'),
+                },
+              ]
             },
           ],
         },
