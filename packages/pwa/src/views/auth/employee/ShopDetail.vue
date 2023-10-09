@@ -3,12 +3,14 @@
     <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60"></div>
     <section class="flex justify-between">
         <aside>
-            <div class="ml-4 mt-25" v-for="restaurant of filteredRestaurants" :key="restaurant.id">
+            <div v-if="loading"></div>
+            <div v-if="error"></div>
+            <div v-else class="ml-4 mt-25">
                 <div  class="flex flex-col gap-4">
                     <RouterLink to="/auth/shops">
                         <div class="flex border-4 border-primary-green hover:border-green-900 rounded-lg p-2 w-70 justify-center">
                             <ChevronLeft class="text-primary-green" />
-                            <p class="text-primary-green pr-2" v-if="restaurant.id == id">{{ restaurant.name }}</p>
+                            <p class="text-primary-green pr-2">{{ name }}</p>
                         </div>  
                     </RouterLink>
                    <button v-for="category of categories" :class="{ 'bg-primary-green': selectedCategory === category.id, 'bg-slate-200': selectedCategory !== category.id }" @click="handleClick(category.id)" class="w-70 h-40 border-primary-green hover:bg-primary-green hover:bg-opacity-60 bg-opacity-70 rounded-lg">
@@ -87,11 +89,14 @@
 
 <script lang="ts">
 import DishPopup from '../../../components/DishPopup.vue';
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft, ChevronDown, ChevronUp, X, MinusCircle, PlusCircle } from 'lucide-vue-next';
 import { SoldDish as ISoldDish } from '../../../interfaces/ISoldDish';
 import { Dish as IDish } from '../../../interfaces/IDish';
+import { useQuery } from '@vue/apollo-composable'
+import { GET_SHOP, GET_SHOPS } from '../../../graphql/shop.query'
+
 export default {
     components: {
         DishPopup,
@@ -103,7 +108,10 @@ export default {
         PlusCircle
     },
     setup() {
-    // TODO: ophalen uit de database
+        const shopName = ref("")
+        const { result, loading, error } = useQuery(GET_SHOP, {name: 'Boomerang Snack'});
+
+        // TODO: ophalen uit de database
         const restaurants = ref([
             { id: 1, name: 'Boomerang Snack', },
             { id: 2, name: 'Frituur', },
@@ -115,7 +123,7 @@ export default {
             { id: 1, name: 'Burger', image: 'https://pngimg.com/uploads/burger_sandwich/burger_sandwich_PNG4114.png' },
             { id: 2, name: 'Drinks', image: 'https://www.freeiconspng.com/thumbs/coca-cola-png/bottle-coca-cola-png-transparent-2.png' }
         ])
-
+        
         // TODO: ophalen uit de database
         const dishes = ref([
             { id: 1, name: 'Classic Cheeseburger', categoryId: 1, description: 'Special burger', price: 7.99, image: 'https://pngimg.com/uploads/burger_sandwich/burger_sandwich_PNG4114.png' },
@@ -130,14 +138,15 @@ export default {
             { id: 11, name: 'Mango Tango Smoothie', categoryId: 2, description: 'Tropical mango smoothie', price: 5.99, image: 'https://ismoothiescafe.com/cdn/shop/products/Mango_tango_grande.png?v=1539789667' },
             { id: 12, name: 'Strawberry Bliss Shake', categoryId: 2, description: 'Creamy strawberry shake', price: 4.99, image: 'https://bahamabucks.com/wp-content/uploads/2021/02/Strawberry-Bliss-1000x1300-1.png' }
         ])
-
+        
         const soldDishs = ref<ISoldDish[]>([]);
         const filteredDishes = computed(() => {
             return dishes.value.filter(dish => dish.categoryId === selectedCategory.value);
         });
-
+        
         const router = useRouter()
         const id : any = ref<string>('')
+        const name : any = ref<string>('')
         const scrollContainer = ref<HTMLElement | null>(null);
         const selectedCategory = ref(categories.value[0].id);
         const SelectedDish = ref({}) as any;
@@ -195,7 +204,8 @@ export default {
 
         onMounted(() => {
             if (router.currentRoute.value.params.id) {
-                id.value = router.currentRoute.value.params.id
+                name.value = router.currentRoute.value.params.id
+                console.log(name.value)
             }
             if (scrollContainer.value) {
                 scrollContainer.value.addEventListener('scroll', handleScroll);
@@ -224,6 +234,7 @@ export default {
 
         return {
             id,
+            name,
             restaurants,
             dishes,
             filteredDishes,
@@ -242,7 +253,11 @@ export default {
             handlePlusClick,
             handleDishSubmitted,
             totalPrice,
-            handleDeleteSoldDish
+            handleDeleteSoldDish,
+            result,
+            loading,
+            error,
+            shopName
 
         }
     },
