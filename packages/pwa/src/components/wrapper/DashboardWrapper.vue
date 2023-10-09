@@ -9,58 +9,58 @@
                 </RouterLink>
             </div>
             <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
+                <RouterLink to="overview" class="w-full dashboard-link">
+                <li class="flex w-full gap-4">
+                        <Box class="w-6 h-6 ml-[37%]" />
                         <span>Overview</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Finances</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Employees</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Visitors</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Attractions</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Shops</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Animals</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><RouterLink to="">
-                    <div class="flex">
-                        <Box class="w-6 h-6" />
-                        <span>Alerts</span>
-                    </div>
-                </RouterLink></li>
-                <li class="dashboard-link"><button class="flex">
-                    <Box class="w-6 h-6" />
+                </li>
+                </RouterLink>
+                <RouterLink to="finances" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Finances</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="employees" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Employees</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="visitors" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Visitors</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="attractions" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Attrations</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="shops" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Shops</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="stock" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Stock</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="alerts" class="w-full dashboard-link">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Alerts</span>
+                    </li>
+                </RouterLink>
+                <button @click="handleSignOut" class="flex dashboard-link w-full gap-4">
+                    <Box class="w-6 h-6"/>
                     <span>Log Out</span>
-                </button></li>
+                </button>
             </ul>
         </aside>
         <RouterView />
@@ -73,19 +73,35 @@
     }
     
     .c-dash-nav::-webkit-scrollbar-thumb {
-        background: #028043;
+        background: #669949;
         border-radius: 25px;
     }
 </style>
 
 <script lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { Box } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import useFirebase from '@/composables/useFirebase'; 
 
 export default {
     components: {
         RouterLink,
         Box
+    },
+    setup() {
+        const{ signOutUser } = useFirebase()
+
+        const router = useRouter()
+
+        const handleSignOut = () => {
+            signOutUser(router)
+        }
+
+        return {
+            handleSignOut
+        }
     }
 }
+
 </script>
