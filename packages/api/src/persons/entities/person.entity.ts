@@ -11,8 +11,8 @@ export class Person {
   id: string;
 
   @Column()
-  @Field({ nullable: true })
-  userId: string;
+  @Field()
+  uid: string;
 
   @Column()
   @Field()
@@ -35,6 +35,10 @@ export class Person {
   workEmail: string;
 
   @Column()
+  @Field()
+  locale: string;
+
+  @Column()
   @Field({ nullable: true })
   phone: string;
 
@@ -46,11 +50,11 @@ export class Person {
   @Field({ nullable: true })
   jobType: IJobType;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   @Field()
   createdAt: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   @Field()
   updatedAt: Date;
 }

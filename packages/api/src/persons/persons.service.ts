@@ -14,21 +14,23 @@ export class PersonsService {
     private readonly personRepository: Repository<Person>,
   ) {}
 
-  create(createPersonInput: CreatePersonInput): Promise<Person> {
+  create(uid: string, createPersonInput: CreatePersonInput): Promise<Person> {
     try {
       const p = new Person()
-      // p.userId = createPersonInput.userId
-      p.personType = createPersonInput.personType
+      p.uid = uid
+      p.personType = createPersonInput.personType ?? PersonType.VISITOR
       p.jobType = createPersonInput.jobType
       p.firstName = createPersonInput.firstName
       p.lastName = createPersonInput.lastName
       p.fullName = createPersonInput.fullName
       p.personalEmail = createPersonInput.personalEmail
       p.workEmail = createPersonInput.workEmail
+      p.locale = createPersonInput.locale ?? 'en'
       p.phone = createPersonInput.phone
       p.createdAt = new Date()
       p.updatedAt = new Date()
-    return this.personRepository.save(p)
+      
+      return this.personRepository.save(p)
     } catch (error) {
       throw error
     }
@@ -41,6 +43,10 @@ export class PersonsService {
   findOneById(id: string): Promise<Person> {
     // @ts-ignore
     return this.personRepository.findOne({_id: new ObjectId(id)});
+  }
+
+  findOneByUid(uid: string): Promise<Person> {
+    return this.personRepository.findOne({ where: { uid: uid } })
   }
 
   findByPersonType(personType: PersonType): Promise<Person[]> {
@@ -63,7 +69,7 @@ export class PersonsService {
     try {
       let p: Person = new Person()
       p.id = id
-      p.userId = updatePersonInput.userId? updatePersonInput.userId : null
+      p.uid = updatePersonInput.userId? updatePersonInput.userId : null
       p.personType = updatePersonInput.personType? updatePersonInput.personType : null
       p.jobType = updatePersonInput.jobType? updatePersonInput.jobType : null
       p.firstName = updatePersonInput.firstName? updatePersonInput.firstName : null

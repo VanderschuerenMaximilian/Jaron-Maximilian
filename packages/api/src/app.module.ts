@@ -28,13 +28,10 @@ import { AlertsModule } from './alerts/alerts.module';
         useUnifiedTopology: true, // Disable deprecated warnings
     }),
     
-    SeedModule,
-
-    AuthenticationModule,
-
-    PersonsModule,
-
     AlertsModule,
+    AuthenticationModule,
+    PersonsModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

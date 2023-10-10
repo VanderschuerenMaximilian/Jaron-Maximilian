@@ -9,17 +9,23 @@ import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
 import { PersonType } from 'src/interfaces/IPersonType';
 import { JobType } from 'src/interfaces/IJobType';
+import { RolesGuard } from './guards/personType.guard';
+import { AllowedPersonTypes } from './decorators/personType.decorator';
 
 @Resolver(() => Person)
 export class PersonsResolver {
   constructor(private readonly personsService: PersonsService) {}
 
+  @UseGuards(FirebaseGuard)
   @Mutation(() => Person)
-  createPerson(@Args('createPersonInput') createPersonInput: CreatePersonInput) {
-    return this.personsService.create(createPersonInput);
+  createPerson(@Args('createPersonInput') createPersonInput: CreatePersonInput,
+  @FirebaseUser() currentUser: UserRecord
+  ) {
+    return this.personsService.create(currentUser.uid, createPersonInput);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.ADMIN)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Person], { name: 'persons' })
   getPersons(@FirebaseUser() currentUser: UserRecord) {
     return this.personsService.findAll();
@@ -27,7 +33,7 @@ export class PersonsResolver {
 
   @UseGuards(FirebaseGuard)
   @Query(() => Person, { name: 'personById', nullable: true })
-  findOne(@Args('id') id: string): Promise<Person> {
+  findOne(@Args('string', { type: () => String}) id: string): Promise<Person> {
     return this.personsService.findOneById(id);
   }
 
