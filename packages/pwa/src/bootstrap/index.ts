@@ -75,7 +75,7 @@ const router = createRouter({
           ]
         },
         {
-          path: 'administration/:id',
+          path: 'management/:id',
           component: () => import('../components/wrapper/DashboardWrapper.vue'),
           meta: { requiresAuth: true, showHeader: false },
           children: [
@@ -84,35 +84,35 @@ const router = createRouter({
               children: [
                 {
                   path: 'alerts',
-                  component: import('../views/auth/administration/Alerts.vue'),
+                  component: import('../views/auth/management/Alerts.vue'),
                 },
                 {
                   path: 'attractions',
-                  component: import('../views/auth/administration/Attractions.vue'),
+                  component: import('../views/auth/management/Attractions.vue'),
                 },
                 {
                   path: 'employees',
-                  component: import('../views/auth/administration/Employees.vue'),
+                  component: import('../views/auth/management/Employees.vue'),
                 },
                 {
                   path: 'finances',
-                  component: import('../views/auth/administration/Finances.vue'),
+                  component: import('../views/auth/management/Finances.vue'),
                 },
                 {
                   path: 'overview',
-                  component: import('../views/auth/administration/Overview.vue'),
+                  component: import('../views/auth/management/Overview.vue'),
                 },
                 {
                   path: 'shops',
-                  component: import('../views/auth/administration/Shops.vue'),
+                  component: import('../views/auth/management/Shops.vue'),
                 },
                 {
                   path: 'stock',
-                  component: import('../views/auth/administration/Stock.vue'),
+                  component: import('../views/auth/management/Stock.vue'),
                 },
                 {
                   path: 'visitors',
-                  component: import('../views/auth/administration/Visitors.vue'),
+                  component: import('../views/auth/management/Visitors.vue'),
                 },
               ]
             },
@@ -147,10 +147,10 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } 
-  else if (to.path.startsWith('/auth/administration/')) {
+  else if (to.path.startsWith('/auth/management/')) {
     if (firebaseUser.value !== null && firebaseUser.value?.email !== null) {
       const emailSplit: string[] = firebaseUser.value.email.split("@")
-      if (emailSplit[1].includes("administration.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
+      if (emailSplit[1].includes("management.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
         next()
       } else {
         next("/")
