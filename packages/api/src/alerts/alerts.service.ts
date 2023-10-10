@@ -13,12 +13,25 @@ export class AlertsService {
   ) {}
 
 
-  create(createAlertInput: CreateAlertInput) {
-    return 'This action adds a new alert';
+  create(createAlertInput: CreateAlertInput): Promise<Alert> {
+    try {
+      const a = new Alert()
+      a.title = createAlertInput.title
+      a.description = createAlertInput.description
+      a.state = createAlertInput.state
+      a.createdBy = createAlertInput.createdBy
+      a.employees = createAlertInput.employees
+      a.assignedEmployee = createAlertInput.assignedEmployee
+      a.createdAt = new Date()
+      a.updatedAt = new Date()
+      return this.alertRepository.save(a)
+    } catch (error) {
+      throw error
+    }
   }
 
-  findAll() {
-    return `This action returns all alerts`;
+  findAll(): Promise<Alert[]> {
+    return this.alertRepository.find();
   }
 
   findOne(id: number) {

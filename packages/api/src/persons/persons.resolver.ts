@@ -8,6 +8,7 @@ import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
 import { PersonType } from 'src/interfaces/IPersonType';
+import { JobType } from 'src/interfaces/IJobType';
 
 @Resolver(() => Person)
 export class PersonsResolver {
@@ -34,6 +35,12 @@ export class PersonsResolver {
   @Query(() => [Person], { name: 'personsByPersonType', nullable: true })
   findByPersonType(@Args('personType', { type: () => String }) personType: PersonType) {
     return this.personsService.findByPersonType(personType);
+  }
+
+  @UseGuards(FirebaseGuard)
+  @Query(() => [Person], { name: 'personsByJobType', nullable: true })
+  findByJobType(@Args('jobType', { type: () => String }) jobType: JobType) {
+    return this.personsService.findByJobType(jobType);
   }
 
   @UseGuards(FirebaseGuard)

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from './entities/person.entity';
 import { ObjectId, Repository } from 'typeorm';
 import { PersonType } from 'src/interfaces/IPersonType';
+import { JobType } from 'src/interfaces/IJobType';
 
 @Injectable()
 export class PersonsService {
@@ -18,6 +19,7 @@ export class PersonsService {
       const p = new Person()
       // p.userId = createPersonInput.userId
       p.personType = createPersonInput.personType
+      p.jobType = createPersonInput.jobType
       p.firstName = createPersonInput.firstName
       p.lastName = createPersonInput.lastName
       p.fullName = createPersonInput.fullName
@@ -45,6 +47,10 @@ export class PersonsService {
     return this.personRepository.find({ where: { personType: personType } })
   }
 
+  findByJobType(jobType: JobType): Promise<Person[]> {
+    return this.personRepository.find({ where: { jobType: jobType } })
+  }
+
   findBySearchString(searchString: string): Promise<Person[]> {
     return this.personRepository.find({ 
       // @ts-ignore
@@ -59,6 +65,7 @@ export class PersonsService {
       p.id = id
       p.userId = updatePersonInput.userId? updatePersonInput.userId : null
       p.personType = updatePersonInput.personType? updatePersonInput.personType : null
+      p.jobType = updatePersonInput.jobType? updatePersonInput.jobType : null
       p.firstName = updatePersonInput.firstName? updatePersonInput.firstName : null
       p.lastName = updatePersonInput.lastName? updatePersonInput.lastName : null
       p.fullName = updatePersonInput.fullName? updatePersonInput.fullName : null

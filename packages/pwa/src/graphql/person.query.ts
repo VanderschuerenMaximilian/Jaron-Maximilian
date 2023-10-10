@@ -11,6 +11,7 @@ export const ALL_PERSONS = gql`
             workEmail
             phone
             personType
+            jobType
         }
     }
 `;
@@ -43,6 +44,7 @@ export const ALL_EMPLOYEES = gql`
             workEmail
             phone
             personType
+            jobType
         }
     }
 `;
@@ -57,6 +59,21 @@ export const FIND_EMPLOYEES_BY_SEARCH = gql`
             personalEmail
             workEmail
             personType
+            jobType
+        }
+    }
+`;
+
+export const FIND_EMPLOYEES_BY_JOB_TYPE = gql`
+    query ($jobType: String!) {
+        personsByJobType(jobType: $jobType) {
+            id
+            firstName
+            lastName
+            fullName
+            personalEmail
+            personType
+            jobType
         }
     }
 `;

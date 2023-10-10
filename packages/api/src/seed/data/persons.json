@@ -6,7 +6,8 @@
         "personalEmail": "jaron.vantomme@email.com",
         "workEmail": "jaron.vantomme@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "CLEANER"
     },
     {
         "firstName": "John",
@@ -15,7 +16,8 @@
         "personalEmail": "john.smith@email.com",
         "workEmail": "john.smith@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "SHOPKEEPER"
     },
     {
         "firstName": "Sarah",
@@ -24,7 +26,8 @@
         "personalEmail": "sarah.johnson@email.com",
         "workEmail": "sarah.johnson@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "SHOPKEEPER"
     },
     {
         "firstName": "Michael",
@@ -33,7 +36,8 @@
         "personalEmail": "michael.davis@email.com",
         "workEmail": "micheal.davis@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "CLEANER"
     },
     {
         "firstName": "Emily",
@@ -42,7 +46,8 @@
         "personalEmail": "emily.wilson@email.com",
         "workEmail": "emily.wilson@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "ATTRACTION_OPERATOR"
     },
     {
         "firstName": "David",
@@ -51,7 +56,8 @@
         "personalEmail": "david.brown@email.com",
         "workEmail": "david.brown@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "ATTRACTION_OPERATOR"
     },
     {
         "firstName": "Linda",
@@ -60,7 +66,8 @@
         "personalEmail": "linda.taylor@email.com",
         "workEmail": "linda.taylor@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "ATTRACTION_OPERATOR"
     },
     {
         "firstName": "James",
@@ -69,7 +76,8 @@
         "personalEmail": "james.anderson@email.com",
         "workEmail": "james.anderson@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "CLEANER"
     },
     {
         "firstName": "Mary",
@@ -78,7 +86,8 @@
         "personalEmail": "mary.white@email.com",
         "workEmail": "mary.white@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "SHOPKEEPER"
     },
     {
         "firstName": "Robert",
@@ -87,7 +96,8 @@
         "personalEmail": "robert.johnson@email.com",
         "workEmail": "robert.johnson@employee.bellewaerde.be",
         "phone": "0471 11 22 33",
-        "personType": "EMPLOYEE"
+        "personType": "EMPLOYEE",
+        "jobType": "SHOPKEEPER"
     },
     {
         "firstName": "Maximilian",

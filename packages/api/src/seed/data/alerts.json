@@ -1,1 +1,82 @@
-[]
+[
+  {
+    "title": "Alert 1",
+    "description": "Description 1",
+    "state": "OPEN",
+    "createdBy": "user1@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 2",
+    "description": "Description 2",
+    "state": "OPEN",
+    "createdBy": "user2@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 3",
+    "description": "Description 3",
+    "state": "OPEN",
+    "createdBy": "user3@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 4",
+    "description": "Description 4",
+    "state": "OPEN",
+    "createdBy": "user4@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 5",
+    "description": "Description 5",
+    "state": "OPEN",
+    "createdBy": "user5@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 6",
+    "description": "Description 6",
+    "state": "OPEN",
+    "createdBy": "user6@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 7",
+    "description": "Description 7",
+    "state": "OPEN",
+    "createdBy": "user7@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 8",
+    "description": "Description 8",
+    "state": "OPEN",
+    "createdBy": "user8@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 9",
+    "description": "Description 9",
+    "state": "OPEN",
+    "createdBy": "user9@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  },
+  {
+    "title": "Alert 10",
+    "description": "Description 10",
+    "state": "OPEN",
+    "createdBy": "user10@example.com",
+    "employees": null,
+    "assignedEmployee": null
+  }
+]

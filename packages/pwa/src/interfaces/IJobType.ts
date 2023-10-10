@@ -1,0 +1,6 @@
+export enum JobType {
+    ALL = 'ALL',
+    CLEANER = 'CLEANER',
+    SHOPKEEPER = 'SHOPKEEPER',
+    ATTRACTION_OPERATOR = 'ATTRACTION_OPERATOR',
+}
