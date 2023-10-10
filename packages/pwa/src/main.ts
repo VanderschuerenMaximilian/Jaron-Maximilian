@@ -4,7 +4,7 @@ import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
 
 import App from './App.vue'
-import router from './router'
+import router from './bootstrap'
 
 import useFirebase from '@/composables/useFirebase'
 
