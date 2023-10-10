@@ -5,7 +5,7 @@
         "description": "Boomerang Snack is a snack bar located on Mexico Square. Here you can get a tasty snack, a soft drink or an ice cream.",
         "dishes": ["1"],
         "zone": "Mexico Square",
-        "category": ["1","2","3"],
+        "category": ["Burgers","Drinks"],
         "shopType": "Snack Bar"
     },
     {
@@ -14,7 +14,7 @@
         "description": "Canadian Burger is a snack bar located on Canada Square. Here you can get a tasty snack, a soft drink or an ice cream.",
         "dishes": ["1", "2", "3"],
         "zone": "Canada Square",
-        "category": ["1","2","3"],
+        "category": ["Burgers", "Drinks"],
         "shopType": "Snack Bar"
     },
     {
@@ -23,7 +23,7 @@
         "description": "Frituur is a snack bar located on Kids Park. Here you can get a tasty snack, a soft drink.",
         "dishes": ["1", "2"],
         "zone": "Kids Park",
-        "category": ["1","3"],
+        "category": ["Burgers", "Drinks"],
         "shopType": "Snack Bar"
     }
 ]

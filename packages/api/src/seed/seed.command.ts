@@ -7,6 +7,8 @@ export class DatabaseSeedCommand {
   constructor(private readonly seedService: SeedService) {}
 
   // ------------ Person ------------
+  // npx nestjs-command seed:database:persons
+  // npx nestjs-command seed:reset:persons
   @Command({
     command: 'seed:database:persons',
     describe: 'Seed the database with persons',
@@ -27,7 +29,8 @@ export class DatabaseSeedCommand {
   }
 
   // ------------ Alert ------------
-
+  // npx nestjs-command seed:database:alerts
+  // npx nestjs-command seed:reset:alerts
   @Command({
     command: 'seed:database:alerts',
     describe: 'Seed the database with alerts',
