@@ -1,6 +1,6 @@
 import { createHttpLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
-import useFirebase from '../composables/useFirebase';
+import useFirebase from './useFirebase';
 
 const {firebaseUser} = useFirebase();
 

@@ -51,8 +51,6 @@ export class SeedService {
       a.description = alert.description
       a.state = alert.state as AlertState
       a.createdBy = alert.createdBy
-      a.employees = alert.employees
-      a.assignedEmployee = alert.assignedEmployee
       a.createdAt = new Date()
       a.updatedAt = new Date()
 

@@ -72,7 +72,7 @@ const router = createRouter({
               component: () => import('../views/auth/employee/Shop.vue'),
             },
             {
-              path: 'shop/:id',
+              path: 'shop/:shopId',
               component: () =>
                 import('../views/auth/employee/ShopDetail.vue'),
             },

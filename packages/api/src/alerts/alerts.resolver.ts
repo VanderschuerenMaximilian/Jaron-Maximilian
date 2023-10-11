@@ -10,7 +10,13 @@ export class AlertsResolver {
 
   @Mutation(() => Alert)
   createAlert(@Args('createAlertInput') createAlertInput: CreateAlertInput) {
-    return this.alertsService.create(createAlertInput);
+    try {
+      return this.alertsService.create(createAlertInput);
+    }
+    catch (error) {
+      console.log(error)
+      return error
+    }
   }
 
   @Query(() => [Alert], { name: 'alerts' })
@@ -23,10 +29,10 @@ export class AlertsResolver {
     return this.alertsService.findOne(id);
   }
 
-  @Mutation(() => Alert)
-  updateAlert(@Args('updateAlertInput') updateAlertInput: UpdateAlertInput) {
-    return this.alertsService.update(updateAlertInput.id, updateAlertInput);
-  }
+  // @Mutation(() => Alert)
+  // updateAlert(@Args('updateAlertInput') updateAlertInput: UpdateAlertInput) {
+  //   return this.alertsService.update(updateAlertInput.id, updateAlertInput);
+  // }
 
   @Mutation(() => Alert)
   removeAlert(@Args('id', { type: () => Int }) id: number) {

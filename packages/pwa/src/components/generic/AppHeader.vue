@@ -35,17 +35,17 @@
                     </div>
                     <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
                         <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
-                            <RouterLink :to="'auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
-                            <RouterLink :to="'auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                            <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.MANAGER" class="flex flex-col gap-2">
-                            <RouterLink to="'auth/management/' + 'firebaseUser.value?.uid' + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                            <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
-                            <RouterLink :to="'auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
-                            <RouterLink :to="'auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">My Tickets</RouterLink>
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">My Tickets</RouterLink>
                         </div>
                     </section>
                     <section class="text-start">

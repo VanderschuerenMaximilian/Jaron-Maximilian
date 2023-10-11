@@ -42,6 +42,7 @@
 <script lang="ts">
 import { ref } from 'vue'
 import useFirebase from '../composables/useFirebase'
+import useCustomPerson from '../composables/useCustomPerson'
 import { Eye, EyeOff } from 'lucide-vue-next';
 import { useRouter } from 'vue-router'
 
@@ -52,6 +53,7 @@ export default {
     },
     setup() {
         const { login, firebaseUser } = useFirebase()
+        const { restoreCustomPerson } = useCustomPerson()
         const dirties = ref({
             email: false,
             password: false,
@@ -104,6 +106,10 @@ export default {
 
             if (!dirties.value.email && !dirties.value.password) {
                 login(loginCredentials.value.email, loginCredentials.value.password, router)
+                    .then(() => {
+                        restoreCustomPerson();
+                        dirties.value.account = false;
+                    })
                     .catch((error) => {
                         dirties.value.account = true;
                     });
