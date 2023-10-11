@@ -88,7 +88,7 @@ export class SeedService {
       const s = new Shop()
       s.category = shop.category
       s.description = shop.description
-      s.dishes = shop.dishes
+      s.products = shop.products
       s.image = shop.image
       s.name = shop.name
       s.shopType = shop.shopType
@@ -130,11 +130,11 @@ export class SeedService {
       p.image = product.image
       p.price = product.price
       p.category = product.category
-      p.size = product.size
+      p.size = Array.isArray(product.size) ? product.size : [product.size] as string[]
       p.sauce = product.sauce
       p.extra = product.extra
       p.removable = product.removable
-      p.ingredients = product.ingredients
+      p.ingredients = Array.isArray(product.ingredients) ? product.ingredients : [product.ingredients] as string[]
       p.shopType = product.shopType
 
       theProducts.push(p)

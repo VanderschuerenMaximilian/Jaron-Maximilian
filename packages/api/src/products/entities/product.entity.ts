@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
-import { Column, Entity, ObjectIdColumn } from 'typeorm'
+import { Column, Double, Entity, ObjectIdColumn } from 'typeorm'
 
 @Entity()
 @ObjectType()
@@ -23,7 +23,7 @@ export class Product {
 
   @Column()
   @Field()
-  price: string
+  price: number
 
   @Column()
   @Field(() => ID) // Assuming you have a Category entity with an ID

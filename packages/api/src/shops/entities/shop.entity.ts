@@ -22,7 +22,7 @@ export class Shop {
 
   @Column()
   @Field(() => [String])
-  dishes: string[]
+  products: string[]
 
   @Column()
   @Field()

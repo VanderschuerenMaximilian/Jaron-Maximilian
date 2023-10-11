@@ -12,7 +12,7 @@ export class CreateShopInput {
   description: string
 
   @Field(() => [String]) 
-  dishes: string[]
+  products: string[]
 
   @Field()
   zone: string

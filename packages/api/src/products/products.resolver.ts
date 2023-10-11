@@ -23,6 +23,13 @@ export class ProductsResolver {
     return this.productsService.findOne(id);
   }
 
+  @Query(() => Product, { name: 'productByName' })
+  async getProductByName(
+    @Args('name') name: string,
+  ): Promise<Product | null> {
+    return this.productsService.findByName(name)
+  }
+
   @Mutation(() => Product)
   updateProduct(@Args('updateProductInput') updateProductInput: UpdateProductInput) {
     return this.productsService.update(updateProductInput.id, updateProductInput);

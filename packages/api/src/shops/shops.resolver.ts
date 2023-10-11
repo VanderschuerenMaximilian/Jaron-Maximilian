@@ -5,12 +5,15 @@ import { CreateShopInput } from './dto/create-shop.input';
 import { UpdateShopInput } from './dto/update-shop.input';
 import { CategoriesService } from 'src/categories/categories.service';
 import { Category } from 'src/categories/entities/category.entity';
+import { Product } from 'src/products/entities/product.entity';
+import { ProductsService } from 'src/products/products.service';
 
 @Resolver(() => Shop)
 export class ShopsResolver {
   constructor(
     private readonly shopsService: ShopsService,
-    private readonly categoriesService: CategoriesService
+    private readonly categoriesService: CategoriesService,
+    private readonly productsService: ProductsService
     
     ) {}
 
@@ -52,5 +55,15 @@ export class ShopsResolver {
     );
 
     return categories;
+  }
+
+  @ResolveField(() => [Product], { name: 'products' })
+  async getProductsForShop(@Parent() shop: Shop): Promise<Product[]> {
+    const productName = shop.products;
+    const products = await Promise.all(
+      productName.map((productName) => this.productsService.findByName(productName)),
+    );
+
+    return products;
   }
 }

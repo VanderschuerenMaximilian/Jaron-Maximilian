@@ -21,7 +21,7 @@ export class ShopsService {
       const s = new Shop()
       s.category = createShopInput.category
       s.description = createShopInput.description
-      s.dishes = createShopInput.dishes
+      s.products = createShopInput.products
       s.image = createShopInput.image
       s.name = createShopInput.name
       s.shopType = createShopInput.shopType

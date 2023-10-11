@@ -1,4 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql'
+import { Double } from 'typeorm'
 
 @InputType()
 export class CreateProductInput {
@@ -12,7 +13,7 @@ export class CreateProductInput {
   image: string
 
   @Field()
-  price: string
+  price: number
 
   @Field() // Assuming you have a Category entity with an ID
   category: string

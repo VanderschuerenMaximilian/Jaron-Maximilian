@@ -1,4 +1,4 @@
-export interface SoldDish {
+export interface SoldProduct {
   id: number
   name: string
   image: string
