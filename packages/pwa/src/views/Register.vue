@@ -57,7 +57,11 @@
                 <p v-show="dirties.Confirmpassword" class="text-red-500 text-3 flex justify-end">Not equal to password</p>
                 </div>
 
-                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Register</button>
+                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
+                :disabled="addUserLoading">
+                    <template v-if="!addUserLoading">Register</template>
+                    <Loader2 v-else class="animate-spin"/>
+                </button>
             </form>
             <div class="mt-[10px] flex justify-center gap-1 mb-[40px]">
                 <p>Already have an account?</p>
@@ -71,14 +75,20 @@
 import { ref } from 'vue'
 import { type AuthError } from 'firebase/auth'
 import useFirebase from '../composables/useFirebase'
-import router from '../router'
+import useCustomPerson from '../composables/useCustomPerson'
+import router from '@/bootstrap'
 import { Eye, EyeOff  } from 'lucide-vue-next';
+import { CREATE_PERSON } from '../graphql/person.mutation'
+import { useMutation } from '@vue/apollo-composable'
+import type { Person } from '@/interfaces/IPersons'
+import { Loader2 } from 'lucide-vue-next'
 
 export default {
     components: {
-        Eye,
-        EyeOff,
-    },
+    Eye,
+    EyeOff,
+    Loader2
+},
     setup() {
         const { register, login } = useFirebase()
         const dirties = ref({
@@ -98,6 +108,7 @@ export default {
             Confirmpassword: ''
         })
 
+        const {mutate: addUser, loading: addUserLoading, onDone: userCreated} = useMutation<Person>(CREATE_PERSON)
         const error = ref<AuthError | null>(null)
 
         const togglePasswordVisibility = () => {
@@ -162,10 +173,22 @@ export default {
                 const name: string = newUser.value.FirstName + ' ' + newUser.value.LastName
                 register(name, newUser.value.email, newUser.value.password)
                     .then(() => {
-                        login(newUser.value.email, newUser.value.password, router)
+                        addUser({
+                            createPersonInput: {
+                                firstName: newUser.value.FirstName,
+                                lastName: newUser.value.LastName,
+                                fullName: newUser.value.FirstName + ' ' + newUser.value.LastName,
+                                personalEmail: newUser.value.email,
+                                phone: null,
+                                locale: 'en',
+                                personType: 'VISITOR',
+                            }
+                        }).then(() => {
+                            login(newUser.value.email, newUser.value.password, router)
                             .then(()=>{
                                 router.push('/login')
                             });
+                        })
                     })
                     .catch((error) => {
                         dirties.value.account = true;
@@ -174,9 +197,12 @@ export default {
         }
 
         return {
+            addUser,
+            addUserLoading,
             newUser,
             error,
             dirties,
+            userCreated,
             togglePasswordVisibility,
             toggleConfirmPasswordVisibility,
             handleRegister,

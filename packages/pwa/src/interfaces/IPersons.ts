@@ -6,6 +6,7 @@ export interface Persons {
 
 export interface Person {
     id: string
+    uid: string,
     firstName: string,
     lastName: string,
     fullName: string,

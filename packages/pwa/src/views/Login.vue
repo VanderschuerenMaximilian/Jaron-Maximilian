@@ -104,9 +104,6 @@ export default {
 
             if (!dirties.value.email && !dirties.value.password) {
                 login(loginCredentials.value.email, loginCredentials.value.password, router)
-                    .then(() => {
-                        // TODO: hier wordt naar database enzo gestuurd
-                    })
                     .catch((error) => {
                         dirties.value.account = true;
                     });

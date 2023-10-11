@@ -33,6 +33,23 @@ export const FIND_PERSON_BY_ID = gql`
     }
 `;
 
+export const FIND_PERSON_BY_UID = gql`
+    query ($uid: String!) {
+        personByUid(uid: $uid) {
+            uid
+            firstName
+            lastName
+            fullName
+            personType
+            jobType
+            personalEmail
+            workEmail
+            locale
+            phone
+        }
+    }
+`;
+
 export const ALL_EMPLOYEES = gql`
     query personsByPersonType($personType: String!) {
         personsByPersonType(personType: $personType) {

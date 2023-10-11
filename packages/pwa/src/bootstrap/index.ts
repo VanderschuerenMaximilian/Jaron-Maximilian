@@ -57,6 +57,10 @@ const router = createRouter({
       meta: { requiresAuth: true, showFooter: false, showHeader: true },
       children: [
         {
+          path: 'visitor/:id',
+          component: () => import('../views/auth/visitor/index.vue'),
+        },
+        {
           path: 'employee/:id',
           children: [
             {
