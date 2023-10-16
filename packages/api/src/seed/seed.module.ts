@@ -9,9 +9,10 @@ import { CategoriesModule } from 'src/categories/categories.module';
 import { ProductsModule } from 'src/products/products.module';
 import { IngredientsModule } from 'src/ingredients/ingredients.module';
 import { SoldProductsModule } from 'src/sold-products/sold-products.module';
+import { OrdersModule } from 'src/orders/orders.module';
 
 @Module({
-    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, CommandModule],
+    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, OrdersModule, CommandModule],
     providers: [DatabaseSeedCommand, SeedService],
 })
 export class SeedModule {}

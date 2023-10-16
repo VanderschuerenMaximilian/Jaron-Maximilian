@@ -167,6 +167,26 @@ export class DatabaseSeedCommand {
     console.info('🪶 Removed sold products')
   }
 
-
+  // ------------ Order ------------
+  // npx nestjs-command seed:database:orders
+  // npx nestjs-command seed:reset:orders
+  @Command({
+    command: 'seed:database:orders',
+    describe: 'Seed the database with orders',
+  })
+  async seedOrders() {
+    console.info('🪺 Start seeding of orders')
+    const orders = await this.seedService.addOrdersFromJson()
+    console.info(`🛒 ${orders.length} Orders are added`)
+  }
+  @Command({
+    command: 'seed:reset:orders',
+    describe: 'Delete all data from the orders table',
+  })
+  async deleteOrders() {
+    console.info('🔪 Start deleting orders')
+    await this.seedService.deleteAllOrders()
+    console.info('🪶 Removed orders')
+  }
 }
 

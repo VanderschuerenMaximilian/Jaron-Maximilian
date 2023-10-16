@@ -1,0 +1,45 @@
+[
+        {
+            "shopId": "1",
+            "soldProducts": [
+                {
+                    "productId": "1",
+                    "size": "Medium",
+                    "sauce": "barbecue",
+                    "amount": 2,
+                    "removeables": [
+                        "cheese",
+                        "onions"
+                    ],
+                    "extras": [
+                        "ketchup"
+                    ]
+                },
+                {
+                    "productId": "2",
+                    "size": "Large",
+                    "sauce": "mayo",
+                    "amount": 1,
+                    "removeables": [
+                        "lettuce",
+                        "tomato"
+                    ],
+                    "extras": [
+                        "mustard"
+                    ]
+                },
+                {
+                    "productId": "3",
+                    "size": "Small",
+                    "sauce": "ranch",
+                    "amount": 1,
+                    "removeables": [
+                        "pickles"
+                    ],
+                    "extras": [
+                        "cola"
+                    ]
+                }
+            ]
+        }
+]

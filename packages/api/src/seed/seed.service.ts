@@ -29,6 +29,11 @@ import { IngredientsService } from 'src/ingredients/ingredients.service'
 import * as soldProducts from './data/sold-products.json'
 import { SoldProduct } from 'src/sold-products/entities/sold-product.entity'
 import { SoldProductsService } from 'src/sold-products/sold-products.service'
+// Order
+import * as orders from './data/orders.json'
+import { Order } from 'src/orders/entities/order.entity'
+import { OrdersService } from 'src/orders/orders.service'
+
 
 
 
@@ -42,6 +47,7 @@ export class SeedService {
     private productsService: ProductsService,
     private ingredientsService: IngredientsService,
     private soldProductsService: SoldProductsService,
+    private ordersService: OrdersService,
   ) {}
 
   // -------------------- Person --------------------
@@ -192,6 +198,22 @@ export class SeedService {
   }
   async deleteAllSoldProducts(): Promise<void> {
     return this.soldProductsService.truncate()
+  }
+  // -------------------- Order --------------------
+  async addOrdersFromJson(): Promise<Order[]> {
+    let theOrders: Order[] = []
+    for (let order of orders) {
+      const o = new Order()
+      o.shopId = order.shopId
+      o.soldProducts = order.soldProducts
+
+      theOrders.push(o)
+    }
+
+    return this.ordersService.saveAllOrders(theOrders)
+  }
+  async deleteAllOrders(): Promise<void> {
+    return this.ordersService.truncate()
   }
 
 
