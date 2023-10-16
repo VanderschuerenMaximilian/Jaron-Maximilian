@@ -7,9 +7,9 @@ query {
     name
     image
     description
-    products {id, name}
+    products {id}
     zone
-    category {id, name, image}
+    category {id}
     shopType
   }
 }
@@ -22,7 +22,7 @@ query ($name:String!) {
     name
     image
     description
-    products {id, name, image, description, price, category, size, sauce, extra, removable, ingredients, shopType}
+    products {id, name, image, description, price, sizeModifier, category, size, sauce, extra, removable, ingredients, shopType}
     zone
     category {id, name, image}
     shopType

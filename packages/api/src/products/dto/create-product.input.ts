@@ -15,6 +15,9 @@ export class CreateProductInput {
   @Field()
   price: number
 
+  @Field()
+  sizeModifier: number
+
   @Field() // Assuming you have a Category entity with an ID
   category: string
 

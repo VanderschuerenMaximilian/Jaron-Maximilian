@@ -13,6 +13,7 @@ import { ShopsModule } from './shops/shops.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
+import { SoldProductsModule } from './sold-products/sold-products.module';
 
 @Module({
   imports: [
@@ -47,6 +48,8 @@ import { IngredientsModule } from './ingredients/ingredients.module';
     ProductsModule,
 
     IngredientsModule,
+
+    SoldProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -30,14 +30,21 @@
         <main class="mt-25 flex flex-wrap justify-center max-h-85vh overflow-auto max-w-70vw gap-5"> 
             <template v-for="product in shop.products">
                 <div v-if="product.category === selectedCategory" :key="product.id">
-                <div class="relative flex flex-col border-4 border-primary-green rounded-lg w-70 h-80 justify-center items-center gap-5">
+                <div class="relative flex flex-col border-4 border-primary-green rounded-lg w-70 h-90 justify-center items-center gap-5">
                     <img :src="product.image" :alt="`${product.name} image`" class="h-30 mx-auto mt-[-40px]">
                     <div class="text-center">
-                    <p class="font-bold text-5 max-w-65 overflow-hidden h-15 max-h-15">{{ product.name }}</p>
-                    <p class="font-bold text-primary-green">{{ '€ ' +  product.price }}</p>
+                        <p class="font-bold text-5 max-w-65 overflow-hidden h-15 max-h-15">{{ product.name }}</p>
+                        <p class="font-bold text-primary-green">{{ '€ ' + calculateProductPrice(product) }}</p>
+                        <div v-if="product.size.length > 1" class="flex justify-center gap-2">
+                            <button v-for="size of product.size" @click="handleSizeClick(product, size)" 
+                                :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold', getSelectedClass(product.id, size)]">
+                                {{ size[0] }}
+                            </button>
+                        </div>
                     </div>
-                    <button @click="openPopup(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
-                </div>
+                    <button v-if="product.size.length > 1" @click="HandleOrder(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
+                    <button v-else @click="openPopup(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
+                    </div>
                 </div>
             </template>
         </main>
@@ -48,10 +55,13 @@
             <h3 class="h3 text-center mt-25">Food List</h3>
             <div  v-if="soldProducts.length > 0"  class="flex flex-col scroll max-h-60vh overflow-auto px-2 gap-4 mt-8 mx-auto" ref="scrollContainer">
                 <div v-for="soldProduct of soldProducts" class="flex relative w-90 bg-white items-center p-4 gap-3 rounded-2xl">
-                    <img :src="soldProduct.image" :alt="soldProduct.name + 'image'" class="h-12">
+                    <div class="w-18 ">
+                        <img :src="soldProduct.image" :alt="soldProduct.name + 'image'">
+                    </div>
                     <div>
                         <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">{{ soldProduct.name }}</p>
-                        <p v-if="soldProduct.size != null" class="text-3">{{ soldProduct.size }}</p>
+                        <p v-show="soldProduct.category != 'Burgers'" class="text-3">{{ soldProduct.size }}</p>
+                        <p v-if="soldProduct.sauce" class="text-3 font-bold mt-1">Sauce:</p>
                         <p class="text-3">{{ soldProduct.sauce }}</p>
                         <div class="flex flex-col justify-between">
                             <p v-if="soldProduct.toppings != ''" class="text-3 font-bold mt-1">Extras:</p>
@@ -84,7 +94,7 @@
                 <p>Total:</p>
                 <p>{{"€ " + totalPrice.toFixed(2) }}</p>
               </div>
-              <button class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+              <button @click="handleChekout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
             </div>
           </div>
         </aside>
@@ -93,7 +103,7 @@
 
 <script lang="ts">
 import ProductPopup from '../../../components/ProductPopup.vue';
-import { ref, onMounted, onUnmounted, computed, watch, watchEffect } from 'vue'
+import { ref, onMounted, onUnmounted, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft, ChevronDown, ChevronUp, X, MinusCircle, PlusCircle } from 'lucide-vue-next';
 import { SoldProduct as ISoldProduct } from '../../../interfaces/ISoldProduct';
@@ -115,13 +125,6 @@ export default {
         PlusCircle
     },
     setup() {
-
-        // Ik heb de Categories opgehaald aan de hand van de Shop
-        // Ik heb de Filter van de Categories gedaan (enkel als je op een Categorie klikt) en haalt de Products op van die filter (uit de voorgemaakte list van products, moet uit database worden gehaalt)
-        
-        // TODO: Maak een query dat als je de Shop get dat je de products mee krijgt (zoals bij categoy, let op dat de product data juist is en dat het niet ID's zijn maar name )
-
-        // TODO: ophalen uit de database
         // const products = ref([
         //     { id: 1, name: 'Classic Cheeseburger', categoryId: "Burgers", description: 'Special burger', price: 7.99, image: 'https://pngimg.com/uploads/burger_sandwich/burger_sandwich_PNG4114.png' },
         //     { id: 2, name: 'Veggie Burger', categoryId: "Burgers", description: 'Special burger', price: 10.99, image: 'https://i.pinimg.com/originals/66/71/ed/6671eddc555209aab720cc321a76846f.png' },
@@ -137,10 +140,7 @@ export default {
         // ])
         
         const soldProducts = ref<ISoldProduct[]>([]);
-        // const filteredProducts = computed(() => {
-        //     return products.value.filter(product => product.categoryId === selectedCategory.value);
-        // });
-        
+        const selectedSizes = ref({});   
         const router = useRouter()
         const id : any = ref<string>('')
         const name : any = ref<string>('')
@@ -174,6 +174,49 @@ export default {
             }
             calculateTotalPrice();
         };
+
+        const calculateProductPrice = (product : any) => {
+            let newPrice = product.price;
+            const sizeModifier = product.sizeModifier;
+            if (selectedSizes.value[product.id] === 'Large') {
+                newPrice += sizeModifier;
+            } else if (selectedSizes.value[product.id] === 'Small') {
+                newPrice -= sizeModifier;
+            }
+            newPrice = parseFloat(newPrice.toFixed(2));
+            return newPrice;
+        };
+
+        const HandleOrder = (product: any) => {
+            const defaultSize = 'Medium'; // Set your desired default size here
+            const sizePrice = selectedSizes.value[product.id] || defaultSize;
+            let newPrice = product.price;
+            if (sizePrice === 'Large') {
+                newPrice += 1;
+            } else if (sizePrice === 'Small') {
+                newPrice -= 1;
+            }
+            newPrice = parseFloat(newPrice.toFixed(2));
+            
+            const newSoldProduct = {
+                name: product.name,
+                image: product.image,
+                price: newPrice,
+                amount: 1,
+                size: sizePrice, // Handle the case where selectedSizes.value[product.id] is undefined
+                sauce: '',
+                toppings: [],
+                removables: [],
+                extraCost: 0
+            };
+
+            soldProducts.value.push(newSoldProduct);
+            calculateTotalPrice();
+        };
+
+        // TODO: Geef een default value aan de size
+        // TODO: Zorg dat een size een afzonderlijke price heeft, zorg dat die in de soldProduct komt zodat je makkelijk de totale prijs kan berekenen
+
 
         const handleProductSubmitted = (product : any) => {
             soldProducts.value.push(product);
@@ -228,6 +271,38 @@ export default {
             selectedCategory.value = category;
         }
 
+        const handleSizeClick = (product: any, size:any) => {
+        // Bij het klikken op een grootte, wordt deze toegewezen aan het desbetreffende product
+            selectedSizes.value = {
+                ...selectedSizes.value,
+                [product.id]: size
+            };
+        };
+
+        const getSelectedClass = (productId, size) => {
+            // Controleer of de huidige grootte is geselecteerd voor het huidige product
+            // Als er geen geselecteerde grootte is, gebruik dan 'Medium' als standaard
+            return selectedSizes.value[productId] === size || (!selectedSizes.value[productId] && size === 'Medium') 
+                ? 'bg-opacity-100' 
+                : 'bg-opacity-50';
+        };
+
+        const handleChekout = () => {
+            if (soldProducts.value.length > 0) {
+                // TODO: POST dit naar de backend (de hele object moet in de order en iedere order moet nog eens afzonderlijk in de database)
+                console.log(soldProducts.value);
+
+                for (const product of soldProducts.value) {
+                    product.shopName = name.value;
+                    //TODO: Voeg dan in de Database een date toe
+                    console.log(product);
+                }
+            } else {
+                alert("Oops! Je kunt niet uitchecken met een lege winkelwagen. Voeg eerst wat lekkers toe!");
+            }
+        };
+
+
         const { result, loading, error } = useQuery(GET_SHOP, {name: name});
         watchEffect(() => {
             // Wacht tot result.value is ingevuld voordat je het print
@@ -259,7 +334,14 @@ export default {
             result,
             loading,
             error,
-            firebaseUser
+            firebaseUser,
+            calculateProductPrice,
+            HandleOrder,
+            handleSizeClick,
+            selectedSizes,
+            getSelectedClass,
+            handleChekout
+            
 
         }
     },

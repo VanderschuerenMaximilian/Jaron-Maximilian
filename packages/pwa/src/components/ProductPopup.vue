@@ -16,7 +16,7 @@
                                 </div>
                                 <img :src="selectedProduct.image" alt="Burger image" class="w-30 h-30">
                             </div>
-                            <div class="flex flex-col max-h-46vh overflow-auto px-4 mt-4">
+                            <div class="flex flex-col h-500 max-h-46vh overflow-auto px-4 mt-1">
                                 <h6 v-if="selectedProduct.category !== 'Burgers'" class="h6">Size:</h6>
                                 <select v-if="selectedProduct.category !== 'Burgers'" v-model="selectedSize" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option v-for="size in selectedProduct.size" :key="size" :value="size">{{ size }}</option>
@@ -25,14 +25,14 @@
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce">{{ sauce }}</option>
                                 </select>
-                                <h6 class="h6 mt-4">Extras (+ € 0.50):</h6>
+                                <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
                                 <div class="flex flex-col">
                                     <label v-for="extra in selectedProduct.extra" :key="extra" class="flex items-center mt-1 cursor-pointer select-none">
                                         <input type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
                                         {{ extra }}
                                     </label>
                                 </div>
-                                <h6 class="h6 mt-4">Removables:</h6>
+                                <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Removables:</h6>
                                 <div class="flex flex-col">
                                     <label v-for="removable in selectedProduct.removable" :key="removable" class="flex items-center mt-1 cursor-pointer select-none">
                                         <input type="checkbox" v-model="selectedRemovables" :value="removable" class="mr-2 cursor-pointer">
@@ -62,7 +62,7 @@ export default {
     },
     setup() {
         const soldProducts = ref([
-            { name: '', image: "", price: 0, amount: 1, size: '', sauce: '', toppings: [''], removables: [''], extraCost: 0 }
+            { name: '', image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: [''], removables: [''], extraCost: 0 }
         ]);
 
         return {
@@ -99,6 +99,7 @@ export default {
                 price: this.selectedProduct.price,
                 amount: 1,
                 size: this.selectedSize,
+                category: this.selectedProduct.category,
                 sauce: this.selectedSauce,
                 toppings: this.selectedToppings,
                 removables: this.selectedRemovables,

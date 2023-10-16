@@ -22,6 +22,7 @@ export class ProductsService {
     p.description = createProductInput.description
     p.image = createProductInput.image
     p.price = createProductInput.price
+    p.sizeModifier = createProductInput.sizeModifier
     p.category = createProductInput.category
     p.size = createProductInput.size
     p.sauce = createProductInput.sauce

@@ -25,6 +25,11 @@ import { ProductsService } from 'src/products/products.service'
 import * as ingredients from './data/ingredients.json'
 import { Ingredient } from 'src/ingredients/entities/ingredient.entity'
 import { IngredientsService } from 'src/ingredients/ingredients.service'
+// SoldProduct
+import * as soldProducts from './data/sold-products.json'
+import { SoldProduct } from 'src/sold-products/entities/sold-product.entity'
+import { SoldProductsService } from 'src/sold-products/sold-products.service'
+
 
 
 @Injectable()
@@ -36,6 +41,7 @@ export class SeedService {
     private categoriesService: CategoriesService,
     private productsService: ProductsService,
     private ingredientsService: IngredientsService,
+    private soldProductsService: SoldProductsService,
   ) {}
 
   // -------------------- Person --------------------
@@ -129,6 +135,7 @@ export class SeedService {
       p.description = product.description
       p.image = product.image
       p.price = product.price
+      p.sizeModifier = product.sizeModifier
       p.category = product.category
       p.size = Array.isArray(product.size) ? product.size : [product.size] as string[]
       p.sauce = product.sauce
@@ -165,4 +172,27 @@ export class SeedService {
   async deleteAllIngredients(): Promise<void> {
     return this.ingredientsService.truncate()
   }
+
+  // -------------------- SoldProduct --------------------
+  async addSoldProductsFromJson(): Promise<SoldProduct[]> {
+    let theSoldProducts: SoldProduct[] = []
+    for (let soldProduct of soldProducts) {
+      const sp = new SoldProduct()
+      sp.size = soldProduct.size
+      sp.sauce = soldProduct.sauce
+      sp.removeables = soldProduct.removeables
+      sp.amount = soldProduct.amount
+      sp.extras = soldProduct.extras
+      sp.productId = soldProduct.productId
+
+      theSoldProducts.push(sp)
+    }
+
+    return this.soldProductsService.saveAllSoldProducts(theSoldProducts)
+  }
+  async deleteAllSoldProducts(): Promise<void> {
+    return this.soldProductsService.truncate()
+  }
+
+
 }

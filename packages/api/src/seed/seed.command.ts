@@ -143,5 +143,30 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllIngredients()
     console.info('🪶 Removed ingredients')
   }
+
+  // ------------ SoldProduct ------------
+  // npx nestjs-command seed:database:sold-products
+  // npx nestjs-command seed:reset:sold-products
+  @Command({
+    command: 'seed:database:sold-products',
+    describe: 'Seed the database with sold-products',
+  })
+  async seedSoldProducts() {
+    console.info('🪺 Start seeding of sold-products')
+    const soldProducts = await this.seedService.addSoldProductsFromJson()
+    console.info(`🛒 ${soldProducts.length} SoldProducts are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:sold-products',
+    describe: 'Delete all data from the sold-products table',
+  })
+  async deleteSoldProducts() {
+    console.info('🔪 Start deleting sold products')
+    await this.seedService.deleteAllSoldProducts()
+    console.info('🪶 Removed sold products')
+  }
+
+
 }
 

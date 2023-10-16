@@ -26,6 +26,10 @@ export class Product {
   price: number
 
   @Column()
+  @Field()
+  sizeModifier: number
+
+  @Column()
   @Field(() => ID) // Assuming you have a Category entity with an ID
   category: string
 

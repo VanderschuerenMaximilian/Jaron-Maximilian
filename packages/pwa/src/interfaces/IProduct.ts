@@ -4,6 +4,7 @@ export interface Product {
   categoryId: number
   description: string
   price: number
+  sizeModifier: number
   image: string
 }
 
