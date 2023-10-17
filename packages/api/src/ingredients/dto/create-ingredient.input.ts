@@ -11,6 +11,9 @@ export class CreateIngredientInput {
   @Field(() => Int)
   stock: number;
 
+  @Field(() => Int)
+  stockReduction: number;
+
   @Field()
   unit: string;
 

@@ -4,6 +4,7 @@ import { UpdateOrderInput } from './dto/update-order.input';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
 export class OrdersService {
@@ -16,27 +17,24 @@ export class OrdersService {
     return this.orderRepository.find()
   }
 
-  create(CreateOrderInput: CreateOrderInput): Promise<Order> {
+  async create(CreateOrderInput: CreateOrderInput): Promise<Order> {
     const o = new Order()
     o.shopId = CreateOrderInput.shopId
+    o.totalPrice = CreateOrderInput.totalPrice
     o.createdAt = new Date()
     o.soldProducts = CreateOrderInput.soldProducts
-    return this.orderRepository.save(o)
+    await this.orderRepository.save(o)
+    return o
   }
 
-  async findOne(id: any): Promise<Order | undefined> {
-    const order = await this.orderRepository.findOne({comment: id});
-  
+  async findOne(id: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({ comment: id });
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
   
     return order;
   }
-
-  
-  
-  
 
   update(id: number, updateOrderInput: UpdateOrderInput) {
     return `This action updates a #${id} order`;

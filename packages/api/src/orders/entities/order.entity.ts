@@ -4,7 +4,10 @@ import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 @ObjectType()
 class OrderSoldProduct {
   @Field()
-  productId: string;
+  productName: string;
+
+  @Field()
+  price: number;
 
   @Field()
   size: string;
@@ -20,7 +23,8 @@ class OrderSoldProduct {
 
   @Field(() => [String])
   extras: string[];
-}
+
+  }
 
 @ObjectType()
 @Entity()
@@ -32,6 +36,10 @@ export class Order {
   @Column()
   @Field()
   shopId: string;
+
+  @Column()
+  @Field()
+  totalPrice: number;
 
   @Column()
   @Field({ nullable: true })

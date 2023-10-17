@@ -94,7 +94,7 @@
                 <p>Total:</p>
                 <p>{{"€ " + totalPrice.toFixed(2) }}</p>
               </div>
-              <button @click="handleChekout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+              <button @click="handleCheckout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
             </div>
           </div>
         </aside>
@@ -106,11 +106,12 @@ import ProductPopup from '../../../components/ProductPopup.vue';
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft, ChevronDown, ChevronUp, X, MinusCircle, PlusCircle } from 'lucide-vue-next';
-import { SoldProduct as ISoldProduct } from '../../../interfaces/ISoldProduct';
+import { SoldProduct as ISoldProduct, type SoldProduct } from '../../../interfaces/ISoldProduct';
 import { Product as IProduct } from '../../../interfaces/IProduct';
-import { useQuery } from '@vue/apollo-composable'
-import { GET_SHOP, GET_SHOPS } from '../../../graphql/shop.query'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { GET_SHOP, GET_SHOPS, CREATE_ORDER } from '../../../graphql/shop.query'
 import useFirebase from '@/composables/useFirebase';
+import createOrder from "../../../graphql/shop.query";
 
 const { firebaseUser } = useFirebase()
 
@@ -199,11 +200,11 @@ export default {
             newPrice = parseFloat(newPrice.toFixed(2));
             
             const newSoldProduct = {
-                name: product.name,
+                productName: product.name,
                 image: product.image,
                 price: newPrice,
                 amount: 1,
-                size: sizePrice, // Handle the case where selectedSizes.value[product.id] is undefined
+                size: sizePrice,
                 sauce: '',
                 toppings: [],
                 removables: [],
@@ -279,7 +280,7 @@ export default {
             };
         };
 
-        const getSelectedClass = (productId, size) => {
+        const getSelectedClass = (productId: string | number, size: string) => {
             // Controleer of de huidige grootte is geselecteerd voor het huidige product
             // Als er geen geselecteerde grootte is, gebruik dan 'Medium' als standaard
             return selectedSizes.value[productId] === size || (!selectedSizes.value[productId] && size === 'Medium') 
@@ -287,23 +288,36 @@ export default {
                 : 'bg-opacity-50';
         };
 
-        const handleChekout = () => {
-            if (soldProducts.value.length > 0) {
-                // TODO: POST dit naar de backend (de hele object moet in de order en iedere order moet nog eens afzonderlijk in de database)
-                console.log(soldProducts.value);
-
-                for (const product of soldProducts.value) {
-                    product.shopName = name.value;
-                    //TODO: Voeg dan in de Database een date toe
-                    console.log(product);
-                }
-            } else {
-                alert("Oops! Je kunt niet uitchecken met een lege winkelwagen. Voeg eerst wat lekkers toe!");
-            }
+        const handleCheckout = () => {
+        if (soldProducts.value.length > 0) {
+            const order = {
+                shopId: name.value,
+                totalPrice: totalPrice.value,
+                soldProducts: soldProducts.value.map((product) => ({
+                    productName: product.productName,
+                    price: (product.price + product.extraCost),
+                    size: product.size,
+                    sauce: product.sauce,
+                    amount: product.amount,
+                    removeables: product.removables,
+                    extras: product.toppings,
+                })),
+            };
+            mutate({ orderInput: order }).catch((error) => {
+                console.log(error);
+            });
         };
+    }
+
+
+
+
+
 
 
         const { result, loading, error } = useQuery(GET_SHOP, {name: name});
+        const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
+
         watchEffect(() => {
             // Wacht tot result.value is ingevuld voordat je het print
             if (result.value) {
@@ -333,6 +347,8 @@ export default {
             handleDeleteSoldProduct,
             result,
             loading,
+            loadingOrder,
+            mutate,
             error,
             firebaseUser,
             calculateProductPrice,
@@ -340,7 +356,7 @@ export default {
             handleSizeClick,
             selectedSizes,
             getSelectedClass,
-            handleChekout
+            handleCheckout
             
 
         }

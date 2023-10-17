@@ -62,7 +62,7 @@ export default {
     },
     setup() {
         const soldProducts = ref([
-            { name: '', image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: [''], removables: [''], extraCost: 0 }
+            { name: '', productId: "", image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: [''], removables: [''], extraCost: 0, ingredients: [''] }
         ]);
 
         return {
@@ -94,6 +94,7 @@ export default {
         },
         handleData() {
             const soldProduct = {
+                productName: this.selectedProduct.name,
                 name: this.selectedProduct.name,
                 image: this.selectedProduct.image,
                 price: this.selectedProduct.price,
@@ -104,6 +105,7 @@ export default {
                 toppings: this.selectedToppings,
                 removables: this.selectedRemovables,
                 extraCost: this.selectedToppings.length * 0.5,
+                ingredients: this.selectedProduct.ingredients,
             };
 
             this.$emit('product-submitted', soldProduct);

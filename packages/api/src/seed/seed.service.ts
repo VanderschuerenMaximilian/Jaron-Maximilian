@@ -169,6 +169,7 @@ export class SeedService {
       i.name = ingredient.name,
       i.price = ingredient.price,
       i.stock = ingredient.stock,
+      i.stockReduction = ingredient.stockReduction,
       i.unit = ingredient.unit,
       theIngredient.push(i)
     }
@@ -205,6 +206,7 @@ export class SeedService {
     for (let order of orders) {
       const o = new Order()
       o.shopId = order.shopId
+      o.totalPrice = order.totalPrice
       o.soldProducts = order.soldProducts
 
       theOrders.push(o)

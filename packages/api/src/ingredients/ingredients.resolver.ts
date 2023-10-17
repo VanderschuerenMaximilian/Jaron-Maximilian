@@ -13,9 +13,26 @@ export class IngredientsResolver {
     return this.ingredientsService.create(createIngredientInput);
   }
 
+  @Mutation(() => Ingredient)
+  async updateIngredientStock(
+    @Args('name') name: string,
+    @Args('stock', { type: () => Int }) stock: number,
+  ): Promise<Ingredient> {
+    return await this.ingredientsService.updateStockByName(name, stock);
+  }
+
+  
+
   @Query(() => [Ingredient], { name: 'ingredients' })
   findAll() {
     return this.ingredientsService.findAll();
+  }
+
+  @Query(() => Ingredient, { name: 'ingredientByName' })
+  async getIngredientByName(
+    @Args('name') name: string,
+  ): Promise<Ingredient | null> {
+    return this.ingredientsService.findByName(name)
   }
 
   @Query(() => Ingredient, { name: 'ingredient' })

@@ -1,10 +1,12 @@
 [
         {
             "shopId": "1",
+            "totalPrice": 30,
             "soldProducts": [
                 {
-                    "productId": "1",
+                    "productName": "Classic Burger",
                     "size": "Medium",
+                    "price": 10,
                     "sauce": "barbecue",
                     "amount": 2,
                     "removeables": [
@@ -16,8 +18,9 @@
                     ]
                 },
                 {
-                    "productId": "2",
+                    "productName": "Classic Burger",
                     "size": "Large",
+                    "price": 15,
                     "sauce": "mayo",
                     "amount": 1,
                     "removeables": [
@@ -29,8 +32,9 @@
                     ]
                 },
                 {
-                    "productId": "3",
+                    "productName": "Classic Burger",
                     "size": "Small",
+                    "price": 5,
                     "sauce": "ranch",
                     "amount": 1,
                     "removeables": [

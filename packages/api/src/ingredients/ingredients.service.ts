@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateIngredientInput } from './dto/create-ingredient.input';
 import { UpdateIngredientInput } from './dto/update-ingredient.input';
 import { Ingredient } from './entities/ingredient.entity'
@@ -26,6 +26,29 @@ export class IngredientsService {
     i.maxStock = createIngredientInput.maxStock
     return this.ingredientRepository.save(i)
   }
+
+  async updateStockByName(name: string, newStock: number): Promise<Ingredient> {
+    const ingredient = await this.ingredientRepository.findOne({ where: { name } });
+    if (!ingredient) {
+      throw new Error(`Ingredient with name ${name} not found`);
+    }
+
+    ingredient.stock = newStock;
+
+    return await this.ingredientRepository.save(ingredient);
+  }
+
+
+  async findByName(name: string): Promise<Ingredient | null> {
+    const shop = await this.ingredientRepository.findOne({ where: { name } })
+
+    if (!shop) {
+      throw new NotFoundException(`Category with name ${name} not found`)
+    }
+
+    return shop
+  }
+
 
   findOne(id: number) {
     return `This action returns a #${id} ingredient`

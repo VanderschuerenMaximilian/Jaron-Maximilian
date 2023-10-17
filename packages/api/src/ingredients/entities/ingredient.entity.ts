@@ -9,10 +9,6 @@ export class Ingredient {
   id: string
 
   @Column()
-  @Field(() => String, { nullable: true })
-  userId: string
-
-  @Column()
   @Field(() => String)
   name: string
 
@@ -23,6 +19,10 @@ export class Ingredient {
   @Column()
   @Field(() => Int)
   stock: number
+
+  @Column()
+  @Field(() => Int)
+  stockReduction: number
 
   @Column()
   @Field(() => String)

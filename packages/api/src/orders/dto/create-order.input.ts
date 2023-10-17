@@ -3,10 +3,13 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class OrderSoldProductInput {
   @Field()
-  productId: string;
+  productName: string;
 
   @Field()
   size: string;
+
+  @Field()
+  price: number;
 
   @Field()
   sauce: string;
@@ -26,9 +29,9 @@ export class CreateOrderInput {
   @Field()
   shopId: string;
 
-  @Field()
-  createdAt: Date;
-
   @Field(() => [OrderSoldProductInput])
   soldProducts: OrderSoldProductInput[];
+
+  @Field()
+  totalPrice: number;
 }

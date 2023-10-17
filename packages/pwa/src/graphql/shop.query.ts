@@ -30,5 +30,25 @@ query ($name:String!) {
 }
 `
 
+export const CREATE_ORDER = gql`
+mutation CreateOrderByVariables($orderInput: CreateOrderInput!) {
+  createOrder(createOrderInput: $orderInput) {
+    id
+    shopId
+    totalPrice
+    createdAt
+    soldProducts {
+      productName
+      price
+      size
+      sauce
+      amount
+      removeables
+      extras
+    }
+  }
+}
+`
+
 
 

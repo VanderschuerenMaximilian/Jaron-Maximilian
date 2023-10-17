@@ -4,6 +4,7 @@
     "name": "Beef Patty",
     "price": 2.00,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "piece",
     "minStock": 5,
     "maxStock": 20
@@ -12,6 +13,7 @@
     "name": "Cheese",
     "price": 0.50,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
@@ -20,6 +22,7 @@
     "name": "Onion",
     "price": 0.50,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "piece",
     "minStock": 5,
     "maxStock": 20
@@ -28,6 +31,7 @@
     "name": "Tomato",
     "price": 0.50,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
@@ -36,6 +40,7 @@
     "name": "Lettuce",
     "price": 0.25,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "leaf",
     "minStock": 5,
     "maxStock": 20
@@ -44,6 +49,7 @@
     "name": "Bacon",
     "price": 1.00,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
@@ -52,6 +58,7 @@
     "name": "Avocado",
     "price": 1.50,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
@@ -60,6 +67,7 @@
     "name": "Cilantro",
     "price": 0.30,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "bunch",
     "minStock": 5,
     "maxStock": 20
@@ -68,6 +76,7 @@
     "name": "Sesame Seed Bun",
     "price": 0.75,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "piece",
     "minStock": 5,
     "maxStock": 20
@@ -76,6 +85,7 @@
     "name": "Jalapeño",
     "price": 0.75,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "piece",
     "minStock": 5,
     "maxStock": 20
@@ -84,7 +94,8 @@
     "name": "Ketchup",
     "price": 0.25,
     "stock": 10,
-    "unit": "bottle",
+    "stockReduction": 25,
+    "unit": "ml",
     "minStock": 5,
     "maxStock": 20
   },
@@ -92,6 +103,7 @@
     "name": "Mustard",
     "price": 0.25,
     "stock": 10,
+    "stockReduction": 25,
     "unit": "bottle",
     "minStock": 5,
     "maxStock": 20
@@ -100,6 +112,7 @@
     "name": "Mayonnaise",
     "price": 0.30,
     "stock": 10,
+    "stockReduction": 25,
     "unit": "jar",
     "minStock": 5,
     "maxStock": 20
@@ -108,6 +121,7 @@
     "name": "Curry Ketchup",
     "price": 0.35,
     "stock": 10,
+    "stockReduction": 25,
     "unit": "bottle",
     "minStock": 5,
     "maxStock": 20
@@ -116,6 +130,7 @@
     "name": "Garlic Aioli",
     "price": 0.40,
     "stock": 10,
+    "stockReduction": 25,
     "unit": "jar",
     "minStock": 5,
     "maxStock": 20
@@ -124,6 +139,7 @@
     "name": "Chipotle Ranch",
     "price": 0.40,
     "stock": 10,
+    "stockReduction": 25,
     "unit": "bottle",
     "minStock": 5,
     "maxStock": 20
@@ -132,6 +148,7 @@
     "name": "Pickles",
     "price": 0.50,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
@@ -140,6 +157,7 @@
     "name": "Fried Egg",
     "price": 1.00,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "piece",
     "minStock": 5,
     "maxStock": 20
@@ -148,6 +166,7 @@
     "name": "Crispy bacon",
     "price": 1.00,
     "stock": 10,
+    "stockReduction": 1,
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
