@@ -3,7 +3,7 @@ import { CreateAlertInput } from './dto/create-alert.input';
 import { UpdateAlertInput } from './dto/update-alert.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alert } from './entities/alert.entity';
-import { Repository } from 'typeorm';
+import { ObjectId, Repository } from 'typeorm';
 import { AlertState } from 'src/interfaces/IAlertState';
 
 @Injectable()
@@ -52,9 +52,9 @@ export class AlertsService {
     return `This action returns a #${id} alert`;
   }
 
-  update(id: number, updateAlertInput: UpdateAlertInput) {
-    return `This action updates a #${id} alert`;
-  }
+  // update(id: ObjectId, updateAlertInput: UpdateAlertInput) {
+  //   return `This action updates a #${id} alert`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} alert`;

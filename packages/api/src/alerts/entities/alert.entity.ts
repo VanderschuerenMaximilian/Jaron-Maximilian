@@ -9,7 +9,7 @@ import { Person } from 'src/persons/entities/person.entity';
 export class Alert {
   @ObjectIdColumn()
   @Field(() => ID)
-  id: string;
+  id: ObjectId;
 
   @Column()
   @Field()

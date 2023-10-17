@@ -31,7 +31,13 @@ export class AlertsResolver {
 
   // @Mutation(() => Alert)
   // updateAlert(@Args('updateAlertInput') updateAlertInput: UpdateAlertInput) {
-  //   return this.alertsService.update(updateAlertInput.id, updateAlertInput);
+  //   try {
+  //     return this.alertsService.update(updateAlertInput.id, updateAlertInput);
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //     return error
+  //   }
   // }
 
   @Mutation(() => Alert)
