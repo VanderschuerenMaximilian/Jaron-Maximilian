@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 
 @ObjectType()
 class OrderSoldProduct {
@@ -25,7 +25,7 @@ class OrderSoldProduct {
 @ObjectType()
 @Entity()
 export class Order {
-  @Field(() => ID)
+  @Field()
   @ObjectIdColumn()
   id: string;
 
@@ -34,7 +34,7 @@ export class Order {
   shopId: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   createdAt: Date;
 
   @Column()

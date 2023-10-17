@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderInput } from './dto/create-order.input';
 import { UpdateOrderInput } from './dto/update-order.input';
 import { Repository } from 'typeorm';
@@ -24,9 +24,19 @@ export class OrdersService {
     return this.orderRepository.save(o)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: any): Promise<Order | undefined> {
+    const order = await this.orderRepository.findOne({comment: id});
+  
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+  
+    return order;
   }
+
+  
+  
+  
 
   update(id: number, updateOrderInput: UpdateOrderInput) {
     return `This action updates a #${id} order`;
