@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import type { Router } from 'vue-router';
-import router from '@/router';
+import router from '@/bootstrap';
 
 const app = initializeApp({
     apiKey: import.meta.env.VITE_apiKey,
@@ -47,12 +47,12 @@ const login = async (email: string, password: string, router: Router): Promise<U
                 const Useremail = firebaseUser.value?.email
                 const splitEmail = Useremail?.split("@")
                 if (firebaseUser.value?.email === "admin@admin.bellewaerde.be") {
-                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard/overview")
+                    router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
                 }
                 else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
                     router.push("/auth/employee/" + firebaseUser.value?.uid + '/profile')
-                } else if (splitEmail?.[1].includes("administration.bellewaerde.be")) {
-                    router.push("/auth/administration/" + firebaseUser.value?.uid + "/dashboard/overview")
+                } else if (splitEmail?.[1].includes("management.bellewaerde.be")) {
+                    router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
                 } else {
                     router.push("/")
                 }

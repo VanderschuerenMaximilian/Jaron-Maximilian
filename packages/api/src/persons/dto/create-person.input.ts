@@ -1,11 +1,12 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { JobType as IJobType } from 'src/interfaces/IJobType';
 
 @InputType()
 export class CreatePersonInput {
-  @Field({ nullable: true })
-  userId: string;
+  //niet nodig want fireguard heeft al uid in de token
+  // @Field(() => String)
+  // uid: string;
 
   @Field()
   personType: IPersonType;
@@ -24,6 +25,9 @@ export class CreatePersonInput {
 
   @Field({ nullable: true })
   workEmail: string;
+
+  @Field({ nullable: true })
+  locale: string;
 
   @Field({ nullable: true })
   phone: string;

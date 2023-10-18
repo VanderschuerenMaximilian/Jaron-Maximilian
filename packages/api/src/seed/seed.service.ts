@@ -9,6 +9,8 @@ import { PersonType } from 'src/interfaces/IPersonType'
 import * as alerts from './data/alerts.json'
 import { Alert } from 'src/alerts/entities/alert.entity'
 import { AlertsService } from 'src/alerts/alerts.service'
+import { JobType } from 'src/interfaces/IJobType'
+import { AlertState } from 'src/interfaces/IAlertState'
 // Shop
 import * as shops from './data/shops.json'
 import { Shop } from 'src/shops/entities/shop.entity'
@@ -38,10 +40,6 @@ import * as stocks from './data/stocks.json'
 import { Stock } from 'src/stocks/entities/stock.entity'
 import { StocksService } from 'src/stocks/stocks.service'
 
-
-
-
-
 @Injectable()
 export class SeedService {
   constructor(
@@ -67,6 +65,7 @@ export class SeedService {
       p.workEmail = person.workEmail
       p.personalEmail = person.personalEmail
       p.phone = person.phone
+      p.jobType = person.jobType as JobType
       p.personType = person.personType as PersonType
       p.createdAt = new Date()
       p.updatedAt = new Date()
@@ -87,6 +86,8 @@ export class SeedService {
       const a = new Alert()
       a.title = alert.title
       a.description = alert.description
+      a.state = alert.state as AlertState
+      a.createdBy = alert.createdBy
       a.createdAt = new Date()
       a.updatedAt = new Date()
 

@@ -35,11 +35,11 @@ import { StocksModule } from './stocks/stocks.module';
         useUnifiedTopology: true, // Disable deprecated warnings
     }),
     
-    SeedModule,
-
+    AlertsModule,
     AuthenticationModule,
-
     PersonsModule,
+
+    SeedModule,
 
     AlertsModule,
 

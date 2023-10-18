@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { JobType as IJobType } from 'src/interfaces/IJobType';
 
@@ -11,8 +11,8 @@ export class Person {
   id: string;
 
   @Column()
-  @Field({ nullable: true })
-  userId: string;
+  @Field()
+  uid: string;
 
   @Column()
   @Field()
@@ -35,6 +35,10 @@ export class Person {
   workEmail: string;
 
   @Column()
+  @Field()
+  locale: string;
+
+  @Column()
   @Field({ nullable: true })
   phone: string;
 
@@ -47,10 +51,14 @@ export class Person {
   jobType: IJobType;
 
   @Column()
+  @Field({ nullable: true })
+  assignedAlertId: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
   @Field()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   @Field()
   updatedAt: Date;
 }

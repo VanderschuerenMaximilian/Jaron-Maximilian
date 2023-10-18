@@ -32,15 +32,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="border-b-2 pb-2 text-start">
-                        <!-- TODO: afhankelijk van welk profiel plaats de juiste links -->
-                        <RouterLink to="/" class="menu-link" @click="clickProfile">acc links</RouterLink>
-                    </div>
+                    <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
+                        <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.MANAGER" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">My Tickets</RouterLink>
+                        </div>
+                    </section>
                     <section class="text-start">
                         <ul class="space-y-2">
                             <li><RouterLink to="/" class="menu-link" @click="clickProfile">Home</RouterLink></li>
                             <li><RouterLink to="/map" class="menu-link" @click="clickProfile">Map</RouterLink></li>
-                            <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Evets</RouterLink></li>
+                            <li><RouterLink to="/events" class="menu-link" @click="clickProfile">Events</RouterLink></li>
                             <li><RouterLink to="/contact" class="menu-link" @click="clickProfile">Contact</RouterLink></li>
                             <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">Opening Hours</RouterLink></li>
                             <li><RouterLink to="/tickets" class="menu-link" @click="clickProfile">Tickets</RouterLink></li>
@@ -73,9 +84,21 @@
                             </div>
                         </div>
                     </div>
-                    <ul v-if="firebaseUser" class="border-b-2 pb-4">
-                        <li><RouterLink to="/" class="menu-link" @click="clickProfile">acc links</RouterLink></li>
-                    </ul>
+                    <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
+                        <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.MANAGER" class="flex flex-col gap-2">
+                            <RouterLink to="'/auth/management/' + 'firebaseUser.value?.uid' + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
+                        </div>
+                        <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">My Tickets</RouterLink>
+                        </div>
+                    </section>
                     <ul class="flex flex-col gap-4 h-full border-b-2 pb-4">
                         <li><RouterLink to="/" class="menu-link" @click="clickProfile">Home</RouterLink></li>
                         <li><RouterLink to="/map" class="menu-link" @click="clickProfile">Map</RouterLink></li>
@@ -100,6 +123,8 @@
 <script lang="ts">
 import { RouterLink } from 'vue-router'
 import useFirebase from '@/composables/useFirebase'
+import useCustomPerson from '@/composables/useCustomPerson'
+import { PersonType } from '@/interfaces/IPersonType'
 import { useRouter } from 'vue-router'
 import { onBeforeMount, ref, watch } from 'vue'
 import { X, Menu } from 'lucide-vue-next';
@@ -112,6 +137,7 @@ export default {
     },
     setup() {
         const { firebaseUser, signOutUser } = useFirebase()
+        const { customPerson } = useCustomPerson()
         const profileLetter = ref(firebaseUser.value?.displayName?.charAt(0).toUpperCase())
         const router = useRouter()
         const clickedProfile = ref(false)
@@ -134,6 +160,9 @@ export default {
         return {
             firebaseUser,
             clickedProfile,
+            customPerson,
+            PersonType,
+
             profileLetter,
             clickProfile,
             handleLogout
