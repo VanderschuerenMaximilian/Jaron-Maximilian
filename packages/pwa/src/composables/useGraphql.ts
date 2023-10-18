@@ -17,7 +17,9 @@ const httpLink = createHttpLink({
 const authLink = setContext(async (_, { headers }) => ({
   headers: {
     ...headers,
-    authorization: `Bearer ${await firebaseUser.value?.getIdToken()}`,
+    authorization: `Bearer ${await firebaseUser.value?.getIdToken()
+      // .then((token) => console.log('{"Authorization": Bearer' + token + "}"))
+    }`,
   },
 }))
 
