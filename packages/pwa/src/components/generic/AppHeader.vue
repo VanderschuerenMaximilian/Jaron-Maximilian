@@ -20,8 +20,7 @@
             </ul>
             <div class="flex items-center">
                 <RouterLink to="/login" class="bg-primary-green hover:bg-secondary-green px-4 py-2 text-slate-100 rounded" v-if="!firebaseUser">Login</RouterLink>
-                <button class="w-8 h-8 rounded-full bg-primary-green" @click="clickProfile" v-else>
-                </button>
+                <button class="w-8 h-8 rounded-full bg-primary-green text-slate-100 items-center text-5" @click="clickProfile" v-else>{{ profileLetter }}</button>
                 <section v-if="clickedProfile" class="transition-opacity rounded fixed top-12 right-8 w-72 bg-secondary-green text-slate-100 px-4 pt-4 space-y-2">
                     <div class="border-b-2 pb-2">
                         <h4 class="h5 mb-2">Account</h4>
@@ -102,7 +101,7 @@
 import { RouterLink } from 'vue-router'
 import useFirebase from '@/composables/useFirebase'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import { X, Menu } from 'lucide-vue-next';
 
 export default {
@@ -113,8 +112,15 @@ export default {
     },
     setup() {
         const { firebaseUser, signOutUser } = useFirebase()
+        const profileLetter = ref(firebaseUser.value?.displayName?.charAt(0).toUpperCase())
         const router = useRouter()
         const clickedProfile = ref(false)
+
+        watch(firebaseUser, (newUser) => {
+            if (newUser) {
+                profileLetter.value = newUser.displayName?.charAt(0).toUpperCase()
+            }
+        })
 
         const clickProfile = () => {
             clickedProfile.value = !clickedProfile.value
@@ -128,7 +134,7 @@ export default {
         return {
             firebaseUser,
             clickedProfile,
-
+            profileLetter,
             clickProfile,
             handleLogout
         }
