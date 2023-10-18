@@ -188,5 +188,27 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllOrders()
     console.info('🪶 Removed orders')
   }
+
+  // ------------ Stock ------------
+  // npx nestjs-command seed:database:stocks
+  // npx nestjs-command seed:reset:stocks
+  @Command({
+    command: 'seed:database:stocks',
+    describe: 'Seed the database with stocks',
+  })
+  async seedStocks() {
+    console.info('🪺 Start seeding of stocks')
+    const stocks = await this.seedService.addStocksFromJson()
+    console.info(`🛒 ${stocks.length} Stocks are added`)
+  }
+  @Command({
+    command: 'seed:reset:stocks',
+    describe: 'Delete all data from the stocks table',
+  })
+  async deleteStocks() {
+    console.info('🔪 Start deleting stocks')
+    await this.seedService.deleteAllStocks()
+    console.info('🪶 Removed stocks')
+  }
 }
 

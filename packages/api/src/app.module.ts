@@ -15,6 +15,7 @@ import { ProductsModule } from './products/products.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { SoldProductsModule } from './sold-products/sold-products.module';
 import { OrdersModule } from './orders/orders.module';
+import { StocksModule } from './stocks/stocks.module';
 
 @Module({
   imports: [
@@ -53,6 +54,8 @@ import { OrdersModule } from './orders/orders.module';
     SoldProductsModule,
 
     OrdersModule,
+
+    StocksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

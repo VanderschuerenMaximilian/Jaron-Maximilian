@@ -33,6 +33,11 @@ import { SoldProductsService } from 'src/sold-products/sold-products.service'
 import * as orders from './data/orders.json'
 import { Order } from 'src/orders/entities/order.entity'
 import { OrdersService } from 'src/orders/orders.service'
+// Stock
+import * as stocks from './data/stocks.json'
+import { Stock } from 'src/stocks/entities/stock.entity'
+import { StocksService } from 'src/stocks/stocks.service'
+
 
 
 
@@ -48,6 +53,7 @@ export class SeedService {
     private ingredientsService: IngredientsService,
     private soldProductsService: SoldProductsService,
     private ordersService: OrdersService,
+    private stocksService: StocksService,
   ) {}
 
   // -------------------- Person --------------------
@@ -216,6 +222,28 @@ export class SeedService {
   }
   async deleteAllOrders(): Promise<void> {
     return this.ordersService.truncate()
+  }
+  // -------------------- Stock --------------------
+  async addStocksFromJson(): Promise<Stock[]> {
+    let theStocks: Stock[] = []
+    for (let stock of stocks) {
+      const s = new Stock()
+      s.facilityId = stock.facilityId
+      s.name = stock.name
+      s.price = stock.price
+      s.stock = stock.stock
+      s.stockReduction = stock.stockReduction
+      s.unit = stock.unit
+      s.minStock = stock.minStock
+      s.maxStock = stock.maxStock
+
+      theStocks.push(s)
+    }
+
+    return this.stocksService.saveAllStocks(theStocks)
+  }
+  async deleteAllStocks(): Promise<void> {
+    return this.stocksService.truncate()
   }
 
 
