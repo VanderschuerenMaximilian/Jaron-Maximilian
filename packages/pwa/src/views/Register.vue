@@ -142,7 +142,7 @@ export default {
                 dirties.value.LastName = true
             } else dirties.value.LastName = false
 
-            const forbiddenDomains = ['admin', 'administration', 'employee'];
+            const forbiddenDomains = ['admin.bellewaerde', 'management.bellewaerde', 'employee.bellewaerde'];
             const emailPattern = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.[a-zA-Z]{2,4}$/;
             const matches = newUser.value.email.match(emailPattern);
             if (!matches || forbiddenDomains.includes(matches[1].toLowerCase())) {
