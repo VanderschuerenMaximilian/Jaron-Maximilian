@@ -59,6 +59,7 @@ export class SeedService {
     let thePersons: Person[] = []
     for (let person of persons) {
       const p = new Person()
+      p.uid = person.uid? person.uid : null
       p.firstName = person.firstName
       p.lastName = person.lastName
       p.fullName = person.fullName
@@ -69,6 +70,7 @@ export class SeedService {
       p.personType = person.personType as PersonType
       p.createdAt = new Date()
       p.updatedAt = new Date()
+      p.locale = person.locale ? person.locale : 'en'
 
       thePersons.push(p)
     }
