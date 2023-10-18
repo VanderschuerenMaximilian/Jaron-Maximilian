@@ -1,15 +1,15 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ObjectId } from 'mongodb';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ObjectIdColumn,  } from 'typeorm';
 import { AlertState as IAlertState } from 'src/interfaces/IAlertState';
 import { Person } from 'src/persons/entities/person.entity';
 
 @Entity()
 @ObjectType()
 export class Alert {
-  @ObjectIdColumn()
   @Field(() => ID)
-  id: ObjectId;
+  @ObjectIdColumn()
+  id: string;
 
   @Column()
   @Field()
@@ -23,21 +23,23 @@ export class Alert {
   @Field()
   state: IAlertState;
 
-  @Field(() => [Person], { nullable: true })
+  @Field(() => [Person], { nullable: 'itemsAndList' })
+  @Column({ nullable: true })
   persons: Person[];
 
   @Column()
-  personId: ObjectId;
+  @Field({ nullable: true })
+  assignedPersonId: string;
 
   @Column()
   @Field()
   createdBy: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   @Field()
   createdAt: Date;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   @Field()
   updatedAt: Date;
 }

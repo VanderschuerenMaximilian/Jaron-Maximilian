@@ -3,14 +3,19 @@ import { CreateAlertInput } from './dto/create-alert.input';
 import { UpdateAlertInput } from './dto/update-alert.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alert } from './entities/alert.entity';
-import { ObjectId, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 import { AlertState } from 'src/interfaces/IAlertState';
+import { PersonsService } from 'src/persons/persons.service';
+import { UpdatePersonInput } from 'src/persons/dto/update-person.input';
+import { Person } from 'src/persons/entities/person.entity';
 
 @Injectable()
 export class AlertsService {
   constructor(
     @InjectRepository(Alert)
     private readonly alertRepository: Repository<Alert>,
+    private readonly personService: PersonsService,
   ) {}
 
 
@@ -29,32 +34,44 @@ export class AlertsService {
     }
   }
 
-  // update(id: string, updateAlertInput: UpdateAlertInput) {
-  //   try {
-  //     const a = new Alert()
-  //     a.id = id
-  //     a.title = updateAlertInput.title
-  //     a.description = updateAlertInput.description
-  //     a.state = updateAlertInput.state
-  //     a.createdBy = updateAlertInput.createdBy
-  //     a.updatedAt = new Date()
-  //     return this.alertRepository.save(a)
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
+  async update(alertId: string, updateAlertInput: UpdateAlertInput) {
+    try {
+      const toUpdateAlert = await this.findOne(alertId)
+      const a = new Alert();
+      a.id = toUpdateAlert.id
+      a.title = toUpdateAlert.title
+      a.description = toUpdateAlert.description
+      a.state = updateAlertInput.state as AlertState
+      a.createdBy = toUpdateAlert.createdBy
+      a.updatedAt = new Date()
+
+      return this.alertRepository.save(a)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async addPersonToAlert(alertId: string, person: Person): Promise<Alert> {
+    const alert = await this.findOne(alertId)
+
+    if (!alert){
+      throw new Error('Alert not found')
+    }
+
+    if (!alert.assignedPersonId) alert.persons.push(person)
+    else throw new Error('Alert already has an assigned person')
+
+    return this.alertRepository.save(alert)
+  }
 
   findAll(): Promise<Alert[]> {
     return this.alertRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} alert`;
+  findOne(id: string): Promise<Alert> {
+    // @ts-ignore
+    return this.alertRepository.findOneBy({ _id: new ObjectId(id) })
   }
-
-  // update(id: ObjectId, updateAlertInput: UpdateAlertInput) {
-  //   return `This action updates a #${id} alert`;
-  // }
 
   remove(id: number) {
     return `This action removes a #${id} alert`;

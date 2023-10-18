@@ -3,7 +3,7 @@ import { CreatePersonInput } from './dto/create-person.input';
 import { UpdatePersonInput } from './dto/update-person.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from './entities/person.entity';
-import { ObjectId, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PersonType } from 'src/interfaces/IPersonType';
 import { JobType } from 'src/interfaces/IJobType';
 
@@ -63,6 +63,15 @@ export class PersonsService {
       fullName: { $regex: searchString, $options: 'i' },
       personType: PersonType.EMPLOYEE,
     })
+  }
+
+  async assignAlertId(personId: string, alertId: string): Promise<void> {
+    try {
+      // const p = await this.findOneById(personId)
+      this.personRepository.update({ id: personId }, { assignedAlertId: alertId })
+    } catch (error) {
+      throw error
+    }
   }
 
   update(id: string, updatePersonInput: UpdatePersonInput): Promise<Person> {
