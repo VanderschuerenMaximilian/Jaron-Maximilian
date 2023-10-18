@@ -244,7 +244,7 @@ export default {
 
         onMounted(() => {
             if (router.currentRoute.value.params.id) {
-                name.value = router.currentRoute.value.params.id
+                name.value = router.currentRoute.value.params.shopId
             }
             if (scrollContainer.value) {
                 scrollContainer.value.addEventListener('scroll', handleScroll);
@@ -308,12 +308,6 @@ export default {
             });
         };
     }
-
-
-
-
-
-
 
         const { result, loading, error } = useQuery(GET_SHOP, {name: name});
         const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
