@@ -6,6 +6,7 @@ import { Person } from './entities/person.entity';
 import { Repository } from 'typeorm';
 import { PersonType } from 'src/interfaces/IPersonType';
 import { JobType } from 'src/interfaces/IJobType';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class PersonsService {

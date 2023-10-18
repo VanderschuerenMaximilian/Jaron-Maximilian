@@ -51,14 +51,16 @@ export class AlertsService {
     }
   }
 
-  async addPersonToAlert(alertId: string, person: Person): Promise<Alert> {
+  async addPersonToAlert(alertId: string, personId: string): Promise<Alert> {
     const alert = await this.findOne(alertId)
 
-    if (!alert){
-      throw new Error('Alert not found')
-    }
+    if (!alert) throw new Error('Alert not found')
 
-    if (!alert.assignedPersonId) alert.persons.push(person)
+    const personExists = await this.personService.findOneById(personId)
+
+    if (!personExists) throw new Error('Person not found')
+
+    if (!alert.assignedPersonId) alert.persons.push(personExists)
     else throw new Error('Alert already has an assigned person')
 
     return this.alertRepository.save(alert)
