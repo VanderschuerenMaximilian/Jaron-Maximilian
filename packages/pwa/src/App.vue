@@ -13,6 +13,7 @@ export default {
     
     // Makes everything accessible in the scope
     provide(DefaultApolloClient, apolloClient)
+
     return {}
   }
 }
