@@ -1,0 +1,10 @@
+[
+    {
+        "productId": "1",
+        "size": "Small",
+        "amount": 2,
+        "sauce": "Ketchup",
+        "removeables": ["Tomato", "Cheese"],
+        "extras": ["Pickles"]
+    }
+]

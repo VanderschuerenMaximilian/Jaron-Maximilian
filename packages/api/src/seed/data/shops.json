@@ -1,0 +1,30 @@
+[
+    {
+      "name": "Boomerang Snack",
+      "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-08/boomerang-snack_1.jpg?itok=Opke8azA",
+      "description": "Boomerang Snack is a snack bar located on Mexico Square. Here you can get a tasty snack, a soft drink or an ice cream.",
+      "products": ["Classic Burger", "Spicy BBQ Inferno Burger", "Refreshing Lemonade", "Iced Caramel Macchiato", "Berry Blast Smoothie"],
+      "zone": "Mexico Square",
+      "category": ["Burgers", "Drinks"],
+      "shopType": "Snack Bar"
+    },
+    {
+      "name": "Canadian Burger",
+      "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-09/canadian-burger.jpg?itok=cNHZh3kO",
+      "description": "Canadian Burger is a snack bar located on Canada Square. Here you can get a tasty snack, a soft drink or an ice cream.",
+      "products": ["Classic Burger"],
+      "zone": "Canada Square",
+      "category": ["Burgers", "Drinks"],
+      "shopType": "Snack Bar"
+    },
+    {
+      "name": "Frituur",
+      "image": "https://www.bellewaerde.be/sites/default/files/styles/1280x670/public/entertainment/2022-08/friterie.jpg?itok=_czIbAEl",
+      "description": "Frituur is a snack bar located on Kids Park. Here you can get a tasty snack, a soft drink.",
+      "products": ["Classic Burger"],
+      "zone": "Kids Park",
+      "category": ["Burgers", "Drinks"],
+      "shopType": "Snack Bar"
+    }
+  ]
+  
