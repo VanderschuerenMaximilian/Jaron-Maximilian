@@ -106,12 +106,10 @@ import ProductPopup from '../../../components/ProductPopup.vue';
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft, ChevronDown, ChevronUp, X, MinusCircle, PlusCircle } from 'lucide-vue-next';
-import { SoldProduct as ISoldProduct, type SoldProduct } from '../../../interfaces/ISoldProduct';
-import { Product as IProduct } from '../../../interfaces/IProduct';
+import type { SoldProduct as ISoldProduct, SoldProduct } from '../../../interfaces/ISoldProduct';
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { GET_SHOP, GET_SHOPS, CREATE_ORDER } from '../../../graphql/shop.query'
+import { GET_SHOP, CREATE_ORDER } from '../../../graphql/shop.query'
 import useFirebase from '@/composables/useFirebase';
-import createOrder from "../../../graphql/shop.query";
 
 const { firebaseUser } = useFirebase()
 
@@ -126,22 +124,8 @@ export default {
         PlusCircle
     },
     setup() {
-        // const products = ref([
-        //     { id: 1, name: 'Classic Cheeseburger', categoryId: "Burgers", description: 'Special burger', price: 7.99, image: 'https://pngimg.com/uploads/burger_sandwich/burger_sandwich_PNG4114.png' },
-        //     { id: 2, name: 'Veggie Burger', categoryId: "Burgers", description: 'Special burger', price: 10.99, image: 'https://i.pinimg.com/originals/66/71/ed/6671eddc555209aab720cc321a76846f.png' },
-        //     { id: 3, name: 'Spicy Chicken Burger', categoryId: "Burgers", description: 'Special burger', price: 6.99, image: 'https://png.pngtree.com/png-clipart/20230423/original/pngtree-chicken-burger-png-image_9090795.png' },
-        //     { id: 4, name: 'Barbecue Pulled Pork Burger', categoryId: "Burgers", description: 'Special burger', price: 5.99, image: 'https://static.vecteezy.com/system/resources/previews/025/228/111/non_2x/tasty-pulled-pork-burger-on-transparent-background-png.png' },
-        //     { id: 5, name: 'Hawaiian Teriyaki Burger', categoryId: "Burgers", description: 'Special burger', price: 8.99, image: 'https://www.butterburgers.com.my/wp-content/uploads/2021/03/Big-Kahuna-Hawaiian-Teriyaki-Burger-Shadow.png' },
-        //     { id: 6, name: 'Mediterranean Lamb Burger', categoryId: "Burgers", description: 'Special burger', price: 7.99, image: 'https://static.vecteezy.com/system/resources/previews/027/145/474/original/delicious-greek-lamb-burger-isolated-on-transparent-background-png.png' },
-        //     { id: 7, name: 'Classic Cola', categoryId: "Drinks", description: 'Refreshing cola drink', price: 2.49, image: 'https://assets.stickpng.com/thumbs/580b57fbd9996e24bc43c0de.png' },
-        //     { id: 8, name: 'Lemonade Splash', categoryId: "Drinks", description: 'Zesty lemonade', price: 3.99, image: 'https://pngimg.com/d/lemonade_PNG16937.png' },
-        //     { id: 9, name: 'Iced Tea Delight', categoryId: "Drinks", description: 'Cool and soothing iced tea', price: 2.99, image: 'https://freepngimg.com/save/35822-iced-tea-transparent/1200x1318' },
-        //     { id: 11, name: 'Mango Tango Smoothie', categoryId: "Drinks", description: 'Tropical mango smoothie', price: 5.99, image: 'https://ismoothiescafe.com/cdn/shop/products/Mango_tango_grande.png?v=1539789667' },
-        //     { id: 12, name: 'Strawberry Bliss Shake', categoryId: "Drinks", description: 'Creamy strawberry shake', price: 4.99, image: 'https://bahamabucks.com/wp-content/uploads/2021/02/Strawberry-Bliss-1000x1300-1.png' }
-        // ])
-        
         const soldProducts = ref<ISoldProduct[]>([]);
-        const selectedSizes = ref({});   
+        const selectedSizes :any = ref({});   
         const router = useRouter()
         const id : any = ref<string>('')
         const name : any = ref<string>('')
@@ -151,31 +135,25 @@ export default {
         const isAtTop = ref(true);
         const totalPrice = ref(0);
         let popupIsOpen = ref(false);
-
-        
         const openPopup = ( product :any ) => {
             popupIsOpen.value = true;
             SelectedProduct.value = product;
         };
-
         const closePopup = () => {
             popupIsOpen.value = false;
         };
-
         const handleMinusClick = (product : any) => {
             if (product.amount > 1) {
                 product.amount--;
             }
             calculateTotalPrice();
         };
-
         const handlePlusClick = (product : any) => {
             if (product.amount < 99) {
                 product.amount++;
             }
             calculateTotalPrice();
         };
-
         const calculateProductPrice = (product : any) => {
             let newPrice = product.price;
             const sizeModifier = product.sizeModifier;
@@ -187,7 +165,6 @@ export default {
             newPrice = parseFloat(newPrice.toFixed(2));
             return newPrice;
         };
-
         const HandleOrder = (product: any) => {
             const defaultSize = 'Medium'; // Set your desired default size here
             const sizePrice = selectedSizes.value[product.id] || defaultSize;
@@ -208,23 +185,18 @@ export default {
                 sauce: '',
                 toppings: [],
                 removables: [],
-                extraCost: 0
+                extraCost: 0,
             };
 
+            // @ts-ignore
             soldProducts.value.push(newSoldProduct);
             calculateTotalPrice();
         };
-
-        // TODO: Geef een default value aan de size
-        // TODO: Zorg dat een size een afzonderlijke price heeft, zorg dat die in de soldProduct komt zodat je makkelijk de totale prijs kan berekenen
-
-
         const handleProductSubmitted = (product : any) => {
             soldProducts.value.push(product);
             closePopup();
             calculateTotalPrice();
         };
-
         const handleDeleteSoldProduct = (product: ISoldProduct) => {
             const index = soldProducts.value.indexOf(product);
 
@@ -233,7 +205,6 @@ export default {
             }
             calculateTotalPrice();
         };
-
         const calculateTotalPrice = () => {
             let total = 0;
             soldProducts.value.forEach((soldProduct) => {
@@ -241,7 +212,6 @@ export default {
             });
             totalPrice.value = total;
         };
-
         onMounted(() => {
             if (router.currentRoute.value.params.id) {
                 name.value = router.currentRoute.value.params.shopId
@@ -249,45 +219,31 @@ export default {
             if (scrollContainer.value) {
                 scrollContainer.value.addEventListener('scroll', handleScroll);
             }
-
-            // watch(result, () => {
-            // if (result && result.shop && result.shop.products) {
-            //     console.log('Producten:', result.shop.products);
-            // }
         });
-
         onUnmounted(() => {
             if (scrollContainer.value) {
                 scrollContainer.value.removeEventListener('scroll', handleScroll);
             }
         });
-
         const handleScroll = () => {
             if (scrollContainer.value) {
                 isAtTop.value = scrollContainer.value.scrollTop === 0;
             }
         };
-
         const handleClick = (category : any) => {
             selectedCategory.value = category;
         }
-
         const handleSizeClick = (product: any, size:any) => {
-        // Bij het klikken op een grootte, wordt deze toegewezen aan het desbetreffende product
             selectedSizes.value = {
                 ...selectedSizes.value,
                 [product.id]: size
             };
         };
-
         const getSelectedClass = (productId: string | number, size: string) => {
-            // Controleer of de huidige grootte is geselecteerd voor het huidige product
-            // Als er geen geselecteerde grootte is, gebruik dan 'Medium' als standaard
             return selectedSizes.value[productId] === size || (!selectedSizes.value[productId] && size === 'Medium') 
                 ? 'bg-opacity-100' 
                 : 'bg-opacity-50';
         };
-
         const handleCheckout = () => {
         if (soldProducts.value.length > 0) {
             const order = {
@@ -307,24 +263,17 @@ export default {
                 console.log(error);
             });
         };
-    }
-
+        };
         const { result, loading, error } = useQuery(GET_SHOP, {name: name});
         const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
-
         watchEffect(() => {
-            // Wacht tot result.value is ingevuld voordat je het print
             if (result.value) {
             selectedCategory.value = result.value.shopByName.category[0].name
             }
         });
-        
-
         return {
             id,
             name,
-            // products,
-            // filteredProducts,
             scrollContainer,
             isAtTop, 
             handleClick,
@@ -351,8 +300,6 @@ export default {
             selectedSizes,
             getSelectedClass,
             handleCheckout
-            
-
         }
     },
 }
