@@ -1,12 +1,18 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
+import { Stock } from 'src/stocks/entities/stock.entity';
+import { StocksService } from 'src/stocks/stocks.service';
 
 @Resolver(() => Product)
 export class ProductsResolver {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly StocksService: StocksService,
+    ) {}
+
 
   @Mutation(() => Product)
   createProduct(@Args('createProductInput') createProductInput: CreateProductInput) {
@@ -39,4 +45,15 @@ export class ProductsResolver {
   removeProduct(@Args('id', { type: () => Int }) id: number) {
     return this.productsService.remove(id);
   }
+
+  @ResolveField(() => [Stock], { name: 'ingredients' })
+  async getStockForProduct(@Parent() product: Product): Promise<Stock[]> {
+    const ingredientName = product.ingredients;
+    const ingredients = await Promise.all(
+      ingredientName.map((ingredientName) => this.StocksService.findByName(ingredientName)),
+    );
+
+    return ingredients;
+  }
+
 }

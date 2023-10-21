@@ -1,5 +1,5 @@
 <template>
-    <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" @close="closePopup" @product-submitted="handleProductSubmitted"></ProductPopup>
+    <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" @close="closePopup(SelectedProduct)" @product-submitted="handleProductSubmitted"></ProductPopup>
     <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60"></div>
     <section  v-if="firebaseUser" v-for="shop of result" class="flex justify-between">
         <aside>
@@ -35,6 +35,10 @@
                     <div class="text-center">
                         <p class="font-bold text-5 max-w-65 overflow-hidden h-15 max-h-15">{{ product.name }}</p>
                         <p class="font-bold text-primary-green">{{ '€ ' + calculateProductPrice(product) }}</p>
+                        <div v-if="product.ingredients != ''" class="flex flex-col">
+                            <p>{{ getIngredientWithMinStock(product, soldProducts) + ' ' + 'Available' }}</p>
+                            <!-- <p >{{ soldProductIngredients }}</p> -->
+                        </div>
                         <div v-if="product.size.length > 1" class="flex justify-center gap-2">
                             <button v-for="size of product.size" @click="handleSizeClick(product, size)" 
                                 :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold', getSelectedClass(product.id, size)]">
@@ -42,8 +46,8 @@
                             </button>
                         </div>
                     </div>
-                    <button v-if="product.size.length > 1" @click="HandleOrder(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
-                    <button v-else @click="openPopup(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
+                        <button v-if="product.size.length > 1" @click="HandleOrder(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
+                        <button v-else @click="openPopup(product)" class="absolute bottom-4 bg-primary-green mx-auto px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
                     </div>
                 </div>
             </template>
@@ -132,6 +136,9 @@ export default {
         const scrollContainer = ref<HTMLElement | null>(null);
         let selectedCategory = ref();
         const SelectedProduct = ref({}) as any;
+        const productObject = ref({}) as any;
+        let soldProductIngredients: { [key: string]: number } = {};
+        let productIngredients: { [key: string]: number } = {};
         const isAtTop = ref(true);
         const totalPrice = ref(0);
         let popupIsOpen = ref(false);
@@ -142,6 +149,8 @@ export default {
         const closePopup = () => {
             popupIsOpen.value = false;
         };
+
+        
         const handleMinusClick = (product : any) => {
             if (product.amount > 1) {
                 product.amount--;
@@ -187,7 +196,6 @@ export default {
                 removables: [],
                 extraCost: 0,
             };
-
             // @ts-ignore
             soldProducts.value.push(newSoldProduct);
             calculateTotalPrice();
@@ -199,11 +207,12 @@ export default {
         };
         const handleDeleteSoldProduct = (product: ISoldProduct) => {
             const index = soldProducts.value.indexOf(product);
-
+            
             if (index !== -1) {
                 soldProducts.value.splice(index, 1);
             }
             calculateTotalPrice();
+            getIngredientWithMinStock(product, soldProducts.value)
         };
         const calculateTotalPrice = () => {
             let total = 0;
@@ -241,31 +250,67 @@ export default {
         };
         const getSelectedClass = (productId: string | number, size: string) => {
             return selectedSizes.value[productId] === size || (!selectedSizes.value[productId] && size === 'Medium') 
-                ? 'bg-opacity-100' 
-                : 'bg-opacity-50';
+            ? 'bg-opacity-100' 
+            : 'bg-opacity-50';
         };
         const handleCheckout = () => {
-        if (soldProducts.value.length > 0) {
-            const order = {
-                shopId: name.value,
-                totalPrice: totalPrice.value,
-                soldProducts: soldProducts.value.map((product) => ({
-                    productName: product.productName,
-                    price: (product.price + product.extraCost),
-                    size: product.size,
-                    sauce: product.sauce,
-                    amount: product.amount,
-                    removeables: product.removables,
-                    extras: product.toppings,
-                })),
+            if (soldProducts.value.length > 0) {
+                const order = {
+                    shopId: name.value,
+                    totalPrice: totalPrice.value,
+                    soldProducts: soldProducts.value.map((product) => ({
+                        productName: product.productName,
+                        price: (product.price + product.extraCost),
+                        size: product.size,
+                        sauce: product.sauce,
+                        amount: product.amount,
+                        removeables: product.removables,
+                        extras: product.toppings,
+                        })),
+                };
+                mutate({ orderInput: order }).catch((error) => {
+                    console.log(error);
+                });
             };
-            mutate({ orderInput: order }).catch((error) => {
-                console.log(error);
-            });
         };
+        const getIngredientWithMinStock = (product: any, soldProducts: any) => {
+            // TODO: Controle op zetten dat je geen prodct niet meer kan bestellen als de ingredienten op zijn en ook niet meer de amount kan verhogen
+            soldProductIngredients = {}
+            for (let soldProduct of soldProducts) {
+                for (let ingredient of soldProduct.ingredients) {
+                    soldProductIngredients[ingredient.name] = (soldProductIngredients[ingredient.name] || 0) + soldProduct.amount;
+                }
+            }
+            productIngredients = {}
+            for (let ingredient of product.ingredients) {
+                productIngredients[ingredient.name] = ingredient.stock
+            }
+            for (let ingredientName in productIngredients) {
+                let stock = productIngredients[ingredientName];
+                if (soldProductIngredients[ingredientName]) {
+                    stock -= soldProductIngredients[ingredientName];
+                }
+                productIngredients[ingredientName] = stock;
+            }
+            let minStock = Infinity;
+            for (let ingredientName in productIngredients) {
+                let stock = productIngredients[ingredientName];
+                
+                if (stock < minStock) {
+                    minStock = stock;
+                }
+            }
+            console.log(productIngredients)
+            console.log(minStock)
+            return minStock;
         };
+
         const { result, loading, error } = useQuery(GET_SHOP, {name: name});
         const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
+        const localIngredientStocks = ref<{ [productId: string]: number }>({});
+
+        
+
         watchEffect(() => {
             if (result.value) {
             selectedCategory.value = result.value.shopByName.category[0].name
@@ -299,7 +344,10 @@ export default {
             handleSizeClick,
             selectedSizes,
             getSelectedClass,
-            handleCheckout
+            handleCheckout,
+            getIngredientWithMinStock,
+            productObject,
+            soldProductIngredients,
         }
     },
 }

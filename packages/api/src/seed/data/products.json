@@ -24,7 +24,7 @@
       "sauce": ["Ketchup", "Mayonnaise", "Mustard", "bicky", "Joppie sauce"],
       "extra": ["Fried Egg", "Pickles","Crispy bacon"],
       "removable": ["Cheese", "Onion", "Tomato", "Lettuce"],
-      "ingredients": ["Beef Patty", "Cheese", "Onion", "Tomato", "Lettuce", "Bacon", "Avocado", "Cilantro", "Sesame Seed Bun"],
+      "ingredients": ["Beef Patty", "Tomato", "Bacon", "Avocado", "Sesame Seed Bun"],
       "shopType": "Snack Bar"
     },
     {
@@ -38,7 +38,7 @@
       "sauce": ["Ketchup", "Mayonnaise", "Mustard", "bicky", "Joppie sauce"],
       "extra": ["Fried Egg", "Pickles","Crispy bacon"],
       "removable": ["Cheese", "Onion", "Tomato", "Lettuce"],
-      "ingredients": ["Beef Patty", "Cheese", "Onion", "Tomato", "Lettuce", "Bacon", "Avocado", "Cilantro", "Sesame Seed Bun"],
+      "ingredients": ["Beef Patty", "Cheese", "Tomato", "Lettuce", "Bacon", "Avocado", "Sesame Seed Bun"],
       "shopType": "Snack Bar"
     },
     {
@@ -52,7 +52,7 @@
       "sauce": ["Ketchup", "Mayonnaise", "Mustard", "bicky", "Joppie sauce"],
       "extra": ["Fried Egg", "Pickles","Crispy bacon"],
       "removable": ["Cheese", "Onion", "Tomato", "Lettuce"],
-      "ingredients": ["Beef Patty", "Cheese", "Onion", "Tomato", "Lettuce", "Bacon", "Avocado", "Cilantro", "Sesame Seed Bun"],
+      "ingredients": ["Beef Patty", "Onion", "Tomato", "Lettuce", "Avocado", "Cilantro", "Sesame Seed Bun"],
       "shopType": "Snack Bar"
     },
     {

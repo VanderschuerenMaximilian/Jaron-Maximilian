@@ -13,7 +13,7 @@ export class ShopsResolver {
   constructor(
     private readonly shopsService: ShopsService,
     private readonly categoriesService: CategoriesService,
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
     
     ) {}
 
@@ -66,4 +66,5 @@ export class ShopsResolver {
 
     return products;
   }
+
 }

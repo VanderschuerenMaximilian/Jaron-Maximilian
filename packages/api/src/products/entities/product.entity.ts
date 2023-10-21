@@ -30,7 +30,7 @@ export class Product {
   sizeModifier: number
 
   @Column()
-  @Field(() => ID) // Assuming you have a Category entity with an ID
+  @Field(() => ID)
   category: string
 
   @Column('simple-array', { nullable: true })
