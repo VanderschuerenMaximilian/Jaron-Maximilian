@@ -50,9 +50,9 @@ export class Person {
   @Field({ nullable: true })
   jobType: IJobType;
 
+  @Field(() => [String], { nullable: 'itemsAndList' })
   @Column()
-  @Field({ nullable: true })
-  assignedAlertId: string;
+  assignedAlerts: string[];
 
   @CreateDateColumn({ type: 'timestamp' })
   @Field()

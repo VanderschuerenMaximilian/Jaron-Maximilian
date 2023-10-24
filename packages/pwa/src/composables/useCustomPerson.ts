@@ -19,8 +19,8 @@ const restoreCustomPerson = async () => {
         })
         onResult((result) => {
             if (result.data){
-                console.log(result)
                 customPerson.value = result.data?.personByUid
+                console.log('customPerson: ', customPerson.value)
                 resolve()
             }
         })

@@ -68,8 +68,13 @@ export class PersonsService {
 
   async assignAlertId(personId: string, alertId: string): Promise<void> {
     try {
-      // const p = await this.findOneById(personId)
-      this.personRepository.update({ id: personId }, { assignedAlertId: alertId })
+      const p = await this.findOneById(personId)
+      p.assignedAlerts = p.assignedAlerts? p.assignedAlerts : []
+
+      if (p.assignedAlerts.includes(alertId)) throw new Error('Alert already assigned to person')
+
+      p.assignedAlerts.push(alertId)
+      await this.personRepository.save(p)
     } catch (error) {
       throw error
     }
@@ -91,6 +96,17 @@ export class PersonsService {
       p.createdAt = updatePersonInput.createdAt? updatePersonInput.createdAt : null
       p.updatedAt = new Date()
       return this.personRepository.save(p)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async removeAssignedAlert(personId: string, alertId: string): Promise<void> {
+    try {
+      const p = await this.findOneById(personId)
+
+      p.assignedAlerts = p.assignedAlerts.filter((id) => id !== alertId.toString())
+      await this.personRepository.save(p)
     } catch (error) {
       throw error
     }

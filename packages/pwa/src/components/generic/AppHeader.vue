@@ -41,6 +41,7 @@
                             <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">Profile</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
@@ -93,6 +94,7 @@
                             <RouterLink to="'/auth/management/' + 'firebaseUser.value?.uid' + '/dashboard/overview'" class="menu-link" @click="clickProfile">Dashboard</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">Profile</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">Shops</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">

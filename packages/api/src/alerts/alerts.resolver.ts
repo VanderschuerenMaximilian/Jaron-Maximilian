@@ -38,11 +38,11 @@ export class AlertsResolver {
 
   // @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)
-  updateAlert(@Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
-    @Args('id', { type: () => String }) id: string, 
+  updateAlert(
+    @Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
   ) {
     try {
-      return this.alertsService.update(id, updateAlertInput);
+      return this.alertsService.update(updateAlertInput);
     }
     catch (error) {
       console.log(error)

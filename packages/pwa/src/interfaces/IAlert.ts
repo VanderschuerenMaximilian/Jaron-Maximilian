@@ -1,3 +1,5 @@
+import type { Person } from './IPersons';
+
 export interface Alert {
     id?: string;
     title: string;

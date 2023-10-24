@@ -36,6 +36,7 @@ export const FIND_PERSON_BY_ID = gql`
 export const FIND_PERSON_BY_UID = gql`
     query ($uid: String!) {
         personByUid(uid: $uid) {
+            id
             uid
             firstName
             lastName
@@ -46,6 +47,7 @@ export const FIND_PERSON_BY_UID = gql`
             workEmail
             locale
             phone
+            assignedAlerts
         }
     }
 `;
