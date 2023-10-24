@@ -56,9 +56,9 @@ export default {
                     assignedPersonId: customPerson.value?.id,
                 },
             })
-            .then(() => {
-                isVisible.value = false;
-            });
+            // .then(() => {
+            //     isVisible.value = false;
+            // });
         }
 
         const completeAlert = async () => {
@@ -68,9 +68,9 @@ export default {
                     state: IAlertState.RESOLVED,
                 },
             })
-            .then(() => {
-                isVisible.value = false;
-            });
+            // .then(() => {
+            //     isVisible.value = false;
+            // });
         }
 
         return {

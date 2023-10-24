@@ -36,7 +36,8 @@ export class AlertsService {
 
   async update(updateAlertInput: UpdateAlertInput) {
     try {
-      const toUpdateAlert = await this.findOne(updateAlertInput.id)
+      const toUpdateAlert = await this.findOneById(updateAlertInput.id)
+      if (!toUpdateAlert) throw new Error('Alert not found')
       const a = new Alert();
       a.id = toUpdateAlert.id
       a.title = toUpdateAlert.title
@@ -56,8 +57,8 @@ export class AlertsService {
   }
 
   async addPersonToAlert(alertId: string, personId: string): Promise<Alert> {
-    const alert = await this.findOne(alertId)
-    
+    const alert = await this.findOneById(alertId)
+
     if (!alert) throw new Error('Alert not found')
 
     const personExists = await this.personService.findOneById(personId)
@@ -78,9 +79,12 @@ export class AlertsService {
     return this.alertRepository.find();
   }
 
-  findOne(id: string): Promise<Alert> {
-    // @ts-ignore
-    return this.alertRepository.findOneBy({ _id: new ObjectId(id) })
+  findOneById(id: string): Promise<Alert> {
+
+      if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+      // @ts-ignore
+      return this.alertRepository.findOne({ _id: new ObjectId(id) })
   }
 
   remove(id: number) {

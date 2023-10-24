@@ -33,7 +33,7 @@ export class AlertsResolver {
 
   @Query(() => Alert, { name: 'alert' })
   findOne(@Args('id', { type: () => String }) id: string) {
-    return this.alertsService.findOne(id);
+    return this.alertsService.findOneById(id);
   }
 
   // @UseGuards(FirebaseGuard)
