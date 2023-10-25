@@ -1,0 +1,12 @@
+{
+  "name": "i18n-export",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sheets.ts",
+  "scripts": {
+    "export": "npx tsx src/sheets.ts path:pwa/src/locales"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

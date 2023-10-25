@@ -6,17 +6,26 @@ import process from 'process'
 import { authenticate } from '@google-cloud/local-auth'
 import { google } from 'googleapis'
 
-import { SUPPORTED_LOCALES } from '../bootstrap/i18n'
+import { SUPPORTED_LOCALES } from '../../pwa/src/bootstrap/i18n'
+
+const pathArgument = process.argv[2]
+let localePath = ''
+
+if (!pathArgument) {
+  throw new Error('No path argument provided. Please provide it: "packages/pwa/src/locales/"')
+} else {
+  localePath = pathArgument.split(':')[1]
+}
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = path.join(process.cwd(), '/src/utils/token.json')
+const TOKEN_PATH = path.join(process.cwd(), '/src/token.json')
 const CREDENTIALS_PATH = path.join(
   process.cwd(),
-  '/src/utils/translations.json',
+  '/src/credentials.json',
 )
 
 /**
@@ -72,14 +81,14 @@ async function authorize() {
   return client
 }
 
-//spreadsheetID: 1L2e-63ReMDJp9mDIW0wiq_fIzvJVX5dZx4YQuXuewa8
+//spreadsheetID: 1VZrU8CFCKU3hkmOawwKrfTNsXOO1fYI2k9duCVGXmis
 
 async function generateTranslations(auth) {
   const sheets = google.sheets({ version: 'v4', auth })
 
   for (const locale in SUPPORTED_LOCALES) {
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: '1XtHJVf7jJGY-im3M6Au8gW-A_J32BW5pAsEo8VLucpg',
+      spreadsheetId: '1VZrU8CFCKU3hkmOawwKrfTNsXOO1fYI2k9duCVGXmis',
       range: locale,
     })
     const rows = res.data.values
@@ -95,20 +104,11 @@ async function generateTranslations(auth) {
       translations[locale][row[0]] = row[2]
     }
 
-    // Create enum with all the keys of translations
-    // const enumName = `${locale}Keys`
-    // const enumContent = `export enum ${enumName} {\n${Object.keys(
-    //   translations[locale],
-    // )
-    //   .map(key => `  ${key} = '${key}'`)
-    //   .join(',\n')}\n}`
-    // .d.ts
-
     await fs.writeFile(
-      path.join(process.cwd(), `/src/locales/${locale}.json`),
+      path.join(process.cwd(), `../${localePath}/${locale}.json`),
       JSON.stringify(translations),
     )
   }
 }
 
-authorize().catch(console.error)
+authorize().then(generateTranslations).catch(console.error)

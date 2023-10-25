@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Project Advanced Full Stack Developement",
   "scripts": {
-    "dev": "todo"
+    "dev": "todo",
+    "export:translations": "npm run export -w i18n-export"
   },
   "keywords": [],
   "author": "Jaron Maximilian",
