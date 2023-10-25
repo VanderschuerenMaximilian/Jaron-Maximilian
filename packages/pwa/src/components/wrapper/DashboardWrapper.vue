@@ -1,12 +1,19 @@
 <template>
     <section class="w-full flex bg-primary-green min-h-screen">
         <aside class="w-[400px] flex flex-col items-center">
-            <div class="h-[100px] flex justify-center items-center">
+            <div class="h-[100px] flex flex-col justify-center items-center">
                 <RouterLink to="/" class="overflow-hidden">
                     <picture>
                         <img src="../../assets/logo.jpg" alt="Logo" loading="lazy" class="w-52">
                     </picture>
                 </RouterLink>
+                <!-- TODO: Add text in the sheets -->
+                <!-- <select class="h-6 bg-slate-100" name="language" id="language"
+                @change="setLanguage" :value="locale">
+                    <option v-for="(value, key) in SUPPORTED_LOCALES" :value="key">
+                        {{ key }}
+                    </option>
+                </select> -->
             </div>
             <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
                 <RouterLink to="overview" class="w-full dashboard-link">
@@ -82,7 +89,10 @@
 import { RouterLink, useRoute } from 'vue-router'
 import { Box } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import useFirebase from '@/composables/useFirebase'; 
+import useFirebase from '@/composables/useFirebase';
+import useLanguage from '@/composables/useLanguage';
+import { useI18n } from 'vue-i18n';
+import { SUPPORTED_LOCALES } from '@/bootstrap/i18n';
 
 export default {
     components: {
@@ -90,7 +100,9 @@ export default {
         Box
     },
     setup() {
-        const{ signOutUser } = useFirebase()
+        const { signOutUser } = useFirebase()
+        const { setLocale } = useLanguage()
+        const { locale } = useI18n()
 
         const router = useRouter()
 
@@ -98,8 +110,17 @@ export default {
             signOutUser(router)
         }
 
+        const setLanguage = (event: any) => {
+            const target = event.target as HTMLSelectElement
+            setLocale(target.value)
+        }
+
         return {
-            handleSignOut
+            locale,
+            SUPPORTED_LOCALES,
+
+            handleSignOut,
+            setLanguage,
         }
     }
 }

@@ -13,7 +13,7 @@ import { i18n } from './bootstrap/i18n'
 
 const app = createApp(App)
 const { restoreUser, firebaseUser } = useFirebase()
-const { restoreCustomPerson } = useCustomPerson()
+const { restoreCustomPerson, customPerson } = useCustomPerson()
 const { restoreCustomAssignedAlerts } = useCustomAlerts()
 
 app.use(i18n)
@@ -21,7 +21,7 @@ app.use(i18n)
     await restoreUser()
     if(firebaseUser.value) {
         await restoreCustomPerson()
-        await restoreCustomAssignedAlerts()
+        if (customPerson.value?.assignedAlerts && customPerson.value?.assignedAlerts?.length > 0) await restoreCustomAssignedAlerts()
     }
     app.use(router)
     app.mount('#app')
