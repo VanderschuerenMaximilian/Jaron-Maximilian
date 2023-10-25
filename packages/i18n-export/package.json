@@ -6,6 +6,9 @@
   "scripts": {
     "export": "npx tsx src/sheets.ts path:pwa/src/locales"
   },
+  "dependencies": {
+    "pwa": "file:../pwa"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"

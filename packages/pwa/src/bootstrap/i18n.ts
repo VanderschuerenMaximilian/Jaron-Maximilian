@@ -1,5 +1,6 @@
 import { type I18nOptions, createI18n } from 'vue-i18n'
 
+// TODO: implement fr locale
 export const SUPPORTED_LOCALES: Record<string, string> = {
   en: 'English',
   nl: 'Nederlands',

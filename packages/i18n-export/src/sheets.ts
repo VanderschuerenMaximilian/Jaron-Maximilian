@@ -6,7 +6,7 @@ import process from 'process'
 import { authenticate } from '@google-cloud/local-auth'
 import { google } from 'googleapis'
 
-import { SUPPORTED_LOCALES } from '../../pwa/src/bootstrap/i18n'
+import { SUPPORTED_LOCALES } from 'pwa/src/bootstrap/i18n'
 
 const pathArgument = process.argv[2]
 let localePath = ''

@@ -28,6 +28,8 @@
     "htmlWhitespaceSensitivity": "css",
     "endOfLine": "lf"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^7.4.1"
   }
 }
