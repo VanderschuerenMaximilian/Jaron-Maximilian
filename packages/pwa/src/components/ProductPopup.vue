@@ -23,13 +23,14 @@
                                 </select>
                                 <h6 v-if="selectedProduct.category === 'Burgers'" class="h6 mt-4">Sauce:</h6>
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
-                                    <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce">{{ sauce }}</option>
+                                    <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce.name" :class="{ 'text-red-900 bg-red-100	': sauce.stock <= 0, 'bg-white': sauce.stock > 0 }">{{ sauce.name }}</option>
                                 </select>
+                                
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
-                                <div class="flex flex-col">
-                                    <label v-for="extra in selectedProduct.extra" :key="extra" class="flex items-center mt-1 cursor-pointer select-none">
-                                        <input type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
-                                        {{ extra }}
+                                <div  v-for="extra in selectedProduct.extra" class="flex flex-col">
+                                    <label v-if="extra.stock >= extra.stockReduction" :key="extra.name" class="flex items-center mt-1 cursor-pointer select-none">
+                                        <input v-if="extra.stock >= extra.stockReduction" type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
+                                        {{ extra.name }}
                                     </label>
                                 </div>
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Removables:</h6>
@@ -62,7 +63,7 @@ export default {
     },
     setup() {
         const soldProducts = ref([
-            { name: '', productId: "", image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: [''], removables: [''], extraCost: 0, ingredients: [''] }
+            { name: '', productId: "", image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: {}, removables: [''], extraCost: 0, ingredients: [''] }
         ]);
 
         return {
@@ -93,8 +94,12 @@ export default {
             this.$emit('close');
         },
         handleData() {
-            const soldProduct = {
-                productName: this.selectedProduct.name,
+            if (this.selectedProduct.sauce.find((item: { name: any; }) => item.name === this.selectedSauce)?.stock <= 0) {
+                alert("This sauce is out of stock, please choose another one!");
+            }
+            else {
+                const soldProduct = {
+                    productName: this.selectedProduct.name,
                 name: this.selectedProduct.name,
                 image: this.selectedProduct.image,
                 price: this.selectedProduct.price,
@@ -107,9 +112,10 @@ export default {
                 extraCost: this.selectedToppings.length * 0.5,
                 ingredients: this.selectedProduct.ingredients,
             };
-
+            
             this.$emit('product-submitted', soldProduct);
             this.clearForm();
+        }
         },
         clearForm() {
             this.selectedSize = "Medium";

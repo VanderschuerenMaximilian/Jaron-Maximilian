@@ -56,4 +56,24 @@ export class ProductsResolver {
     return ingredients;
   }
 
+  @ResolveField(() => [Stock], { name: 'sauce' })
+  async getStockForProductSauce(@Parent() product: Product): Promise<Stock[]> {
+    const sauceName = product.sauce;
+    const sauces = await Promise.all(
+      sauceName.map((sauceName) => this.StocksService.findByName(sauceName)),
+    );
+    
+    return sauces;
+  }
+
+  @ResolveField(() => [Stock], { name: 'extra' })
+  async getStockForProductExtra(@Parent() product: Product): Promise<Stock[]> {
+    const extraName = product.extra;
+    const extras = await Promise.all(
+      extraName.map((extraName) => this.StocksService.findByName(extraName)),
+    );
+
+    return extras;
+  }
+
 }

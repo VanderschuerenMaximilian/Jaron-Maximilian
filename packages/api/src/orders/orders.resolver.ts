@@ -4,36 +4,90 @@ import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { UpdateOrderInput } from './dto/update-order.input';
 import { ProductsService } from 'src/products/products.service';
-import { IngredientsService } from 'src/ingredients/ingredients.service';
+import { StocksService } from 'src/stocks/stocks.service';
+import { SoldProduct } from 'src/sold-products/entities/sold-product.entity';
 
 @Resolver(() => Order)
 export class OrdersResolver {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly productsService: ProductsService,
-    private readonly ingredientService: IngredientsService,
+    private readonly stocksService: StocksService,
     ) {}
 
-  @Mutation(() => Order)
-  async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {
-      const order = await this.ordersService.create(createOrderInput);
-      // Update de voorraad na het maken van de bestelling
-      for (const product of createOrderInput.soldProducts) {
-          await this.productsService.findByName(product.productName).then(async (p) => {
-            for (const ingredient of p.ingredients) {
-              await this.ingredientService.findByName(ingredient)
-                .then(async (i) => {
-                  i.stock = i.stock - i.stockReduction;
-                  // TODO: ❗ wachten met drank eerst burgers uitwerken. Als het een drankje is moet hij krijgen wat de grote is en dan de stock verminderen adhv die grote 
-                  // TODO: Je moet er ook voor zorgen dat het niet onder 0 kan gaan door controle te doen of er nog genoeg ingredienten zijn voor die hamburger (in de frontend)
-                  // TODO: zorg ook dat hij de extras er af doet en de removables niet
-                  await this.ingredientService.updateStockByName(i.name, i.stock);
-                });
+    @Mutation(() => Order)
+    async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {   
+        for (const product of createOrderInput.soldProducts) {
+          // TODO: Nu kan het zijn dat als je een order doet dat er een product af in de stock maar dat er geen order gamaakt word en 
+          // dat komt door dat de hij ingredient per ingredient overloopt denkik en dus een ingredient update maar dan bij het volgende pas de error geeft
+          try {
+                const p = await this.productsService.findByName(product.productName);
+    
+                for (const ingredient of p.ingredients) {
+                    const stockItem = await this.stocksService.findByName(ingredient);
+                    if (product.size == "Small") {
+                      if (stockItem.stock >= ((stockItem.stockReduction - 50) * product.amount)) {
+                        stockItem.stock = stockItem.stock - ((stockItem.stockReduction - 50) * product.amount);
+                        await this.stocksService.updateStockByName(stockItem.name, stockItem.stock)
+                      } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
+                      }
+                      if (product.size == "Large") {
+                        if (stockItem.stock >= ((stockItem.stockReduction + 50) * product.amount)) {
+                          stockItem.stock = stockItem.stock - ((stockItem.stockReduction + 50) * product.amount);
+                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock)
+                        } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
+                      }
+                      if (product.size == "Medium") {
+                        if (stockItem.stock >= ((stockItem.stockReduction) * product.amount)) {
+                          stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
+                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+                      } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
+                      }
+                    }
+                if (product.extras.length >= 1) {
+                  for (const extra of product.extras) {
+                      const stockItem = await this.stocksService.findByName(extra);
+                      if (stockItem.stock >= (stockItem.stockReduction * product.amount)) {
+                          stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
+                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+                      } else {
+                          throw new Error(`Onvoldoende voorraad voor extra: ${extra}`);
+                      }
+                  }
+                }
+                if (product.removeables.length >= 1) {
+                  for (const removeable of product.removeables) {
+                      const stockItem = await this.stocksService.findByName(removeable);
+                      if (stockItem.stock >= 1) {
+                          stockItem.stock = stockItem.stock + (stockItem.stockReduction * product.amount);
+                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+                      } else {
+                          throw new Error(`Onvoldoende voorraad voor verwijderbaar item: ${removeable}`);
+                      }
+                  }
+                }
+                if (product.sauce != '') {
+                  const sauce = product.sauce
+                  const stockItem = await this.stocksService.findByName(sauce);
+                  if (stockItem.stock >= (stockItem.stockReduction * product.amount)) {
+                      stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
+                      await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+                  } else {
+                      throw new Error(`Onvoldoende voorraad voor extra: ${sauce}`);
+                  }
+                }                
+            } catch (error) {
+                console.error(`Fout bij verwerken product ${product.productName}: ${error.message}`);
+                throw new Error(`Fout bij verwerken product ${product.productName}`);
             }
-        })
-      }
-      return order;
-  }
+        }
+
+        const order = await this.ordersService.create(createOrderInput);
+
+    
+        return order;
+    }
+    
 
   @Query(() => [Order], { name: 'orders' })
   findAll() {
