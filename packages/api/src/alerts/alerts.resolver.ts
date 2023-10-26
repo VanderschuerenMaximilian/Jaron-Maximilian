@@ -33,16 +33,16 @@ export class AlertsResolver {
 
   @Query(() => Alert, { name: 'alert' })
   findOne(@Args('id', { type: () => String }) id: string) {
-    return this.alertsService.findOne(id);
+    return this.alertsService.findOneById(id);
   }
 
   // @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)
-  updateAlert(@Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
-    @Args('id', { type: () => String }) id: string, 
+  updateAlert(
+    @Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
   ) {
     try {
-      return this.alertsService.update(id, updateAlertInput);
+      return this.alertsService.update(updateAlertInput);
     }
     catch (error) {
       console.log(error)
@@ -50,18 +50,18 @@ export class AlertsResolver {
     }
   }
 
-  // @Mutation(() => Alert)
-  // addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
-  //   @Args('person', { type: () => String }) person: Person, 
-  // ) {
-  //   try {
-  //     return this.alertsService.addPersonToAlert(alertId, person);
-  //   }
-  //   catch (error) {
-  //     console.log(error)
-  //     return error
-  //   }
-  // }
+  @Mutation(() => Alert)
+  addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
+    @Args('personId', { type: () => String }) personId: string, 
+  ) {
+    try {
+      return this.alertsService.addPersonToAlert(alertId, personId);
+    }
+    catch (error) {
+      console.log(error)
+      return error
+    }
+  }
 
   @Mutation(() => Alert)
   removeAlert(@Args('id', { type: () => Int }) id: number) {

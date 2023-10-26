@@ -34,16 +34,21 @@ export class AlertsService {
     }
   }
 
-  async update(alertId: string, updateAlertInput: UpdateAlertInput) {
+  async update(updateAlertInput: UpdateAlertInput) {
     try {
-      const toUpdateAlert = await this.findOne(alertId)
+      const toUpdateAlert = await this.findOneById(updateAlertInput.id)
+      if (!toUpdateAlert) throw new Error('Alert not found')
       const a = new Alert();
       a.id = toUpdateAlert.id
       a.title = toUpdateAlert.title
       a.description = toUpdateAlert.description
       a.state = updateAlertInput.state as AlertState
+      a.assignedPersonId = updateAlertInput.assignedPersonId? updateAlertInput.assignedPersonId : toUpdateAlert.assignedPersonId
+      a.persons = null
       a.createdBy = toUpdateAlert.createdBy
       a.updatedAt = new Date()
+
+      if (updateAlertInput.state === AlertState.RESOLVED) await this.personService.removeAssignedAlert(a.assignedPersonId, a.id)
 
       return this.alertRepository.save(a)
     } catch (error) {
@@ -51,14 +56,20 @@ export class AlertsService {
     }
   }
 
-  async addPersonToAlert(alertId: string, person: Person): Promise<Alert> {
-    const alert = await this.findOne(alertId)
+  async addPersonToAlert(alertId: string, personId: string): Promise<Alert> {
+    const alert = await this.findOneById(alertId)
 
-    if (!alert){
-      throw new Error('Alert not found')
+    if (!alert) throw new Error('Alert not found')
+
+    const personExists = await this.personService.findOneById(personId)
+
+    if (!personExists) throw new Error('Person not found')
+
+    if (!alert.assignedPersonId) {
+      alert.persons = []
+      alert.persons.push(personExists)
+      this.personService.assignAlertId(personId, alertId)
     }
-
-    if (!alert.assignedPersonId) alert.persons.push(person)
     else throw new Error('Alert already has an assigned person')
 
     return this.alertRepository.save(alert)
@@ -68,9 +79,12 @@ export class AlertsService {
     return this.alertRepository.find();
   }
 
-  findOne(id: string): Promise<Alert> {
-    // @ts-ignore
-    return this.alertRepository.findOneBy({ _id: new ObjectId(id) })
+  findOneById(id: string): Promise<Alert> {
+
+      if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+      // @ts-ignore
+      return this.alertRepository.findOne({ _id: new ObjectId(id) })
   }
 
   remove(id: number) {

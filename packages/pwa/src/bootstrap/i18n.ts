@@ -1,9 +1,10 @@
 import { type I18nOptions, createI18n } from 'vue-i18n'
 
+// TODO: implement fr locale
 export const SUPPORTED_LOCALES: Record<string, string> = {
   en: 'English',
   nl: 'Nederlands',
-  fr: 'Français',
+  // fr: 'Français',
 }
 
 export const DEFAULT_LOCALE = 'en'
@@ -19,9 +20,9 @@ export const i18nOptions: I18nOptions = {
     nl: {
       hello: 'hallo wereld',
     },
-    fr: {
-      hello: 'bonjour monde',
-    },
+    // fr: {
+    //   hello: 'bonjour monde',
+    // },
   },
 }
 

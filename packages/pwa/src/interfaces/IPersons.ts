@@ -17,4 +17,5 @@ export interface Person {
     jobType: string,
     createdAt: string,
     updatedAt: string,
+    assignedAlerts: string[]
 }
