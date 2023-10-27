@@ -1,7 +1,7 @@
 <template>
     <div v-if="!loading">
         <div v-if="!orderCompleted">
-            <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" @close="closePopup(SelectedProduct)" @product-submitted="handleProductSubmitted"></ProductPopup>
+            <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" :listExtras="listExtras"  @close="closePopup()" @product-submitted="handleProductSubmitted"></ProductPopup>
             <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60"></div>
             <section  v-if="firebaseUser" v-for="shop of result" class="flex justify-between">
                 <aside>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </aside>
-
+                
                 <main class="mt-25 flex flex-wrap justify-center max-h-85vh overflow-auto max-w-70vw gap-5"> 
                     <template v-for="product in shop.products">
                         <div v-if="product.category === selectedCategory" :key="product.id">
@@ -106,11 +106,11 @@
                                 <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
                                     <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
                                 </div>
                                 <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
                                     <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
                                 </div>
                             </div>
@@ -213,6 +213,8 @@ export default {
         const isAtTop = ref(true);
         const totalPrice = ref(0);
         let popupIsOpen = ref(false);
+        const listExtras = ref({})
+        const isStockAvailable = ref(true)
         const orderCompleted = ref(false)
         const openPopup = ( product :any ) => {
             popupIsOpen.value = true;
@@ -227,18 +229,70 @@ export default {
             if (product.amount > 1) {
                 product.amount--;
             }
+            isStockAvailable.value = true
             calculateTotalPrice();
         };
         const handlePlusClick = (soldProduct : any) => {
-            console.log(soldProduct)
+            // Dit doet wel wat het moet doen, maar als er een topping 0 is dan lukt het ook niet meet omdat het de hele list checkt, eingelijk zou het de 
+            // toppings moeten checken van het product dat je aan het toevoegen of verhogen bent
+            const listToppingsStocks = GetListExtras(soldProducts.value)
+            let kleinsteWaarde;
 
-            if (soldProduct.amount < 99) {
-                soldProduct.amount++;
+            if (listToppingsStocks.length > 0) {
+                kleinsteWaarde = Math.min(...listToppingsStocks.map(ingredient => ingredient.stock));
+                // console.log(kleinsteWaarde)
+                // console.log(soldProduct.amount)
+                console.log(listToppingsStocks)
+                if (1 > kleinsteWaarde) {
+                    isStockAvailable.value = false
+                }
+                if (1 == kleinsteWaarde) {
+                    soldProduct.amount++;
+                    isStockAvailable.value = false
+                }
+                else {
+                    soldProduct.amount++;
+                    isStockAvailable.value = true
+                }
+            } else {
+                kleinsteWaarde = 99            
             }
-            // TODO: Kijken of er nog genoeg extra's zijn om + te doen
-            calculateTotalPrice();
+            // TODO: Moet kijkn als het een drank is want dan werkt het anders, dus nu zal ik de amount niet kunnen verhogen
+            // TODO: Moet het van alle dranken bij houden, moest je een andere hamburger kiezen dan moet het nog steeds kloppen
 
+            // TODO: Check if soldProduct.amount is smaller than the smallest from the listToppingsStocks (moet nog 1 er af kunnen)
+            // if (soldProduct.amount > kleinsteWaarde + 1) {
+                
+            // }
+            calculateTotalPrice();
         };
+
+        const GetListExtras = (soldProducts: any) => {
+            let listToppingsStocks = [];
+
+            for (let soldProduct of soldProducts) {
+                for (let topping of soldProduct.toppings) {
+                    // Zoek of het ingrediënt al in de lijst zit
+                    const existingIngredientIndex = listToppingsStocks.findIndex(item => item.ingredient === topping.name);
+
+                    const reduction = 1 * soldProduct.amount;
+                    if (existingIngredientIndex !== -1) {
+                        // Als het ingrediënt al in de lijst zit, verlaag de voorraad met de stockReduction vermenigvuldigd met de amount van het verkochte product
+                        listToppingsStocks[existingIngredientIndex].stock -= reduction;
+                    } else {
+                        // Als het ingrediënt niet in de lijst zit, voeg het toe met de voorraad gelijk aan de stock verminderd met de stockReduction vermenigvuldigd met de amount van het verkochte product
+                        listToppingsStocks.push({ ingredient: topping.name, stock: topping.stock - reduction });
+                    }
+                }
+            }
+            listExtras.value = listToppingsStocks
+            return listToppingsStocks;
+        };
+
+
+
+
+
         const calculateProductPrice = (product : any) => {
             let newPrice = product.price;
             const sizeModifier = product.sizeModifier;
@@ -358,6 +412,7 @@ export default {
             }
         };
         const getIngredientWithMinStock = (product: any, soldProducts: any) => {
+            GetListExtras(soldProducts)
             soldProductIngredients = {}
             let size = selectedSizes.value[product.id]
             for (let soldProduct of soldProducts) {
@@ -448,7 +503,9 @@ export default {
             getIngredientWithMinStock,
             productObject,
             soldProductIngredients,
-            orderCompleted
+            orderCompleted,
+            listExtras,
+            isStockAvailable
         }
     },
 }
