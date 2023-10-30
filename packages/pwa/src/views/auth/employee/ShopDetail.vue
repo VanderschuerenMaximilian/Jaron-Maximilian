@@ -1,7 +1,7 @@
 <template>
     <div v-if="!loading">
         <div v-if="!orderCompleted">
-            <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" :listExtras="listExtras"  @close="closePopup()" @product-submitted="handleProductSubmitted"></ProductPopup>
+            <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" :listExtras="listExtras" :listSauces="listSauces"  @close="closePopup()" @product-submitted="handleProductSubmitted"></ProductPopup>
             <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60"></div>
             <section  v-if="firebaseUser" v-for="shop of result" class="flex justify-between">
                 <aside>
@@ -87,7 +87,7 @@
                                 <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">{{ soldProduct.name }}</p>
                                 <p v-show="soldProduct.category != 'Burgers'" class="text-3">{{ soldProduct.size }}</p>
                                 <p v-if="soldProduct.sauce" class="text-3 font-bold mt-1">Sauce:</p>
-                                <p class="text-3">{{ soldProduct.sauce }}</p>
+                                <p class="text-3">{{ soldProduct.sauce.name }}</p>
                                 <div class="flex flex-col justify-between">
                                     <p v-if="soldProduct.toppings.length > 0" class="text-3 font-bold mt-1">Extras:</p>
                                     <div class="flex gap-1" v-for="topping of soldProduct.toppings">
@@ -106,14 +106,14 @@
                                 <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
-                                </div>
-                                <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
-                                </div>
-                            </div>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable &&( listSauces.ingredient == null || ((listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce.name)[0]?.stock || 0) >= 25) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
+                                        <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    </div>
+                                    <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
+                                        <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
+                                            <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                        </div>
+                                    </div>
                             <X class="absolute top-4 right-4 cursor-pointer" @click="handleDeleteSoldProduct(soldProduct)"/>
                         </div> 
                     </div>
@@ -181,6 +181,7 @@ import type { SoldProduct as ISoldProduct, SoldProduct } from '../../../interfac
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GET_SHOP, CREATE_ORDER } from '../../../graphql/shop.query'
 import useFirebase from '@/composables/useFirebase';
+import { constants } from 'buffer';
 
 const { firebaseUser } = useFirebase()
 
@@ -214,6 +215,7 @@ export default {
         const totalPrice = ref(0);
         let popupIsOpen = ref(false);
         const listExtras = ref({})
+        const listSauces = ref({})
         const isStockAvailable = ref(true)
         const orderCompleted = ref(false)
         const openPopup = ( product :any ) => {
@@ -235,28 +237,93 @@ export default {
         const handlePlusClick = (soldProduct : any) => {
             // Dit doet wel wat het moet doen, maar als er een topping 0 is dan lukt het ook niet meet omdat het de hele list checkt, eingelijk zou het de 
             // toppings moeten checken van het product dat je aan het toevoegen of verhogen bent
-            const listToppingsStocks = GetListExtras(soldProducts.value)
-            let kleinsteWaarde;
+            // ❗❗❗❗ KLOPT NIET ❗❗❗❗ 
+            // TODO: Hier moet hij nog kijken naar de ingredienten van het product dat je aan het toevoegen bent, want als het geen topping is dan moet hij het niet checken
+            // const listToppingsStocks = GetListExtras(soldProducts.value)
+            // const listSaucesStocks = GetListSauces(soldProducts.value)
+            // let isExtraStockAvailable = true
+            // let isSauceStockAvailable = true
 
-            if (listToppingsStocks.length > 0) {
-                kleinsteWaarde = Math.min(...listToppingsStocks.map(ingredient => ingredient.stock));
-                // console.log(kleinsteWaarde)
-                // console.log(soldProduct.amount)
-                console.log(listToppingsStocks)
-                if (1 > kleinsteWaarde) {
-                    isStockAvailable.value = false
-                }
-                if (1 == kleinsteWaarde) {
-                    soldProduct.amount++;
-                    isStockAvailable.value = false
-                }
-                else {
-                    soldProduct.amount++;
-                    isStockAvailable.value = true
-                }
-            } else {
-                kleinsteWaarde = 99            
-            }
+
+            // let kleinsteWaarde;
+            // if (listToppingsStocks.length > 0) {
+            //     kleinsteWaarde = Math.min(...listToppingsStocks.map(ingredient => ingredient.stock));
+            //     if (1 > kleinsteWaarde) {
+            //         isExtraStockAvailable = false
+            //     }
+            //     if (1 == kleinsteWaarde) {
+            //         isExtraStockAvailable = false
+            //         soldProduct.amount++;
+            //     }
+            //     else { 
+            //         isExtraStockAvailable = true
+            //     }
+            // }
+            // TODO: Dit moet veranderd worden normaal, wat ik doe dit in de html 
+            // if (listSaucesStocks.length > 0) {
+            //     console.log(listSaucesStocks)
+            //     kleinsteWaarde = Math.min(...listSaucesStocks.map(ingredient => ingredient.stock));
+            //     if (25 > kleinsteWaarde) {
+            //         isSauceStockAvailable = false
+            //     }
+            //     if (25 >= kleinsteWaarde && kleinsteWaarde < 50) {
+            //         isSauceStockAvailable = false
+            //         soldProduct.amount++;
+            //     }
+            //     else {
+            //         isSauceStockAvailable = true
+            //     }
+            // } 
+            // if (isExtraStockAvailable === false || isSauceStockAvailable === false) {
+            // if (isExtraStockAvailable === false) {
+            //     isStockAvailable.value = false
+            // }
+            // else {
+                isStockAvailable.value = true
+                soldProduct.amount++;
+            // }
+
+            // const isExtraAvailable = listToppingsStocks.find((item: { stock: number; }) => item.stock)
+            // const isSauceAvailable = listSaucesStocks.find((item: { stock: number; }) => item.stock)
+            // console.log(isExtraAvailable)
+            // console.log(isSauceAvailable)
+            // let kleinsteWaarde;
+            // if (listToppingsStocks.length > 0) {
+            //     kleinsteWaarde = Math.min(...listToppingsStocks.map(ingredient => ingredient.stock));
+            //     if (1 > kleinsteWaarde) {
+            //         isStockAvailable.value = false
+            //     }
+            //     if (1 == kleinsteWaarde) {
+            //         soldProduct.amount++;
+            //         isStockAvailable.value = false
+            //     }
+            //     else {
+            //         soldProduct.amount++;
+            //         isStockAvailable.value = true
+            //     }
+            // } else {
+            //     kleinsteWaarde = 99   
+            //     soldProduct.amount++;         
+            // }
+            // if (listSaucesStocks.length > 0) {
+            //     kleinsteWaarde = Math.min(...listSaucesStocks.map(ingredient => ingredient.stock));
+            //     if (25 > kleinsteWaarde) {
+            //         isStockAvailable.value = false
+            //     }
+            //     if (25 == kleinsteWaarde) {
+            //         soldProduct.amount++;
+            //         isStockAvailable.value = false
+            //     }
+            //     else {
+            //         soldProduct.amount++;
+            //         isStockAvailable.value = true
+            //     }
+            // } else {
+            //     kleinsteWaarde = 99   
+            //     soldProduct.amount++;
+            // }
+
+            
             // TODO: Moet kijkn als het een drank is want dan werkt het anders, dus nu zal ik de amount niet kunnen verhogen
             // TODO: Moet het van alle dranken bij houden, moest je een andere hamburger kiezen dan moet het nog steeds kloppen
 
@@ -266,6 +333,36 @@ export default {
             // }
             calculateTotalPrice();
         };
+
+        const checkToppings = (soldProduct: any) => {
+            // Veronderstel dat soldProduct een array van ingrediënten is, bijvoorbeeld soldProduct.ingredients
+            let soldProductIngredients = soldProduct.toppings;
+            let listToppingsStocks = GetListExtras(soldProducts.value);
+            let kleinsteWaarde = 0;
+            if (listToppingsStocks.length > 0 && soldProductIngredients.length > 0) {
+                // Filter de ingrediënten van soldProduct uit listToppingsStocks
+                let matchingIngredients = listToppingsStocks.filter(ingredient => {
+                    // Zoek naar overeenkomend product in de tweede array
+                    let matchingProduct = soldProductIngredients.find((product: { name: any; }) => product.name === ingredient.ingredient);
+
+                    // Als er een overeenkomst is, behoud het element in de resultaatarray
+                    return matchingProduct !== undefined;
+                    });                
+
+                if (matchingIngredients.length > 0) {
+                    // Zoek de kleinste voorraadwaarde van de overeenkomende ingrediënten
+                    kleinsteWaarde = Math.min(...matchingIngredients.map(ingredient => ingredient.stock));
+                    return kleinsteWaarde;
+                } else {
+                    // Geen overeenkomende ingrediënten gevonden
+                    return 99;
+                }
+            } else {
+                // Geen toppingsStocks of geen ingrediënten in soldProduct
+                return 99;
+            }
+        }
+
 
         const GetListExtras = (soldProducts: any) => {
             let listToppingsStocks = [];
@@ -288,6 +385,22 @@ export default {
             listExtras.value = listToppingsStocks
             return listToppingsStocks;
         };
+
+        const GetListSauces = (soldProducts: any) => {
+            let listSauceStocks = [];            
+            for (let soldProduct of soldProducts) {
+                const existingIngredientIndex = listSauceStocks.findIndex(item => item.ingredient === soldProduct.sauce.name);
+                const reduction = 25 * soldProduct.amount;
+                if (existingIngredientIndex !== -1) {
+                    listSauceStocks[existingIngredientIndex].stock -= reduction;
+                } else {
+                    // Als het ingrediënt niet in de lijst zit, voeg het toe met de voorraad gelijk aan de stock verminderd met de stockReduction vermenigvuldigd met de amount van het verkochte product
+                    listSauceStocks.push({ ingredient: soldProduct.sauce.name, stock: soldProduct.sauce.stock - reduction });
+                }
+            }
+            listSauces.value = listSauceStocks
+            return listSauceStocks;
+        }
 
 
 
@@ -413,6 +526,7 @@ export default {
         };
         const getIngredientWithMinStock = (product: any, soldProducts: any) => {
             GetListExtras(soldProducts)
+            GetListSauces(soldProducts)
             soldProductIngredients = {}
             let size = selectedSizes.value[product.id]
             for (let soldProduct of soldProducts) {
@@ -505,7 +619,9 @@ export default {
             soldProductIngredients,
             orderCompleted,
             listExtras,
-            isStockAvailable
+            listSauces,
+            isStockAvailable,
+            checkToppings
         }
     },
 }
