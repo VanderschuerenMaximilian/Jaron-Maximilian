@@ -106,14 +106,14 @@
                                 <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable && ((listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce.name)[0]?.stock || 0) >= 25 && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
-                                        <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable && (listSauces[0].ingredient === undefined ||((listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce.name)[0]?.stock || 0) >= 25) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                </div>
+                                <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
                                     </div>
-                                    <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                        <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
-                                            <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
-                                        </div>
-                                    </div>
+                                </div>
                             <X class="absolute top-4 right-4 cursor-pointer" @click="handleDeleteSoldProduct(soldProduct)"/>
                         </div> 
                     </div>
