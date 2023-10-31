@@ -403,10 +403,6 @@ export default {
             return listSauceStocks;
         }
 
-
-
-
-
         const calculateProductPrice = (product : any) => {
             let newPrice = product.price;
             const sizeModifier = product.sizeModifier;
@@ -418,7 +414,9 @@ export default {
             newPrice = parseFloat(newPrice.toFixed(2));
             return newPrice;
         };
+
         const HandleOrder = (product: any) => {
+            console.log("slkdjflsdjfl")
             const defaultSize = 'Medium'; // Set your desired default size here
             const sizePrice = selectedSizes.value[product.id] || defaultSize;
             let newPrice = product.price;
@@ -428,6 +426,7 @@ export default {
                 newPrice -= 1;
             }
             newPrice = parseFloat(newPrice.toFixed(2));
+            
             
             const newSoldProduct = {
                 name: product.name,
@@ -441,15 +440,60 @@ export default {
                 ingredients: product.ingredients,
                 extraCost: 0,
             };
-            // @ts-ignore
-            soldProducts.value.push(newSoldProduct);
+
+            updateSoldProducts(newSoldProduct, false);  
             calculateTotalPrice();
         };
+
+        const updateSoldProducts = (newSoldProduct: any, state: boolean) => {
+            for (let i = 0; i < soldProducts.value.length; i++) {
+                const soldProduct = soldProducts.value[i]; 
+                if (soldProduct.name === newSoldProduct.name) {
+                    console.log("name is true")
+                }
+                if (soldProduct.size === newSoldProduct.size) {
+                    console.log("size is true")
+                }
+                if (JSON.stringify(soldProduct.sauce) === JSON.stringify(newSoldProduct.sauce)) {
+                    console.log("sauce is true")
+                }
+                if (JSON.stringify(soldProduct.toppings) === JSON.stringify(newSoldProduct.toppings)) {
+                    console.log("toppings are true")
+                }
+                if (JSON.stringify(soldProduct.removables) === JSON.stringify(newSoldProduct.removables)) {
+                    console.log("removeables are true")
+                }
+                if (
+                    soldProduct.name === newSoldProduct.name &&
+                    (soldProduct.size === newSoldProduct.size || state) &&
+                    JSON.stringify(soldProduct.sauce) === JSON.stringify(newSoldProduct.sauce) &&
+                    JSON.stringify(soldProduct.toppings) === JSON.stringify(newSoldProduct.toppings) &&
+                    JSON.stringify(soldProduct.removables) === JSON.stringify(newSoldProduct.removables)
+                ) {
+                    // Product gevonden, verhoog de hoeveelheid
+                    soldProducts.value[i].amount += 1;
+                    console.log("true")
+                    return true; // Geef aan dat het product is bijgewerkt
+                }
+            }
+
+            // Product niet gevonden, voeg het toe met hoeveelheid 1
+            soldProducts.value.push(newSoldProduct);
+            console.log("false")
+            return false; // Geef aan dat een nieuw product is toegevoegd
+        };
+
         const handleProductSubmitted = (product : any) => {
-            soldProducts.value.push(product);
+            // TODO: Dit werkt bij drinks maar niet bij burgers, wss is product hier die ik meegeef niet hetzelfde als product die ik meegeef bij handleOrder
+            // TODO: die console.logs bij de updateSoldProducts en kijk wat er verkeerd word doorgestuur en verbeter het zodat het werkt.
+
+            // TODO: ❗❗❗❗ TOGGLE ❗❗❗❗
+            updateSoldProducts(product, true);  
+
             closePopup();
             calculateTotalPrice();
         };
+
         const handleDeleteSoldProduct = (product: ISoldProduct) => {
             const index = soldProducts.value.indexOf(product);
             
@@ -579,7 +623,6 @@ export default {
                 }
             return minStock;
         };
-        
 
         watchEffect(() => {
             if (result.value) {
