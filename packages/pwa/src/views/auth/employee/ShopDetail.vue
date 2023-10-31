@@ -87,7 +87,8 @@
                                 <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">{{ soldProduct.name }}</p>
                                 <p v-show="soldProduct.category != 'Burgers'" class="text-3">{{ soldProduct.size }}</p>
                                 <p v-if="soldProduct.sauce" class="text-3 font-bold mt-1">Sauce:</p>
-                                <p class="text-3">{{ soldProduct.sauce.name }}</p>
+                                <p v-if="soldProduct.sauce != ''" class="text-3">{{ soldProduct.sauce.name }}</p>
+                                <p v-else v-if="soldProduct.category === 'Burgers'" class="text-3">No Sauce</p>
                                 <div class="flex flex-col justify-between">
                                     <p v-if="soldProduct.toppings.length > 0" class="text-3 font-bold mt-1">Extras:</p>
                                     <div class="flex gap-1" v-for="topping of soldProduct.toppings">
