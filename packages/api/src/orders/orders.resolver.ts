@@ -66,7 +66,7 @@ export class OrdersResolver {
                       }
                   }
                 }
-                if (product.sauce != '') {
+                if (product.sauce != 'No Sauce') {
                   const sauce = product.sauce
                   const stockItem = await this.stocksService.findByName(sauce);
                   if (stockItem.stock >= (stockItem.stockReduction * product.amount)) {
