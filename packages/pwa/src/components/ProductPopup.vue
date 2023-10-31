@@ -21,31 +21,10 @@
                                 <select v-if="selectedProduct.category !== 'Burgers'" v-model="selectedSize" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option v-for="size in selectedProduct.size" :key="size" :value="size">{{ size }}</option>
                                 </select>
-                                
-                                <!-- {{ listExtras[0].filter(item => item.ingredient === 'Crispy bacon') }} -->
-                                <h6 v-if="selectedProduct.category === 'Burgers'" class="h6 mt-4">Sauce:</h6>
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
+                                    <option :value="''" :selected="selectedSauce === ''">No Sauce</option>
                                     <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce" :class="{ 'hidden': sauce.stock < 25 || isSauceAvailable(sauce) == false, 'bg-white': sauce.stock > 0 || isSauceAvailable(sauce) == true }">{{ sauce.name }}</option>
                                 </select>
-
-                                <!-- <div v-for="sauce in selectedProduct.sauce">
-                                    <p>{{ isSauceAvailable(sauce) }}</p>
-                                </div> -->
-
-
-                                <!-- <div v-for="sauce in selectedProduct.sauce">
-                                    <div v-if="getSauceStock(sauce.name) >= 25">{{ sauce.name }}</div>
-                                    <div>{{ getSauceStock(sauce.name) }}</div>
-                                </div>
-
-                                <p>{{ listSauces }}</p> -->
-
-                                
-
-                                <!-- <p>{{ getSauceStock}}</p>
-                                <p>{{ listSauces }}</p>
-                                <p>{{ listExtras }}</p> -->
-                                <!-- <p>{{ listSauces.filter(item => item.ingredient === sauce).map(item => item.stock)[0] !=0 }}</p> -->
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
                                 <div  v-for="extra in selectedProduct.extra" class="flex flex-col">
                                     <label v-if="extra.stock >= extra.stockReduction && listExtras.filter(item => item.ingredient === extra.name).map(item => item.stock)[0] !=0" :key="extra.name" class="flex items-center mt-1 cursor-pointer select-none">
@@ -116,7 +95,7 @@ export default {
     data() {
         return {
             selectedSize: "Medium",
-            selectedSauce: [],
+            selectedSauce: '',
             selectedToppings: [],
             selectedRemovables: [],
         };
@@ -126,29 +105,22 @@ export default {
             this.$emit('close');
         },
         handleData() {
-            console.log(this.selectedSauce)
-            if (this.selectedSauce.length === 0) {
-                alert("Are you sure you don't want any sauce?");
-            }
-            else {
-                const soldProduct = {
-                    productName: this.selectedProduct.name,
-                    name: this.selectedProduct.name,
-                    image: this.selectedProduct.image,  
-                    price: this.selectedProduct.price,
-                    amount: 1,
-                    size: this.selectedSize,
-                    category: this.selectedProduct.category,
-                    sauce: this.selectedSauce,
-                    toppings: this.selectedToppings,
-                    removables: this.selectedRemovables,
-                    extraCost: this.selectedToppings.length * 0.5,
-                    ingredients: this.selectedProduct.ingredients,
-                };
-            
+            const soldProduct = {
+                productName: this.selectedProduct.name,
+                name: this.selectedProduct.name,
+                image: this.selectedProduct.image,  
+                price: this.selectedProduct.price,
+                amount: 1,
+                size: this.selectedSize,
+                category: this.selectedProduct.category,
+                sauce: this.selectedSauce,
+                toppings: this.selectedToppings,
+                removables: this.selectedRemovables,
+                extraCost: this.selectedToppings.length * 0.5,
+                ingredients: this.selectedProduct.ingredients,
+            };
             this.$emit('product-submitted', soldProduct);
             this.clearForm();
-        }
         },
         isSauceAvailable(sauce: any) {
             // console.log(sauce)
