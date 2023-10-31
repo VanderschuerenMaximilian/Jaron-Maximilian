@@ -51,6 +51,30 @@ export class DatabaseSeedCommand {
     console.info('❌ Removed alerts')
   }
 
+  // ------------ Zone ------------
+  // npx nestjs-command seed:database:zones
+  // npx nestjs-command seed:reset:zones
+
+  @Command({
+    command: 'seed:database:zones',
+    describe: 'Seed the database with zones',
+  })
+  async seedZones() {
+    console.info('🗺 Start seeding of zones')
+    const zones = await this.seedService.addZonesFromJson()
+    console.info(`🗺 ${zones.length} Zones are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:zones',
+    describe: 'Delete all data from the zones table',
+  })
+  async deleteZones() {
+    console.info('🔪 Start deleting zones')
+    await this.seedService.deleteAllZones()
+    console.info('❌ Removed zones')
+  }
+
   // ------------ Shop ------------
   // npx nestjs-command seed:database:shops
   // npx nestjs-command seed:reset:shops

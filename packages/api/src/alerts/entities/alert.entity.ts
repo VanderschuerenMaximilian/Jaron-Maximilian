@@ -38,6 +38,10 @@ export class Alert {
 
   @Column()
   @Field()
+  zoneId: string;
+
+  @Column()
+  @Field()
   createdBy: string;
 
   @CreateDateColumn({ type: 'timestamp' })

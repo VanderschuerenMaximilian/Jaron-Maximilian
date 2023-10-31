@@ -11,6 +11,9 @@ export class CreateAlertInput {
   description: string;
 
   @Field()
+  zoneId: string;
+  
+  @Field()
   createdBy: string;
 
 }

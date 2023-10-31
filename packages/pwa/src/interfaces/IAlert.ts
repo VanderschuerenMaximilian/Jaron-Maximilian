@@ -7,6 +7,7 @@ export interface Alert {
     state?: string;
     persons?: Person[];
     personId?: string;
+    zoneId?: string;
     createdBy?: string;
     createdAt?: Date;
     updatedAt?: Date;

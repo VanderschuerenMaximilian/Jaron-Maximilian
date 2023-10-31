@@ -1,36 +1,55 @@
 <template>
         <template v-if="firebaseUser">
-            <main class="pt-[70px] mb-8">
-                <h2 class="h2-green text-center my-12">Make an Alert</h2>
-                <form @submit.prevent="handleSubmitAlert" class="grid grid-cols-1 max-w-lg mx-auto gap-6">
+            <main class="pt-[70px] mb-8 min-h-[85vh] flex justify-center">
+                <section class="bg-white border-t-12 border-[#047143] mt-20 rounded-md w-1/2 px-8 pt-8">
+                    <h2 class="h2-green text-center">Make an Alert</h2>
+                    <form @submit.prevent="handleSubmitAlert" class="flex flex-col justify-center gap-8 py-8"> 
+                        <div v-if="isCreated" class="border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
+                            <p class="text-primary-green font-semibold">Your alert is added!</p>
+                        </div>
 
-                    <div v-if="isCreated" class="border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
-                        <p class="text-primary-green font-semibold">Your alert is added!</p>
-                    </div>
+                        <div class="flex flex-col max-w-lg">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title" v-model="newAlert.title"
+                            placeholder="Summarize what happend in a few words"
+                            :class="{ 'border-red-500': errorFields?.title }"
+                            class="bg-[#E7E7E7] py-2 px-3 rounded-md"
+                            >
+                            <p v-if="errorFields?.title && errorFields?.title[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.title[0].message }}</p>
+                            <p v-if="errorFields?.title && isSubmitted" class="text-red-500 text-sm">{{ errorFields.title[0].message }}</p>
+                        </div>
 
-                    <div class="flex flex-col max-w-lg">
-                        <label for="title">Title</label>
-                        <input type="text" name="title" id="title" v-model="newAlert.title"
-                        :class="{ 'border-red-500': errorFields?.title }">
-                        <p v-if="errorFields?.title" class="text-red-500 text-sm">{{ errorFields.title[0].message }}</p>
-                    </div>
+                        <div class="flex flex-col max-w-lg">
+                            <label for="zone">Zone</label>
+                            <select name="zone" id="zone" v-model="newAlert.zoneId"
+                            class="bg-[#E7E7E7] py-2 px-3 rounded-md">
+                                <option value="">Select a zone</option>
+                                <option v-for="zone in zones?.zones" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
+                            </select>
+                            <p v-if="errorFields?.zones && errorFields?.zones[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.zones[0].message }}</p>
+                            <p v-if="errorFields?.zones && isSubmitted" class="text-red-500 text-sm">{{ errorFields.zones[0].message }}</p>
+                        </div>
 
-                    <div class="flex flex-col max-w-lg">
-                        <label for="description">Description</label>
-                        <input type="text" name="description" id="description" v-model="newAlert.description"
-                        :class="{ 'border-red-500': errorFields?.description }">
-                        <p v-if="errorFields?.description" class="text-red-500 text-sm">{{ errorFields.description[0].message }}</p>
-                    </div>
+                        <div class="flex flex-col max-w-lg">
+                            <label for="description">Description</label>
+                            <textarea type="text" rows="5" name="description" id="description" v-model="newAlert.description"
+                            placeholder="Describe what happend in a few sentences"
+                            :class="{ 'border-red-500': errorFields?.description }"
+                            class="bg-[#E7E7E7] py-2 px-3 rounded-md"></textarea>
+                            <p v-if="errorFields?.description && errorFields?.description[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.description[0].message }}</p>
+                            <p v-if="errorFields?.description && isSubmitted" class="text-red-500 text-sm">{{ errorFields.description[0].message }}</p>
+                        </div>
 
-                    <div class="w-full flex justify-center">
-                        <button type="submit" :disabled="loading || !pass"
-                            class="flex justify-center bg-secondary-green hover:bg-primary-green px-4 py-2 w-[250px] rounded-sm 
-                            text-slate-100 disabled:bg-opacity-40">
-                            <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin"/>
-                            <span v-else>Submit</span>
-                        </button>
-                    </div>
-                </form>
+                        <div class="w-full flex justify-center">
+                            <button type="submit" :disabled="loading || !pass"
+                                class="flex justify-center bg-secondary-green hover:bg-primary-green px-4 py-2 w-[250px] rounded-sm 
+                                text-slate-100 disabled:bg-opacity-40">
+                                <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin"/>
+                                <span v-else>Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
             </main>
         </template>
         <template v-else>
@@ -40,18 +59,21 @@
             </main>
         </template>
 </template>
+<stlye>
 
+</stlye>
 <script lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import useFirebase from '../composables/useFirebase'
 import useCustomPerson from '../composables/useCustomPerson'
-import { useMutation } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import { CREATE_ALERT } from '@/graphql/alert.mutation'
+import { GET_ZONES } from '@/graphql/zone.query'
 import type { Alert } from '@/interfaces/IAlert'
+import type { Zones } from '@/interfaces/IZone'
 import type { Rules } from 'async-validator'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
 import { Loader2 } from 'lucide-vue-next'
-
 
 export default {
     components: {
@@ -63,13 +85,15 @@ export default {
         const newAlert = ref<Alert>({
             title: '',
             description: '',
+            zoneId: '',
         })
         const rules: Rules = {
             title: {
                 type: 'string',
                 required: true,
-                min: 3,
+                min: 10,
                 max: 30,
+                
             },
             description: {
                 type: 'string',
@@ -77,22 +101,38 @@ export default {
                 min: 15,
                 max: 150,
             },
+            zones: {
+                type: 'string',
+                required: true,
+                validator(rule, value, callback, source, options) {
+                    if (source.zoneId === '' || source.zoneId === undefined) {
+                        callback(new Error('Please select a zone'))
+                    } else {
+                        callback()
+                    }
+                },
+            }
         }
         const { pass, errorFields } = useAsyncValidator(newAlert, rules)
+        const isSubmitted = ref<boolean>(false)
         const isCreated = ref<boolean>(false)
+        const { result: zones } = useQuery<Zones>(GET_ZONES)
         const { mutate: createAlert, loading } = useMutation(CREATE_ALERT)
-        
+
         const handleSubmitAlert = () => {
+            console.log(newAlert.value)
             createAlert({ createAlertInput: 
                 {
                     title: newAlert.value.title,
                     description: newAlert.value.description,
+                    zoneId: newAlert.value.zoneId,
                     createdBy: customPerson.value?.id,
                 }
             }).then(() => {
                 newAlert.value = {
                     title: '',
                     description: '',
+                    zoneId: '',
                 }
                 isCreated.value = true
             })
@@ -101,11 +141,13 @@ export default {
         return {
             firebaseUser,
             isCreated,
+            isSubmitted,
             loading,
             newAlert,
             pass,
             // isFinished,
             errorFields,
+            zones,
 
             createAlert,
             handleSubmitAlert,

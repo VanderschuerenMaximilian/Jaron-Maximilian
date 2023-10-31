@@ -62,13 +62,13 @@
                     <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">{{ $t('navigation.logOut') }}</button>
                 </section>
             </div>
-            <!-- TODO: implement language switcher ALSO IN MOBILE MENU -->
-            <select class="h-6 bg-slate-100" name="language" id="language"
+            <select class="h-6 bg-slate-100 cursor-pointer" name="language" id="language"
             @change="setLanguage" :value="locale">
                 <option v-for="(value, key) in SUPPORTED_LOCALES" :value="key">
                     {{ key }}
                 </option>
             </select>
+            <AppLocalePicker/>
         </nav>
         <!-- mobile menu -->
         <section class="md:hidden block">
@@ -151,7 +151,7 @@ export default {
     components: {
         X,
         Menu,
-        RouterLink
+        RouterLink,
     },
     setup() {
         const { firebaseUser, signOutUser } = useFirebase()

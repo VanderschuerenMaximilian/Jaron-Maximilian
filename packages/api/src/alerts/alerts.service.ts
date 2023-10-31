@@ -26,6 +26,7 @@ export class AlertsService {
       a.description = createAlertInput.description
       a.state = AlertState.OPEN
       a.createdBy = createAlertInput.createdBy
+      a.zoneId = createAlertInput.zoneId
       a.createdAt = new Date()
       a.updatedAt = new Date()
       return this.alertRepository.save(a)
