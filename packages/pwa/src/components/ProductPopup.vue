@@ -22,7 +22,7 @@
                                     <option v-for="size in selectedProduct.size" :key="size" :value="size">{{ size }}</option>
                                 </select>
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
-                                    <option :value="''" :selected="selectedSauce === ''">No Sauce</option>
+                                    <option :value="[]" :selected="selectedSauce.length === 0">No Sauce</option>
                                     <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce" :class="{ 'hidden': sauce.stock < 25 || isSauceAvailable(sauce) == false, 'bg-white': sauce.stock > 0 || isSauceAvailable(sauce) == true }">{{ sauce.name }}</option>
                                 </select>
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
@@ -95,7 +95,7 @@ export default {
     data() {
         return {
             selectedSize: "Medium",
-            selectedSauce: '',
+            selectedSauce: [],
             selectedToppings: [],
             selectedRemovables: [],
         };
@@ -136,7 +136,7 @@ export default {
         },
         clearForm() {
             this.selectedSize = "Medium";
-            this.selectedSauce = '';
+            this.selectedSauce = [];
             this.selectedToppings = [];
             this.selectedRemovables = [];
         },
