@@ -433,9 +433,9 @@ export default {
                 await mutate({ orderInput: order }).catch((error) => {
                     console.log(error);
                 });
-                // await setTimeout(() => {
-                //     location.reload();
-                // }, 3000);
+                await setTimeout(() => {
+                    location.reload();
+                }, 3000);
             }
             else {
                 alert("No items in cart")

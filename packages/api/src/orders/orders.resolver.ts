@@ -13,80 +13,98 @@ export class OrdersResolver {
     private readonly ordersService: OrdersService,
     private readonly productsService: ProductsService,
     private readonly stocksService: StocksService,
-    ) {}
+  ) {}
 
     @Mutation(() => Order)
-    async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {   
+    async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {      
+      try {
+        const totalIngredients: Record<string, number> = {};
+
+        // Add all ingredients, extras, removeables and sauces to the totalIngredients list
         for (const product of createOrderInput.soldProducts) {
-          // TODO: Nu kan het zijn dat als je een order doet dat er een product af in de stock maar dat er geen order gamaakt word en 
-          // dat komt door dat de hij ingredient per ingredient overloopt denkik en dus een ingredient update maar dan bij het volgende pas de error geeft
-          try {
-                const p = await this.productsService.findByName(product.productName);
-    
-                for (const ingredient of p.ingredients) {
-                    const stockItem = await this.stocksService.findByName(ingredient);
-                    if (product.size == "Small") {
-                      if (stockItem.stock >= ((stockItem.stockReduction - 50) * product.amount)) {
-                        stockItem.stock = stockItem.stock - ((stockItem.stockReduction - 50) * product.amount);
-                        await this.stocksService.updateStockByName(stockItem.name, stockItem.stock)
-                      } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
-                      }
-                      if (product.size == "Large") {
-                        if (stockItem.stock >= ((stockItem.stockReduction + 50) * product.amount)) {
-                          stockItem.stock = stockItem.stock - ((stockItem.stockReduction + 50) * product.amount);
-                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock)
-                        } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
-                      }
-                      if (product.size == "Medium") {
-                        if (stockItem.stock >= ((stockItem.stockReduction) * product.amount)) {
-                          stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
-                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
-                      } else throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
-                      }
-                    }
-                if (product.extras.length >= 1) {
-                  for (const extra of product.extras) {
-                      const stockItem = await this.stocksService.findByName(extra);
-                      if (stockItem.stock >= (stockItem.stockReduction * product.amount)) {
-                          stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
-                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
-                      } else {
-                          throw new Error(`Onvoldoende voorraad voor extra: ${extra}`);
-                      }
-                  }
-                }
-                if (product.removeables.length >= 1) {
-                  for (const removeable of product.removeables) {
-                      const stockItem = await this.stocksService.findByName(removeable);
-                      if (stockItem.stock >= 1) {
-                          stockItem.stock = stockItem.stock + (stockItem.stockReduction * product.amount);
-                          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
-                      } else {
-                          throw new Error(`Onvoldoende voorraad voor verwijderbaar item: ${removeable}`);
-                      }
-                  }
-                }
-                if (product.sauce != 'No Sauce') {
-                  const sauce = product.sauce
-                  const stockItem = await this.stocksService.findByName(sauce);
-                  if (stockItem.stock >= (stockItem.stockReduction * product.amount)) {
-                      stockItem.stock = stockItem.stock - (stockItem.stockReduction * product.amount);
-                      await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
-                  } else {
-                      throw new Error(`Onvoldoende voorraad voor extra: ${sauce}`);
-                  }
-                }                
-            } catch (error) {
-                console.error(`Fout bij verwerken product ${product.productName}: ${error.message}`);
-                throw new Error(`Fout bij verwerken product ${product.productName}`);
+          const p = await this.productsService.findByName(product.productName);
+          if (p.category !== "Drinks") {
+            for (const ingredient of p.ingredients) {
+              if (totalIngredients[ingredient]) {
+                totalIngredients[ingredient] += product.amount;
+              } else {
+                totalIngredients[ingredient] = product.amount;
+              }
             }
+            for (const extra of product.extras) {
+              if (totalIngredients[extra]) {
+                totalIngredients[extra] += product.amount;
+              }
+              else {
+                totalIngredients[extra] = product.amount;
+              }
+            }
+            if (product.sauce != 'No Sauce') {
+              if (totalIngredients[product.sauce]) {
+                totalIngredients[product.sauce] += 25 * product.amount;
+              }
+              else {
+                totalIngredients[product.sauce] = 25 * product.amount;
+              }
+            }
+            for (const removeable of product.removeables) {
+              if (totalIngredients[removeable]) {
+                totalIngredients[removeable] -= product.amount;
+              }
+            }
+          }
+          if (p.category == "Drinks") {
+            for (const ingredient of p.ingredients) {
+              if (totalIngredients[ingredient]) {
+                if (product.size == "Small") {
+                  totalIngredients[ingredient] += (200 * product.amount);
+                }
+                if (product.size == "Medium") {
+                  totalIngredients[ingredient] += (250 * product.amount);
+                }
+                if (product.size == "Large") {
+                  totalIngredients[ingredient] += (300 * product.amount);
+                }
+              } else {
+                if (product.size == "Small") {
+                  totalIngredients[ingredient] = (200 * product.amount);
+                }
+                if (product.size == "Medium") {
+                  totalIngredients[ingredient] = (250 * product.amount);
+                }
+                if (product.size == "Large") {
+                  totalIngredients[ingredient] = (300 * product.amount);
+                }
+              }
+            }
+          }
         }
 
-        const order = await this.ordersService.create(createOrderInput);
+        // Check if there is enough stock for all products in the order
+        for (const ingredient of Object.keys(totalIngredients)) {
+          const stockItem = await this.stocksService.findByName(ingredient);
+          if (stockItem.stock < totalIngredients[ingredient]) {
+            throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
+          }
+        }
 
-    
+        // Update the stock of all ingredients, extras, removeables and sauces of all products in the order
+        for (const ingredient of Object.keys(totalIngredients)) {
+          const stockItem = await this.stocksService.findByName(ingredient);
+          stockItem.stock = stockItem.stock - totalIngredients[ingredient];
+          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+        }
+
+        // Create the order
+        const order = await this.ordersService.create(createOrderInput);
         return order;
-    }
+
+
+      } 
+      catch (error) {
+        throw new Error(`Fout bij verwerken order: ${error.message}`);
+      }
+  }
     
 
   @Query(() => [Order], { name: 'orders' })
