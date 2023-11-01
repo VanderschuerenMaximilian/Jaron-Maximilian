@@ -10,8 +10,8 @@ export interface SoldProduct {
   category: string
   amount: number
   size: string
-  sauce: string
-  toppings: string[]
+  sauce?: string | { name: string };
+  toppings: { name: string }[];
   removables: string[]
   ingredients: string[]
 }

@@ -12,7 +12,7 @@
                             <RouterLink :to="'/auth/employee/' + firebaseUser.uid + '/shops'">
                                 <div class="flex border-4 border-primary-green hover:border-green-900 rounded-lg p-2 w-70 justify-center">
                                     <ChevronLeft class="text-primary-green" />
-                                    <p class="text-primary-green pr-2">{{ name }}</p>
+                                    <p class="text-primary-green pr-2">{{ shopName }}</p>
                                 </div>  
                             </RouterLink>
                             <div v-if="loading">Loading...</div>
@@ -87,12 +87,11 @@
                                 <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">{{ soldProduct.productName }}</p>
                                 <p v-show="soldProduct.category != 'Burgers'" class="text-3">{{ soldProduct.size }}</p>
                                 <p v-if="soldProduct.sauce" class="text-3 font-bold mt-1">Sauce:</p>
-                                <p v-if="soldProduct.sauce != ''" class="text-3">{{ soldProduct.sauce.name }}</p>
+                                <p v-if="soldProduct.sauce != ''" class="text-3">{{ typeof soldProduct.sauce === 'string' ? soldProduct.sauce : soldProduct.sauce?.name }}</p>
                                 <p v-else v-if="soldProduct.category === 'Burgers'" class="text-3">No Sauce</p>
                                 <div class="flex flex-col justify-between">
                                     <p v-if="soldProduct.toppings.length > 0" class="text-3 font-bold mt-1">Extras:</p>
                                     <div class="flex gap-1" v-for="topping of soldProduct.toppings">
-                                        <!-- <p class="text-3">{{ soldProduct.toppings.join(', ') }}</p> -->
                                         <p class="text-3">{{ topping.name }}</p>
                                     </div>
                                     <p v-if="soldProduct.removables.length > 0" class="text-3 font-bold mt-1">Removables:</p>
@@ -107,11 +106,11 @@
                                 <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 & isStockAvailable && (((listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce.name)[0]?.ingredient) === undefined ||((listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce.name)[0]?.stock || 0) >= 25) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 && isStockAvailable && checkSauces(soldProduct, listSauces) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
                                     <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
                                 </div>
                                 <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 & isStockAvailable" @click="handlePlusClick(soldProduct)"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 && isStockAvailable" @click="handlePlusClick(soldProduct)"/>
                                     <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
                                     </div>
                                 </div>
@@ -200,8 +199,8 @@ export default {
         Loader2
     },
     setup() {
-        const name : any = ref<string>('')
-        const { result, loading, error } = useQuery(GET_SHOP, {name: name});
+        const shopName : any = ref<string>('')
+        const { result, loading, error } = useQuery(GET_SHOP, {name: shopName});
         const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
         const localIngredientStocks = ref<{ [productId: string]: number }>({});
         const soldProducts = ref<ISoldProduct[]>([]);
@@ -217,8 +216,8 @@ export default {
         const isAtTop = ref(true);
         const totalPrice = ref(0);
         let popupIsOpen = ref(false);
-        const listExtras = ref({})
-        const listSauces = ref({})
+        const listExtras = ref({}) as any;
+        const listSauces = ref({}) as any
         const isStockAvailable = ref(true)
         const orderCompleted = ref(false)
         const isCartEmpty = ref(false)
@@ -242,6 +241,14 @@ export default {
             isStockAvailable.value = true
             soldProduct.amount++;
             calculateTotalPrice();
+        };
+        const checkSauces = (soldProduct: any, listSauces: any[]): boolean => {
+            const matchingSauce = (listSauces as any[]).filter(sauce => sauce.ingredient === soldProduct.sauce?.name)[0];
+
+            return (
+                matchingSauce?.ingredient === undefined ||
+                (matchingSauce?.stock || 0) >= 25
+            );
         };
 
         const checkToppings = (soldProduct: any) => {
@@ -384,7 +391,7 @@ export default {
         };
         onMounted(() => {
             if (router.currentRoute.value.params.id) {
-                name.value = router.currentRoute.value.params.shopId
+                shopName.value = router.currentRoute.value.params.shopId
             }
             if (scrollContainer.value) {
                 scrollContainer.value.addEventListener('scroll', handleScroll);
@@ -419,15 +426,17 @@ export default {
                 orderCompleted.value = true
 
                 const order = {
-                    shopId: name.value,
+                    shopId: shopName.value,
                     totalPrice: totalPrice.value,
                     soldProducts: soldProducts.value.map((product) => ({
                         productName: product.productName,
                         price: product.price + product.extraCost,
                         size: product.size,
+                        //@ts-ignore
                         sauce: product.sauce.name !== undefined ? product.sauce.name : "No Sauce",
                         amount: product.amount,
                         removeables: product.removables.map((removable) => removable),
+                        //@ts-ignore 
                         extras: product.toppings.map((extra) => extra.name),
                     })),
                 };
@@ -507,7 +516,7 @@ export default {
         });
         return {
             id,
-            name,
+            shopName,
             scrollContainer,
             isAtTop, 
             handleClick,
@@ -542,7 +551,8 @@ export default {
             listSauces,
             isStockAvailable,
             checkToppings,
-            isCartEmpty
+            isCartEmpty,
+            checkSauces
         }
     },
 }
