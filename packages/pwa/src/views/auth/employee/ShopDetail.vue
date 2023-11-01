@@ -130,6 +130,7 @@
                         <p>{{"€ " + totalPrice.toFixed(2) }}</p>
                     </div>
                     <button @click="handleCheckout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+                    <p v-if="isCartEmpty" class="absolute right-20 text-red-600 font-medium select-none ">There are no items in the cart</p> 
                     </div>
                 </div>
                 </aside>
@@ -220,6 +221,7 @@ export default {
         const listSauces = ref({})
         const isStockAvailable = ref(true)
         const orderCompleted = ref(false)
+        const isCartEmpty = ref(false)
         const openPopup = ( product :any ) => {
             popupIsOpen.value = true;
             SelectedProduct.value = product;
@@ -309,6 +311,7 @@ export default {
         };
 
         const HandleOrder = (product: any) => {
+            isCartEmpty.value = false
             const defaultSize = 'Medium';
             const sizePrice = selectedSizes.value[product.id] || defaultSize;
             let newPrice = product.price;
@@ -360,6 +363,7 @@ export default {
 
         const handleProductSubmitted = (product : any) => {
             updateSoldProducts(product, true);  
+            isCartEmpty.value = false
             closePopup();
             calculateTotalPrice();
         };
@@ -438,7 +442,7 @@ export default {
                 }, 3000);
             }
             else {
-                alert("No items in cart")
+                isCartEmpty.value = true
             }
         };
         const getIngredientWithMinStock = (product: any, soldProducts: any) => {
@@ -537,7 +541,8 @@ export default {
             listExtras,
             listSauces,
             isStockAvailable,
-            checkToppings
+            checkToppings,
+            isCartEmpty
         }
     },
 }
