@@ -22,7 +22,7 @@ query ($name:String!) {
     name
     image
     description
-    products {id, name, image, description, price, sizeModifier, category, size, sauce, extra, removable, ingredients, shopType}
+    products {id, name, image, description, price, sizeModifier, category, size, sauce {name, stock, stockReduction}, extra {name, stock, stockReduction}, removable, ingredients {name, stock, stockReduction}, shopType}
     zone
     category {id, name, image}
     shopType

@@ -6,6 +6,29 @@ import { SeedService } from './seed.service'
 export class DatabaseSeedCommand {
   constructor(private readonly seedService: SeedService) {}
 
+  // ------------ ALL COMMANDS - REMOVE ------------
+  // npx nestjs-command seed:reset:persons
+  // npx nestjs-command seed:reset:alerts
+  // npx nestjs-command seed:reset:shops
+  // npx nestjs-command seed:reset:categories
+  // npx nestjs-command seed:reset:products
+  // npx nestjs-command seed:reset:ingredients
+  // npx nestjs-command seed:reset:sold-products
+  // npx nestjs-command seed:reset:orders
+  // npx nestjs-command seed:reset:stocks
+
+  // ------------ ALL COMMANDS - ADD ------------
+  // npx nestjs-command seed:database:persons
+  // npx nestjs-command seed:database:alerts
+  // npx nestjs-command seed:database:shops
+  // npx nestjs-command seed:database:categories
+  // npx nestjs-command seed:database:products
+  // npx nestjs-command seed:database:ingredients
+  // npx nestjs-command seed:database:sold-products
+  // npx nestjs-command seed:database:orders
+  // npx nestjs-command seed:database:stocks
+
+
   // ------------ Person ------------
   // npx nestjs-command seed:database:persons
   // npx nestjs-command seed:reset:persons

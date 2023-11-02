@@ -12,7 +12,7 @@ class OrderSoldProduct {
   @Field()
   size: string;
 
-  @Field()
+  @Field({ nullable: true })
   sauce: string;
 
   @Field()

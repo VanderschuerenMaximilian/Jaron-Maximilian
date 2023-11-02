@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class StocksService {
+  beginTransaction() {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Stock)
     private readonly stockRepository: Repository<Stock>,

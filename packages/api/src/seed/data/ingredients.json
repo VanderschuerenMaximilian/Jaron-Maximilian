@@ -170,5 +170,32 @@
     "unit": "slice",
     "minStock": 5,
     "maxStock": 20
+  },
+  {
+    "name": "Refreshing Lemonade",
+    "price": 2.99,
+    "stock": 1000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 10000
+  },
+  {
+    "name": "Iced Caramel Macchiato",
+    "price": 4.49,
+    "stock": 1000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 10000
+  },
+  {
+    "name": "Berry Blast Smoothie",
+    "price": 3.99,
+    "stock": 1000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 10000
   }
 ]

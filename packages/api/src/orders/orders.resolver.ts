@@ -4,36 +4,108 @@ import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { UpdateOrderInput } from './dto/update-order.input';
 import { ProductsService } from 'src/products/products.service';
-import { IngredientsService } from 'src/ingredients/ingredients.service';
+import { StocksService } from 'src/stocks/stocks.service';
+import { SoldProduct } from 'src/sold-products/entities/sold-product.entity';
 
 @Resolver(() => Order)
 export class OrdersResolver {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly productsService: ProductsService,
-    private readonly ingredientService: IngredientsService,
-    ) {}
+    private readonly stocksService: StocksService,
+  ) {}
 
-  @Mutation(() => Order)
-  async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {
-      const order = await this.ordersService.create(createOrderInput);
-      // Update de voorraad na het maken van de bestelling
-      for (const product of createOrderInput.soldProducts) {
-          await this.productsService.findByName(product.productName).then(async (p) => {
+    @Mutation(() => Order)
+    async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {      
+      try {
+        const totalIngredients: Record<string, number> = {};
+
+        // Add all ingredients, extras, removeables and sauces to the totalIngredients list
+        for (const product of createOrderInput.soldProducts) {
+          const p = await this.productsService.findByName(product.productName);
+          if (p.category !== "Drinks") {
             for (const ingredient of p.ingredients) {
-              await this.ingredientService.findByName(ingredient)
-                .then(async (i) => {
-                  i.stock = i.stock - i.stockReduction;
-                  // TODO: ❗ wachten met drank eerst burgers uitwerken. Als het een drankje is moet hij krijgen wat de grote is en dan de stock verminderen adhv die grote 
-                  // TODO: Je moet er ook voor zorgen dat het niet onder 0 kan gaan door controle te doen of er nog genoeg ingredienten zijn voor die hamburger (in de frontend)
-                  // TODO: zorg ook dat hij de extras er af doet en de removables niet
-                  await this.ingredientService.updateStockByName(i.name, i.stock);
-                });
+              if (totalIngredients[ingredient]) {
+                totalIngredients[ingredient] += product.amount;
+              } else {
+                totalIngredients[ingredient] = product.amount;
+              }
             }
-        })
+            for (const extra of product.extras) {
+              if (totalIngredients[extra]) {
+                totalIngredients[extra] += product.amount;
+              }
+              else {
+                totalIngredients[extra] = product.amount;
+              }
+            }
+            if (product.sauce != 'No Sauce') {
+              if (totalIngredients[product.sauce]) {
+                totalIngredients[product.sauce] += 25 * product.amount;
+              }
+              else {
+                totalIngredients[product.sauce] = 25 * product.amount;
+              }
+            }
+            for (const removeable of product.removeables) {
+              if (totalIngredients[removeable]) {
+                totalIngredients[removeable] -= product.amount;
+              }
+            }
+          }
+          if (p.category == "Drinks") {
+            for (const ingredient of p.ingredients) {
+              if (totalIngredients[ingredient]) {
+                if (product.size == "Small") {
+                  totalIngredients[ingredient] += (200 * product.amount);
+                }
+                if (product.size == "Medium") {
+                  totalIngredients[ingredient] += (250 * product.amount);
+                }
+                if (product.size == "Large") {
+                  totalIngredients[ingredient] += (300 * product.amount);
+                }
+              } else {
+                if (product.size == "Small") {
+                  totalIngredients[ingredient] = (200 * product.amount);
+                }
+                if (product.size == "Medium") {
+                  totalIngredients[ingredient] = (250 * product.amount);
+                }
+                if (product.size == "Large") {
+                  totalIngredients[ingredient] = (300 * product.amount);
+                }
+              }
+            }
+          }
+        }
+
+        // Check if there is enough stock for all products in the order
+        for (const ingredient of Object.keys(totalIngredients)) {
+          const stockItem = await this.stocksService.findByName(ingredient);
+          if (stockItem.stock < totalIngredients[ingredient]) {
+            throw new Error(`Onvoldoende voorraad voor ingrediënt: ${ingredient}`);
+          }
+        }
+
+        // Update the stock of all ingredients, extras, removeables and sauces of all products in the order
+        for (const ingredient of Object.keys(totalIngredients)) {
+          const stockItem = await this.stocksService.findByName(ingredient);
+          stockItem.stock = stockItem.stock - totalIngredients[ingredient];
+          await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
+        }
+
+        // Create the order
+        const order = await this.ordersService.create(createOrderInput);
+        return order;
+
+
+      } 
+      catch (error) {
+        throw new Error(`Fout bij verwerken order: ${error.message}`);
       }
-      return order;
   }
+    
 
   @Query(() => [Order], { name: 'orders' })
   findAll() {

@@ -21,15 +21,16 @@
                                 <select v-if="selectedProduct.category !== 'Burgers'" v-model="selectedSize" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option v-for="size in selectedProduct.size" :key="size" :value="size">{{ size }}</option>
                                 </select>
-                                <h6 v-if="selectedProduct.category === 'Burgers'" class="h6 mt-4">Sauce:</h6>
+                                <h6 v-if="selectedProduct.category === 'Burgers'" class="h6">Sauce:</h6>
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
-                                    <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce">{{ sauce }}</option>
+                                    <option :value="[]" :selected="selectedSauce.length === 0">No Sauce</option>
+                                    <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce" :class="{ 'hidden': sauce.stock < 25 || isSauceAvailable(sauce) == false, 'bg-white': sauce.stock > 0 || isSauceAvailable(sauce) == true }">{{ sauce.name }}</option>
                                 </select>
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
-                                <div class="flex flex-col">
-                                    <label v-for="extra in selectedProduct.extra" :key="extra" class="flex items-center mt-1 cursor-pointer select-none">
-                                        <input type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
-                                        {{ extra }}
+                                <div  v-for="extra in selectedProduct.extra" class="flex flex-col">
+                                    <label v-if="extra.stock >= extra.stockReduction && listExtras.filter((item: any) => item.ingredient === extra.name).map((item: any) => item.stock)[0] !=0" :key="extra.name" class="flex items-center mt-1 cursor-pointer select-none">
+                                        <input v-if="extra.stock >= extra.stockReduction" type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
+                                        {{ extra.name }}
                                     </label>
                                 </div>
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Removables:</h6>
@@ -52,7 +53,6 @@
 <script lang="ts">
 import { X, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { Product as IProduct } from '../interfaces/Product';
 
 export default {
     components: {
@@ -62,9 +62,10 @@ export default {
     },
     setup() {
         const soldProducts = ref([
-            { name: '', productId: "", image: "", price: 0, amount: 1, size: '', category: '', sauce: '', toppings: [''], removables: [''], extraCost: 0, ingredients: [''] }
+            { name: '', productId: "", image: "", price: 0, amount: 1, size: '', category: '', sauce: {}, toppings: {}, removables: [''], extraCost: 0, ingredients: [''] }
         ]);
 
+        
         return {
             soldProducts,
         };
@@ -75,6 +76,14 @@ export default {
             type: Boolean,
             required: true,
         },
+        listExtras: {
+            type: Array,
+            required: true,
+        },
+        listSauces: {
+            type: Array,
+            required: true,
+        },
         selectedProduct: {
             type: Object,
             required: true,
@@ -83,7 +92,7 @@ export default {
     data() {
         return {
             selectedSize: "Medium",
-            selectedSauce: 'Ketchup',
+            selectedSauce: [],
             selectedToppings: [],
             selectedRemovables: [],
         };
@@ -96,7 +105,7 @@ export default {
             const soldProduct = {
                 productName: this.selectedProduct.name,
                 name: this.selectedProduct.name,
-                image: this.selectedProduct.image,
+                image: this.selectedProduct.image,  
                 price: this.selectedProduct.price,
                 amount: 1,
                 size: this.selectedSize,
@@ -107,13 +116,20 @@ export default {
                 extraCost: this.selectedToppings.length * 0.5,
                 ingredients: this.selectedProduct.ingredients,
             };
-
             this.$emit('product-submitted', soldProduct);
             this.clearForm();
         },
+        isSauceAvailable(sauce: any) {
+            if (sauce.stock <= 25 && this.listSauces.filter((item: any) => item.ingredient === sauce.name).map((item: any) => item.stock)[0] !== undefined || this.listSauces.filter((item: any) => item.ingredient === sauce.name).map((item: any) => item.stock)[0] < 25) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        },
         clearForm() {
             this.selectedSize = "Medium";
-            this.selectedSauce = 'Ketchup';
+            this.selectedSauce = [];
             this.selectedToppings = [];
             this.selectedRemovables = [];
         },

@@ -21,7 +21,9 @@ export class OrdersService {
     const o = new Order()
     o.shopId = CreateOrderInput.shopId
     o.totalPrice = CreateOrderInput.totalPrice
-    o.createdAt = new Date()
+    const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 1);
+    o.createdAt = currentDate;   
     o.soldProducts = CreateOrderInput.soldProducts
     await this.orderRepository.save(o)
     return o
