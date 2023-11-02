@@ -47,11 +47,6 @@
                                     </div>
                                 </div>
                                 <div v-if="product.size.length > 1">
-                                    <!-- <div v-if="getIngredientWithMinStock(product, soldProducts) >= 0.66 && getIngredientWithMinStock(product, soldProducts) < 1" class="flex justify-center gap-2">
-                                        <button @click="handleSizeClick(product, 'Small')" :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold bg-opacity-100']">S</button>
-                                        <button class="w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold bg-opacity-100 cursor-not-allowed">M</button>
-                                        <button class="w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold bg-opacity-100 cursor-not-allowed">L</button>
-                                    </div> -->
                                     <div  class="flex justify-center gap-2">
                                         <button v-for="size of product.size" @click="handleSizeClick(product, size)" 
                                                 :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold', getSelectedClass(product.id, size)]">
@@ -182,8 +177,6 @@ import type { SoldProduct as ISoldProduct, SoldProduct } from '../../../interfac
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GET_SHOP, CREATE_ORDER } from '../../../graphql/shop.query'
 import useFirebase from '@/composables/useFirebase';
-import { constants } from 'buffer';
-import { Console } from 'console';
 
 const { firebaseUser } = useFirebase()
 
@@ -202,7 +195,6 @@ export default {
         const shopName : any = ref<string>('')
         const { result, loading, error } = useQuery(GET_SHOP, {name: shopName});
         const { mutate, loading: loadingOrder, onDone } = useMutation<SoldProduct>(CREATE_ORDER);
-        const localIngredientStocks = ref<{ [productId: string]: number }>({});
         const soldProducts = ref<ISoldProduct[]>([]);
         const selectedSizes :any = ref({});   
         const router = useRouter()
@@ -348,10 +340,14 @@ export default {
         };
 
         const updateSoldProducts = (newSoldProduct: any, state: boolean) => {
+            console.log(newSoldProduct.name)
+            console.log(newSoldProduct.productName)
             for (let i = 0; i < soldProducts.value.length; i++) {
                 const soldProduct = soldProducts.value[i]; 
+                console.log(soldProduct.name)
                 if (
                     soldProduct.name === newSoldProduct.name &&
+                    soldProduct.productName === newSoldProduct.productName &&
                     (soldProduct.size === newSoldProduct.size || state) &&
                     JSON.stringify(soldProduct.sauce) === JSON.stringify(newSoldProduct.sauce) &&
                     JSON.stringify(soldProduct.toppings) === JSON.stringify(newSoldProduct.toppings) &&
@@ -362,10 +358,9 @@ export default {
                 }
             }
 
-            // Product niet gevonden, voeg het toe met hoeveelheid 1
             soldProducts.value.push(newSoldProduct);
 
-            return false; // Geef aan dat een nieuw product is toegevoegd
+            return false;
         };
 
         const handleProductSubmitted = (product : any) => {
@@ -440,9 +435,6 @@ export default {
                         extras: product.toppings.map((extra) => extra.name),
                     })),
                 };
-                console.log('---------')
-                console.log(order)
-                console.log('---------')
                 await mutate({ orderInput: order }).catch((error) => {
                     console.log(error);
                 });

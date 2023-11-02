@@ -21,13 +21,14 @@
                                 <select v-if="selectedProduct.category !== 'Burgers'" v-model="selectedSize" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option v-for="size in selectedProduct.size" :key="size" :value="size">{{ size }}</option>
                                 </select>
+                                <h6 v-if="selectedProduct.category === 'Burgers'" class="h6">Sauce:</h6>
                                 <select v-if="selectedProduct.category === 'Burgers'" v-model="selectedSauce" class="p-2 mt-2 border-3 border-primary-green hover:border-green-900 rounded-md cursor-pointer">
                                     <option :value="[]" :selected="selectedSauce.length === 0">No Sauce</option>
                                     <option v-for="sauce in selectedProduct.sauce" :key="sauce" :value="sauce" :class="{ 'hidden': sauce.stock < 25 || isSauceAvailable(sauce) == false, 'bg-white': sauce.stock > 0 || isSauceAvailable(sauce) == true }">{{ sauce.name }}</option>
                                 </select>
                                 <h6 v-if="selectedProduct.category == 'Burgers'" class="h6 mt-4">Extras (+ € 0.50):</h6>
                                 <div  v-for="extra in selectedProduct.extra" class="flex flex-col">
-                                    <label v-if="extra.stock >= extra.stockReduction && listExtras.filter(item => item.ingredient === extra.name).map(item => item.stock)[0] !=0" :key="extra.name" class="flex items-center mt-1 cursor-pointer select-none">
+                                    <label v-if="extra.stock >= extra.stockReduction && listExtras.filter((item: any) => item.ingredient === extra.name).map((item: any) => item.stock)[0] !=0" :key="extra.name" class="flex items-center mt-1 cursor-pointer select-none">
                                         <input v-if="extra.stock >= extra.stockReduction" type="checkbox" v-model="selectedToppings" :value="extra" class="mr-2 cursor-pointer">
                                         {{ extra.name }}
                                     </label>
@@ -52,10 +53,6 @@
 <script lang="ts">
 import { X, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { Product as IProduct } from '../interfaces/Product';
-
-//TODO: wat ik eingelijk nog moet doen is de function moet eingelijk een list zijn dus die moet ik als ik het mee stuur met de popup een soldProducts meegeven zodat het een list doorstuur
-// En dan moet ik die list gebruiken om te controleren of er nog genoeg stock is voor de saus en de toppings en dan moet ik die stock aanpassen
 
 export default {
     components: {
@@ -123,11 +120,7 @@ export default {
             this.clearForm();
         },
         isSauceAvailable(sauce: any) {
-            // console.log(sauce)
-            // console.log("-------------------")
-            // console.log(this.listSauces.filter(item => item.ingredient === sauce.name).map(item => item.stock)[0])
-            if (sauce.stock <= 25 && this.listSauces.filter(item => item.ingredient === sauce.name).map(item => item.stock)[0] !== undefined || this.listSauces.filter(item => item.ingredient === sauce.name).map(item => item.stock)[0] < 25) {
-                // Niet meer in stock
+            if (sauce.stock <= 25 && this.listSauces.filter((item: any) => item.ingredient === sauce.name).map((item: any) => item.stock)[0] !== undefined || this.listSauces.filter((item: any) => item.ingredient === sauce.name).map((item: any) => item.stock)[0] < 25) {
                 return false;
             }
             else {
