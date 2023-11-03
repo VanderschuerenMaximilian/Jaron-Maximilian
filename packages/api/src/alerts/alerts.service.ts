@@ -103,7 +103,7 @@ export class AlertsService {
 
   //seeding alerts
 
-  saveAllAlerts(alerts: any[]) {
+  saveAllAlerts(alerts: Alert[]) {
     return this.alertRepository.save(alerts)
   }
 

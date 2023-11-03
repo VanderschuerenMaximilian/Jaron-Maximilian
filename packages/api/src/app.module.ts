@@ -17,6 +17,8 @@ import { SoldProductsModule } from './sold-products/sold-products.module';
 import { OrdersModule } from './orders/orders.module';
 import { StocksModule } from './stocks/stocks.module';
 import { ZonesModule } from './zones/zones.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
 
 @Module({
   imports: [
@@ -59,6 +61,10 @@ import { ZonesModule } from './zones/zones.module';
     StocksModule,
 
     ZonesModule,
+
+    TicketsModule,
+
+    TicketPricesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -98,6 +98,30 @@ export class DatabaseSeedCommand {
     console.info('❌ Removed zones')
   }
 
+  // ------------ Ticket Prices ------------
+  // npx nestjs-command seed:database:ticket-prices
+  // npx nestjs-command seed:reset:ticket-prices
+
+  @Command({
+    command: 'seed:database:ticket-prices',
+    describe: 'Seed the database with ticket-prices',
+  })
+  async seedTicketPrices() {
+    console.info('🎟 Start seeding of ticket-prices')
+    const ticketPrices = await this.seedService.addTicketPricesFromJson()
+    console.info(`🎟 ${ticketPrices.length} TicketPrices are added`)
+  }
+
+  @Command({
+    command: 'seed:reset:ticket-prices',
+    describe: 'Delete all data from the ticket-prices table',
+  })
+  async deleteTicketPrices() {
+    console.info('🔪 Start deleting ticket-prices')
+    await this.seedService.deleteAllTicketPrices()
+    console.info('❌ Removed ticket-prices')
+  }
+
   // ------------ Shop ------------
   // npx nestjs-command seed:database:shops
   // npx nestjs-command seed:reset:shops
