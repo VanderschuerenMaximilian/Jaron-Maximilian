@@ -7,7 +7,7 @@
             <AlertCircle class="text-red-600 mt-2"/>
             <div class="w-10/12 flex flex-col justify-between h-full">
                 <h5 class="h5">{{ currentAlert.title }}</h5>
-                <p class="font-semibold text-sm">ADD THE ZONE!!!!!!!!!!</p>
+                <p class="font-semibold text-sm">ADD ZONE!!</p>
                 <p class="line-clamp-2">{{ currentAlert.description }}</p>
             </div>
         </div>
@@ -29,6 +29,9 @@ import { useMutation } from '@vue/apollo-composable';
 import { AlertState as IAlertState } from '@/interfaces/IAlertState';
 import type { Alert as IAlert } from '@/interfaces/IAlert';
 import useCustomPerson from '@/composables/useCustomPerson';
+import { GET_ZONE_BY_ID } from '@/graphql/zone.query';
+import { useQuery } from '@vue/apollo-composable';
+import type { Zone as IZone } from '@/interfaces/IZone';
 
 export default {
     props: ['alert'],
@@ -41,8 +44,19 @@ export default {
     setup(props) {
         const { customPerson } = useCustomPerson();
         const currentAlert = ref<IAlert>(props.alert);
+        const zone = ref<IZone>();
         const isVisible = ref<boolean>(true);
         const { mutate: updateAlertState, loading: acceptingAlert, error } = useMutation(UPDATE_ALERT_STATE);
+        // const { onResult } = useQuery(GET_ZONE_BY_ID, () => ({
+        //     id: currentAlert.value.zoneId,
+        // }));
+
+        // onResult((result) => {
+        //     console.log(result);
+        //     if (result.data) {
+        //         zone.value = result.data?.zone;
+        //     } 
+        // });
 
         const closePopUp = () => {
             isVisible.value = false;
@@ -78,6 +92,7 @@ export default {
             IAlertState,
             currentAlert,
             isVisible,
+            zone,
 
             acceptAlert,
             closePopUp,

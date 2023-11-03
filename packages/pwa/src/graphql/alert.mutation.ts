@@ -6,6 +6,7 @@ export const CREATE_ALERT = gql`
             id
             title
             description
+            zoneId
             createdBy
             createdAt
             updatedAt
