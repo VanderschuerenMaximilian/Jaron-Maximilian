@@ -62,7 +62,7 @@ export default {
         })
         const router = useRouter();
         const loginCredentials = ref({
-            email: 'test@employee.bellewaerde.be',
+            email: 'test@management.bellewaerde.be',
             password: 'test123'
         })
 

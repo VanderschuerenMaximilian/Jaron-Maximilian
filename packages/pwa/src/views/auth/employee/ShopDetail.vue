@@ -340,8 +340,6 @@ export default {
         };
 
         const updateSoldProducts = (newSoldProduct: any, state: boolean) => {
-            console.log(newSoldProduct.name)
-            console.log(newSoldProduct.productName)
             for (let i = 0; i < soldProducts.value.length; i++) {
                 const soldProduct = soldProducts.value[i]; 
                 console.log(soldProduct.name)

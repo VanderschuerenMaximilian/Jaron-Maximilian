@@ -16,49 +16,49 @@
                 </select> -->
             </div>
             <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
-                <RouterLink to="overview" class="w-full dashboard-link">
+                <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
                 <li class="flex w-full gap-4">
                         <Box class="w-6 h-6 ml-[37%]" />
                         <span>Overview</span>
                 </li>
                 </RouterLink>
-                <RouterLink to="finances" class="w-full dashboard-link">
+                <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Finances</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="employees" class="w-full dashboard-link">
+                <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Employees</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="visitors" class="w-full dashboard-link">
+                <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Visitors</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="attractions" class="w-full dashboard-link">
+                <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Attrations</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="shops" class="w-full dashboard-link">
+                <RouterLink to="shops" class="w-full dashboard-link" @click="checkPath('shops')" :class="{ 'bg-secondary-green': path === 'shops' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Shops</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="stock" class="w-full dashboard-link">
+                <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Stock</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="alerts" class="w-full dashboard-link">
+                <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Alerts</span>
@@ -93,6 +93,7 @@ import useFirebase from '@/composables/useFirebase';
 import useLanguage from '@/composables/useLanguage';
 import { useI18n } from 'vue-i18n';
 import { SUPPORTED_LOCALES } from '@/bootstrap/i18n';
+import { onMounted, ref } from 'vue';
 
 export default {
     components: {
@@ -103,9 +104,13 @@ export default {
         const { signOutUser } = useFirebase()
         const { setLocale } = useLanguage()
         const { locale } = useI18n()
-
+        const path = ref('overview')
         const router = useRouter()
 
+        const checkPath = (route: string) => {
+            path.value = route    
+        }
+        
         const handleSignOut = () => {
             signOutUser(router)
         }
@@ -115,10 +120,15 @@ export default {
             setLocale(target.value)
         }
 
+        onMounted(() => {
+            checkPath(router.currentRoute.value.path.split('/')[router.currentRoute.value.path.split('/').length - 1])
+        })
+
         return {
             locale,
             SUPPORTED_LOCALES,
-
+            checkPath,
+            path,
             handleSignOut,
             setLanguage,
         }
