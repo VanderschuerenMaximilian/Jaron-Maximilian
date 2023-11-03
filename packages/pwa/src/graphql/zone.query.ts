@@ -9,3 +9,13 @@ query {
     }
 }
 `;
+
+export const GET_ZONE_BY_ID = gql`
+query getZone ($zoneId: String!) {
+  zone (id: $zoneId) {
+	id
+    name
+    description
+  }
+}
+`;

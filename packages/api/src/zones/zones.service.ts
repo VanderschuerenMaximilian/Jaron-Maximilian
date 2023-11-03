@@ -4,6 +4,7 @@ import { UpdateZoneInput } from './dto/update-zone.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Zone } from './entities/zone.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ZonesService {
@@ -30,8 +31,11 @@ export class ZonesService {
     return this.zoneRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} zone`;
+  findOne(id: string) {
+      if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+      // @ts-ignore
+      return this.zoneRepository.findOne({ _id: new ObjectId(id) })
   }
 
   update(id: number, updateZoneInput: UpdateZoneInput) {

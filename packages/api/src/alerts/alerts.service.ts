@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Delete, Get, Injectable, Param, Post } from '@nestjs/common';
 import { CreateAlertInput } from './dto/create-alert.input';
 import { UpdateAlertInput } from './dto/update-alert.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,8 +7,6 @@ import { Repository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { AlertState } from 'src/interfaces/IAlertState';
 import { PersonsService } from 'src/persons/persons.service';
-import { UpdatePersonInput } from 'src/persons/dto/update-person.input';
-import { Person } from 'src/persons/entities/person.entity';
 
 @Injectable()
 export class AlertsService {
@@ -18,8 +16,8 @@ export class AlertsService {
     private readonly personService: PersonsService,
   ) {}
 
-
-  create(createAlertInput: CreateAlertInput): Promise<Alert> {
+  @Post()
+  create(@Body() createAlertInput: CreateAlertInput): Promise<Alert> {
     try {
       const a = new Alert()
       a.title = createAlertInput.title
@@ -35,7 +33,8 @@ export class AlertsService {
     }
   }
 
-  async update(updateAlertInput: UpdateAlertInput) {
+  @Post()
+  async update(@Body() updateAlertInput: UpdateAlertInput) {
     try {
       const toUpdateAlert = await this.findOneById(updateAlertInput.id)
       if (!toUpdateAlert) throw new Error('Alert not found')
@@ -57,7 +56,8 @@ export class AlertsService {
     }
   }
 
-  async addPersonToAlert(alertId: string, personId: string): Promise<Alert> {
+  @Post()
+  async addPersonToAlert(@Param() alertId: string,@Param() personId: string): Promise<Alert> {
     const alert = await this.findOneById(alertId)
 
     if (!alert) throw new Error('Alert not found')
@@ -76,11 +76,13 @@ export class AlertsService {
     return this.alertRepository.save(alert)
   }
 
+  @Get()
   findAll(): Promise<Alert[]> {
     return this.alertRepository.find();
   }
 
-  findOneById(id: string): Promise<Alert> {
+  @Get(':id')
+  findOneById(@Param('id') id: string): Promise<Alert> {
 
       if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
 
@@ -88,8 +90,15 @@ export class AlertsService {
       return this.alertRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} alert`;
+  @Delete(':id')
+  async remove(id: string) {
+    try {
+      const alert = await this.alertRepository.delete(id);
+      console.log(alert)
+      return alert
+    } catch (error) {
+      throw error
+    }
   }
 
   //seeding alerts

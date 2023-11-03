@@ -5,6 +5,7 @@ export const ALL_ALERTS = gql`
         alerts {
             title
             description
+            zoneId
             state
             createdBy
     }
@@ -17,6 +18,7 @@ export const FIND_ALERT_BY_ID = gql`
             id
             title
             description
+            zoneId
             state
             persons {
                 id
