@@ -22,7 +22,7 @@ export class StocksService {
   create(createStockInput: CreateStockInput): Promise<Stock> {
     const s = new Stock()
     s.name = createStockInput.name
-    s.facilityId = createStockInput.facilityId
+    s.facilityName = createStockInput.facilityName
     s.price = createStockInput.price
     s.stock = createStockInput.stock
     s.stockReduction = createStockInput.stockReduction
@@ -43,6 +43,19 @@ export class StocksService {
     return await this.stockRepository.save(stock);
   }
 
+  async updateStock(name: string, facilityName: string, newStock: number): Promise<Stock> {
+
+    const stock = await this.stockRepository.findOne({ where: { name, facilityName } });
+  
+    if (!stock) {
+      throw new NotFoundException(`Stock with name ${name} and facilityName ${facilityName} not found`);
+    }
+      stock.stock = newStock;
+  
+    return await this.stockRepository.save(stock);
+  }
+  
+
   async findByName(name: string): Promise<Stock | null> {
     const shop = await this.stockRepository.findOne({ where: { name } })
 
@@ -52,6 +65,17 @@ export class StocksService {
 
     return shop
   }
+
+  async findByFacilityName(facilityName: string): Promise<Stock[] | null> {
+    const stocks = await this.stockRepository.find({ where: { facilityName } });
+  
+    if (!stocks || stocks.length === 0) {
+      throw new NotFoundException(`Stocks with facilityName ${facilityName} not found`);
+    }
+  
+    return stocks;
+  }
+  
 
   findOne(id: number) {
     return `This action returns a #${id} stock`;

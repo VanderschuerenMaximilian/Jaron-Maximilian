@@ -6,7 +6,7 @@ export class CreateStockInput {
   name: string;
 
   @Field(() => String)
-  facilityId: string;
+  facilityName: string;
 
   @Field(() => Float)
   price: number;

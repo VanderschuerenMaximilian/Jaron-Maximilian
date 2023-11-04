@@ -27,7 +27,7 @@ export class OrderSoldProductInput {
 @InputType()
 export class CreateOrderInput {
   @Field()
-  shopId: string;
+  shopName: string;
 
   @Field(() => [OrderSoldProductInput])
   soldProducts: OrderSoldProductInput[];

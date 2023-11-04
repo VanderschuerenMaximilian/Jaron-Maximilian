@@ -10,7 +10,7 @@ export class Stock {
 
   @Column()
   @Field(() => String)
-  facilityId: string
+  facilityName: string
 
   @Column()
   @Field(() => String)

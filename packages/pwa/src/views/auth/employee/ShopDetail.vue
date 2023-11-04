@@ -384,7 +384,7 @@ export default {
         };
         onMounted(() => {
             if (router.currentRoute.value.params.id) {
-                shopName.value = router.currentRoute.value.params.shopId
+                shopName.value = router.currentRoute.value.params.shopName
             }
             if (scrollContainer.value) {
                 scrollContainer.value.addEventListener('scroll', handleScroll);
@@ -419,7 +419,7 @@ export default {
                 orderCompleted.value = true
 
                 const order = {
-                    shopId: shopName.value,
+                    shopName: shopName.value,
                     totalPrice: totalPrice.value,
                     soldProducts: soldProducts.value.map((product) => ({
                         productName: product.productName,

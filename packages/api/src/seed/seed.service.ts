@@ -214,7 +214,7 @@ export class SeedService {
     let theOrders: Order[] = []
     for (let order of orders) {
       const o = new Order()
-      o.shopId = order.shopId
+      o.shopName = order.shopName
       o.totalPrice = order.totalPrice
       o.soldProducts = order.soldProducts
 
@@ -231,7 +231,7 @@ export class SeedService {
     let theStocks: Stock[] = []
     for (let stock of stocks) {
       const s = new Stock()
-      s.facilityId = stock.facilityId
+      s.facilityName = stock.facilityName
       s.name = stock.name
       s.price = stock.price
       s.stock = stock.stock
