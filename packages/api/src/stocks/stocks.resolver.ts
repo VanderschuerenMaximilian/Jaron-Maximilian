@@ -25,15 +25,33 @@ export class StocksResolver {
     return this.stocksService.findByName(name)
   }
 
+  @Query(() => [String], { name: 'uniqueFacilityNames' })
+  async getUniqueFacilityNames(): Promise<string[]> {
+    const stocks = await this.stocksService.findAll();
+    const uniqueFacilityNames = Array.from(new Set(stocks.map(stock => stock.facilityName)));
+    return uniqueFacilityNames;
+  }
+
+  @Query(() => [Stock], { name: 'stocksByFacilityName' })
+  async getStocksByFacilityName(
+    @Args('facilityName') facilityName: string,
+  ): Promise<Stock[] | null> {
+    return this.stocksService.findByFacilityName(facilityName);
+  }
+
   @Query(() => Stock, { name: 'stock' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.stocksService.findOne(id);
   }
 
   @Mutation(() => Stock)
-  updateStock(@Args('updateStockInput') updateStockInput: UpdateStockInput) {
-    return this.stocksService.update(updateStockInput.id, updateStockInput);
-  }
+    updateStock(
+      @Args('name') name: string,
+      @Args('facilityName') facilityName: string,
+      @Args('newStock', { type: () => Int }) newStock: number,
+    ) {
+      return this.stocksService.updateStock(name, facilityName, newStock);
+    }
 
   @Mutation(() => Stock)
   removeStock(@Args('id', { type: () => Int }) id: number) {

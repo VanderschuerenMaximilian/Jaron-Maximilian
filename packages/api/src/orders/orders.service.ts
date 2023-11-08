@@ -19,7 +19,7 @@ export class OrdersService {
 
   async create(CreateOrderInput: CreateOrderInput): Promise<Order> {
     const o = new Order()
-    o.shopId = CreateOrderInput.shopId
+    o.shopName = CreateOrderInput.shopName
     o.totalPrice = CreateOrderInput.totalPrice
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 1);

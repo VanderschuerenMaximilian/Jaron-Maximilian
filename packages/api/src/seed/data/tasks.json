@@ -1,0 +1,36 @@
+[
+    {
+        "personId": "user789",
+        "workblockId": "workblock012",
+        "title": "Refreshing Drinks",
+        "description": "Preparing refreshing drinks for an event",
+        "createdAt": "2023-11-08T17:00:00.000Z",
+        "stockItems": [
+          {"name": "Refreshing Lemonade", "stock": 3},
+          {"name": "Iced Caramel Macchiato", "stock": 2},
+          {"name": "Berry Blast Smoothie", "stock": 4}
+        ]
+    },
+    {
+        "personId": "user456",
+        "workblockId": "workblock789",
+        "title": "Main Stock Replenishment",
+        "description": "Replenishing main stock items for the day",
+        "createdAt": "2023-11-08T15:45:00.000Z",
+        "stockItems": [
+          {"name": "Beef Patty", "stock": 5},
+          {"name": "Cheese", "stock": 3},
+          {"name": "Onion", "stock": 4},
+          {"name": "Tomato", "stock": 5},
+          {"name": "Lettuce", "stock": 3},
+          {"name": "Bacon", "stock": 4},
+          {"name": "Sesame Seed Bun", "stock": 5},
+          {"name": "Jalapeño", "stock": 2},
+          {"name": "Pickles", "stock": 3},
+          {"name": "Fried Egg", "stock": 2},
+          {"name": "Refreshing Lemonade", "stock": 2},
+          {"name": "Iced Caramel Macchiato", "stock": 3},
+          {"name": "Berry Blast Smoothie", "stock": 4}
+        ]
+    }    
+]

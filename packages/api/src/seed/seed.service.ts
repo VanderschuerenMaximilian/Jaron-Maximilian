@@ -43,6 +43,10 @@ import { OrdersService } from 'src/orders/orders.service'
 import * as stocks from './data/stocks.json'
 import { Stock } from 'src/stocks/entities/stock.entity'
 import { StocksService } from 'src/stocks/stocks.service'
+// Task
+import * as tasks from './data/tasks.json'
+import { Task } from 'src/tasks/entities/task.entity'
+import { TasksService } from 'src/tasks/tasks.service'
 
 @Injectable()
 export class SeedService {
@@ -57,6 +61,7 @@ export class SeedService {
     private soldProductsService: SoldProductsService,
     private ordersService: OrdersService,
     private stocksService: StocksService,
+    private tasksService: TasksService,
   ) {}
 
   // -------------------- Person --------------------
@@ -239,7 +244,7 @@ export class SeedService {
     let theOrders: Order[] = []
     for (let order of orders) {
       const o = new Order()
-      o.shopId = order.shopId
+      o.shopName = order.shopName
       o.totalPrice = order.totalPrice
       o.soldProducts = order.soldProducts
 
@@ -256,7 +261,7 @@ export class SeedService {
     let theStocks: Stock[] = []
     for (let stock of stocks) {
       const s = new Stock()
-      s.facilityId = stock.facilityId
+      s.facilityName = stock.facilityName
       s.name = stock.name
       s.price = stock.price
       s.stock = stock.stock
@@ -272,6 +277,27 @@ export class SeedService {
   }
   async deleteAllStocks(): Promise<void> {
     return this.stocksService.truncate()
+  }
+
+  // -------------------- Task --------------------
+  async addTasksFromJson(): Promise<Task[]> {
+    let theTasks: Task[] = []
+    for (let task of tasks) {
+      const t = new Task()
+      t.personId = task.personId
+      t.workblockId = task.workblockId
+      t.title = task.title
+      t.description = task.description
+      t.createdAt = new Date()
+      t.stockItems = task.stockItems
+
+      theTasks.push(t)
+    }
+
+    return this.tasksService.saveAllTasks(theTasks)
+  }
+  async deleteAllTasks(): Promise<void> {
+    return this.tasksService.truncate()
   }
 
 

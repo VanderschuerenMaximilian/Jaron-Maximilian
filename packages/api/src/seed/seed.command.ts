@@ -257,5 +257,28 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllStocks()
     console.info('🪶 Removed stocks')
   }
+
+  // ------------ Tasks ------------
+  // npx nestjs-command seed:database:tasks
+  // npx nestjs-command seed:reset:tasks
+  @Command({
+    command: 'seed:database:tasks',
+    describe: 'Seed the database with tasks',
+  })
+  async seedTasks() {
+    console.info('🪺 Start seeding of tasks')
+    const tasks = await this.seedService.addTasksFromJson()
+    console.info(`🛒 ${tasks.length} Tasks are added`)
+  }
+  @Command({
+    command: 'seed:reset:tasks',
+    describe: 'Delete all data from the tasks table',
+  })
+  async deleteTasks() {
+    console.info('🔪 Start deleting tasks')
+    await this.seedService.deleteAllTasks()
+    console.info('🪶 Removed tasks')
+  }
+
 }
 

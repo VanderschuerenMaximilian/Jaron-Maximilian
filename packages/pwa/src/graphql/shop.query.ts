@@ -34,7 +34,7 @@ export const CREATE_ORDER = gql`
 mutation CreateOrderByVariables($orderInput: CreateOrderInput!) {
   createOrder(createOrderInput: $orderInput) {
     id
-    shopId
+    shopName
     totalPrice
     createdAt
     soldProducts {

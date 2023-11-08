@@ -2,7 +2,7 @@
 [
   {
     "name": "Beef Patty",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 2.00,
     "stock": 10,
     "stockReduction": 1,
@@ -12,7 +12,7 @@
   },
   {
     "name": "Cheese",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.50,
     "stock": 10,
     "stockReduction": 1,
@@ -22,7 +22,7 @@
   },
   {
     "name": "Onion",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.50,
     "stock": 10,
     "stockReduction": 1,
@@ -32,7 +32,7 @@
   },
   {
     "name": "Tomato",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.50,
     "stock": 10,
     "stockReduction": 1,
@@ -42,7 +42,7 @@
   },
   {
     "name": "Lettuce",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.25,
     "stock": 10,
     "stockReduction": 1,
@@ -52,7 +52,7 @@
   },
   {
     "name": "Bacon",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 1.00,
     "stock": 10,
     "stockReduction": 1,
@@ -62,7 +62,7 @@
   },
   {
     "name": "Avocado",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 1.50,
     "stock": 10,
     "stockReduction": 1,
@@ -72,7 +72,7 @@
   },
   {
     "name": "Cilantro",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.30,
     "stock": 10,
     "stockReduction": 1,
@@ -82,7 +82,7 @@
   },
   {
     "name": "Sesame Seed Bun",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.75,
     "stock": 10,
     "stockReduction": 1,
@@ -92,7 +92,7 @@
   },
   {
     "name": "Jalapeño",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.75,
     "stock": 10,
     "stockReduction": 1,
@@ -102,97 +102,87 @@
   },
   {
     "name": "Ketchup",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.25,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Mustard",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.25,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Mayonnaise",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.30,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Curry Ketchup",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.35,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Bicky",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.45,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
-  },
-  {
-    "name": "Mustard",
-    "facilityId" : "",
-    "price": 0.45,
-    "stock": 100,
-    "stockReduction": 25,
-    "unit": "ml",
-    "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Joppie sauce",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.45,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Garlic Aioli",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.40,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Chipotle Ranch",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.40,
     "stock": 100,
     "stockReduction": 25,
     "unit": "ml",
     "minStock": 5,
-    "maxStock": 20
+    "maxStock": 10000
   },
   {
     "name": "Pickles",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 0.50,
     "stock": 10,
     "stockReduction": 1,
@@ -202,7 +192,7 @@
   },
   {
     "name": "Fried Egg",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 1.00,
     "stock": 10,
     "stockReduction": 1,
@@ -212,7 +202,7 @@
   },
   {
     "name": "Crispy bacon",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 1.00,
     "stock": 10,
     "stockReduction": 1,
@@ -222,7 +212,7 @@
   },
   {
     "name": "Refreshing Lemonade",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 2.99,
     "stock": 1000,
     "stockReduction": 250,
@@ -232,7 +222,7 @@
   },
   {
     "name": "Iced Caramel Macchiato",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 4.49,
     "stock": 1000,
     "stockReduction": 250,
@@ -242,12 +232,252 @@
   },
   {
     "name": "Berry Blast Smoothie",
-    "facilityId" : "",
+    "facilityName" : "Boomerang Snack",
     "price": 3.99,
     "stock": 1000,
     "stockReduction": 250,
     "unit": "ml",
     "minStock": 500,
     "maxStock": 10000
+  },
+  {
+    "name": "Beef Patty",
+    "facilityName" : "Main Stock",
+    "price": 2.00,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "piece",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Cheese",
+    "facilityName" : "Main Stock",
+    "price": 0.50,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Onion",
+    "facilityName" : "Main Stock",
+    "price": 0.50,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "piece",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Tomato",
+    "facilityName" : "Main Stock",
+    "price": 0.50,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Lettuce",
+    "facilityName" : "Main Stock",
+    "price": 0.25,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "leaf",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Bacon",
+    "facilityName" : "Main Stock",
+    "price": 1.00,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Avocado",
+    "facilityName" : "Main Stock",
+    "price": 1.50,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Cilantro",
+    "facilityName" : "Main Stock",
+    "price": 0.30,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "bunch",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Sesame Seed Bun",
+    "facilityName" : "Main Stock",
+    "price": 0.75,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "piece",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Jalapeño",
+    "facilityName" : "Main Stock",
+    "price": 0.75,
+    "stock": 70000,
+    "stockReduction": 1,
+    "unit": "piece",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Ketchup",
+    "facilityName" : "Main Stock",
+    "price": 0.25,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Mustard",
+    "facilityName" : "Main Stock",
+    "price": 0.25,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Mayonnaise",
+    "facilityName" : "Main Stock",
+    "price": 0.30,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Curry Ketchup",
+    "facilityName" : "Main Stock",
+    "price": 0.35,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Bicky",
+    "facilityName" : "Main Stock",
+    "price": 0.45,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Joppie sauce",
+    "facilityName" : "Main Stock",
+    "price": 0.45,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Garlic Aioli",
+    "facilityName" : "Main Stock",
+    "price": 0.40,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Chipotle Ranch",
+    "facilityName" : "Main Stock",
+    "price": 0.40,
+    "stock": 10000,
+    "stockReduction": 25,
+    "unit": "ml",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Pickles",
+    "facilityName" : "Main Stock",
+    "price": 0.50,
+    "stock": 10000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 25000
+  },
+  {
+    "name": "Fried Egg",
+    "facilityName" : "Main Stock",
+    "price": 1.00,
+    "stock": 50000,
+    "stockReduction": 1,
+    "unit": "piece",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Crispy bacon",
+    "facilityName" : "Main Stock",
+    "price": 1.00,
+    "stock": 50000,
+    "stockReduction": 1,
+    "unit": "slice",
+    "minStock": 5,
+    "maxStock": 100000
+  },
+  {
+    "name": "Refreshing Lemonade",
+    "facilityName" : "Main Stock",
+    "price": 2.99,
+    "stock": 100000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 250000
+  },
+  {
+    "name": "Iced Caramel Macchiato",
+    "facilityName" : "Main Stock",
+    "price": 4.49,
+    "stock": 100000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 250000
+  },
+  {
+    "name": "Berry Blast Smoothie",
+    "facilityName" : "Main Stock",
+    "price": 3.99,
+    "stock": 100000,
+    "stockReduction": 250,
+    "unit": "ml",
+    "minStock": 500,
+    "maxStock": 250000
   }
 ]

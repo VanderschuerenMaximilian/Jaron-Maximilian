@@ -35,7 +35,7 @@ export class Order {
 
   @Column()
   @Field()
-  shopId: string;
+  shopName: string;
 
   @Column()
   @Field()
