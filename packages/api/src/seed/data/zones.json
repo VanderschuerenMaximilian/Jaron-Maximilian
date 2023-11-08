@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Mexico",
+        "description": "At the entrance to the park" 
+    },
+    {
+        "name": "Far West",
+        "description": "The zone where Mexico leads you to"
+    },
+    {
+        "name": "Jungle",
+        "description": "The zone where Far West leads you to"
+    },
+    {
+        "name": "Savanne",
+        "description": "The zone where Jungle leads you to"
+    },
+    {
+        "name": "Kids Park",
+        "description": "The zone where Savanne leads you to"
+    },
+    {
+        "name": "India",
+        "description": "The zone where Kids Park leads you to"
+    },
+    {
+        "name": "Canada",
+        "description": "The zone where India leads you to"
+    }
+]

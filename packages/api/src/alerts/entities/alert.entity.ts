@@ -1,50 +1,68 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { ObjectId } from 'mongodb';
-import { Column, CreateDateColumn, Entity, ObjectIdColumn,  } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm';
 import { AlertState as IAlertState } from 'src/interfaces/IAlertState';
 import { Person } from 'src/persons/entities/person.entity';
-import { Type } from 'class-transformer';
-import { IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsDate, IsDefined, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @Entity()
 @ObjectType()
 export class Alert {
+  @IsDefined()
   @Field(() => ID)
   @ObjectIdColumn()
   id: string;
 
+  @IsString()
   @IsNotEmpty()
   @Column()
   @Field()
   title: string;
 
+  @IsString()
   @IsNotEmpty()  
   @Column()
   @Field()
   description: string;
 
+  @IsEnum(IAlertState)
   @IsNotEmpty()
   @Column()
   @Field()
   state: IAlertState;
 
+  @IsOptional()
+  @IsNotEmpty()
   @Field(() => [Person], { nullable: 'itemsAndList' })
   @Column({ nullable: true })
   persons: Person[];
 
-  @Column()
+  @IsMongoId()
+  @IsOptional()
+  @IsString()
+  @Column({ nullable: true })
   @Field({ nullable: true })
   assignedPersonId: string;
 
+  @IsMongoId()
+  @IsString()
+  @IsNotEmpty()
+  @Column()
+  @Field()
+  zoneId: string;
+
+  @IsString()
+  @IsNotEmpty()
   @Column()
   @Field()
   createdBy: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  @Field()
+  @IsDate()
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
   createdAt: Date;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  @Field()
+  @IsDate()
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
   updatedAt: Date;
 }

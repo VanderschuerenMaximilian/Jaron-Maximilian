@@ -11,6 +11,10 @@ import { Alert } from 'src/alerts/entities/alert.entity'
 import { AlertsService } from 'src/alerts/alerts.service'
 import { JobType } from 'src/interfaces/IJobType'
 import { AlertState } from 'src/interfaces/IAlertState'
+// Zone
+import * as zones from './data/zones.json'
+import { Zone } from 'src/zones/entities/zone.entity'
+import { ZonesService } from 'src/zones/zones.service'
 // Shop
 import * as shops from './data/shops.json'
 import { Shop } from 'src/shops/entities/shop.entity'
@@ -49,6 +53,7 @@ export class SeedService {
   constructor(
     private personsService: PersonsService,
     private alertsService: AlertsService,
+    private zonesService: ZonesService,
     private shopsService: ShopsService,
     private categoriesService: CategoriesService,
     private productsService: ProductsService,
@@ -105,6 +110,26 @@ export class SeedService {
   }
   async deleteAllAlerts(): Promise<void> {
     return this.alertsService.truncate()
+  }
+
+  // -------------------- Zone --------------------
+  async addZonesFromJson(): Promise<Zone[]> {
+    let theZones: Zone[] = []
+    for (let zone of zones) {
+      const z = new Zone()
+      z.name = zone.name
+      z.description = zone.description
+      z.createdAt = new Date()
+      z.updatedAt = new Date()
+      
+      theZones.push(z)
+    }
+
+    return this.zonesService.saveAllZones(theZones)
+  }
+
+  async deleteAllZones(): Promise<void> {
+    return this.zonesService.truncate()
   }
 
   // -------------------- Shop --------------------
