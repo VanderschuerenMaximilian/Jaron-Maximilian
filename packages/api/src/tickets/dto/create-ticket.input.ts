@@ -1,7 +1,14 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
+import { IsNumber, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTicketInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @IsPositive()
+  @IsNumber()
+  @Field()
+  price: number;
+
+  @IsString()
+  @Field()
+  name: string;
 }

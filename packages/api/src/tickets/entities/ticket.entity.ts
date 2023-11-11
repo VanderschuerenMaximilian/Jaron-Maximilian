@@ -1,7 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { IsEnum } from 'class-validator';
-import { Column, ObjectIdColumn, Entity } from 'typeorm';
-import { TicketPrize as ITicketPrize } from 'src/interfaces/ITicketPrize';
+import { IsBoolean, IsDate, IsNumber, IsPositive, IsString } from 'class-validator';
+import { Column, ObjectIdColumn, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -10,24 +9,32 @@ export class Ticket {
   @ObjectIdColumn()
   id: string;
 
-  // @IsEnum(ITicketPrize)
-  // @Field()
-  // @Column()
-  // prize: number;
+  @IsNumber()
+  @IsPositive()
+  @Field()
+  @Column()
+  price: number;
 
+  @IsString()
+  @Field()
+  @Column()
+  name: string;
+
+  @IsBoolean()
   @Field()
   @Column()
   isActive: boolean;
 
+  @IsDate()
   @Field()
   @Column()
   expirationDate: Date;
 
   @Field()
-  @Column()
+  @CreateDateColumn({ type: 'timestamp', nullable: true })
   createdAt: Date;
 
   @Field()
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt: Date;
 }
