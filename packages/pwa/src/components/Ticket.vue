@@ -3,7 +3,7 @@
         <div class="h-full">
             <h5 class="h5 mb-3">{{ ticketPrice.name }}</h5>
             <p><span>{{ ticketPrice.price }}</span>$</p>
-            {{ setAmountToNull }}
+            <!-- {{ setAmountToNull }} -->
         </div>
         <div class="flex items-end justify-center w-1/3 gap-2">
             <button @click="removeTicket"
@@ -53,7 +53,7 @@ export default {
 
         watch(() => props.setAmountToNull,
             (newVal) => {
-                console.log('setAmountToNull in child', newVal);
+                // console.log('setAmountToNull in child', newVal);
                 if (newVal) handleCountChange();
             },
             { immediate: true }

@@ -1,5 +1,5 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTicketInput {
@@ -11,4 +11,8 @@ export class CreateTicketInput {
   @IsString()
   @Field()
   name: string;
+
+  @IsMongoId()
+  @Field()
+  personId: string;
 }

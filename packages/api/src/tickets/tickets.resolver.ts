@@ -13,10 +13,10 @@ export class TicketsResolver {
     return this.ticketsService.create(createTicketInput);
   }
 
-  // @Mutation(() => [Ticket])
-  // createTickets(@Args('createTicketInput') createTicketInput: CreateTicketInput) {
-  //   return this.ticketsService.create(createTicketInput);
-  // }
+  @Mutation(() => [Ticket])
+  createTickets(@Args('createTicketsInput', { type: () => [CreateTicketInput] }) createTicketsInput: CreateTicketInput[] ) {
+    return this.ticketsService.createTickets(createTicketsInput);
+  }
 
   @Query(() => [Ticket], { name: 'tickets' })
   findAll() {

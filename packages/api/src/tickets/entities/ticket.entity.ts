@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { IsBoolean, IsDate, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
 import { Column, ObjectIdColumn, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
@@ -8,6 +8,11 @@ export class Ticket {
   @Field(() => ID)
   @ObjectIdColumn()
   id: string;
+
+  @IsMongoId()
+  @Field()
+  @Column()
+  personId: string;
 
   @IsNumber()
   @IsPositive()
@@ -28,7 +33,7 @@ export class Ticket {
   @IsDate()
   @Field()
   @Column()
-  expirationDate: Date;
+  expiresAt: Date;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp', nullable: true })

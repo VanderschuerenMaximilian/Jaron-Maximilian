@@ -35,7 +35,7 @@
                             <p>Total:</p>
                             <p>{{ "€ " + toPayPrice }}</p>
                         </div>
-                        <button class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+                        <button @click="handleCheckOut" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
                         <p v-if="!isTickets" class="absolute right-20 text-red-600 font-medium select-none ">There are no tickets selected.</p> 
                         </div>
                     </div>
@@ -45,9 +45,12 @@
 <script lang="ts">
 import { ref, watch, watchEffect } from 'vue';
 import { X } from 'lucide-vue-next';
-import { GET_TICKET_PRICES } from '@/graphql/ticket-prices';
-import { useQuery } from '@vue/apollo-composable';
+import { GET_TICKET_PRICES } from '@/graphql/ticket-price.query';
+import { CREATE_TICKETS } from '@/graphql/ticket.mutation';
+import { useMutation, useQuery } from '@vue/apollo-composable';
 import Ticket from '@/components/Ticket.vue';
+import useCustomPerson from '@/composables/useCustomPerson';
+import { useQRCode } from '@vueuse/integrations/useQRCode'
 
 export default {
     components: {
@@ -55,13 +58,15 @@ export default {
         X,
     },
     setup() {
+        const { customPerson } = useCustomPerson();
         const ticketPrices = ref();
         const soldTickets = ref<any>([]);
         const toPayPrice = ref<number>(0);
         const { result } = useQuery(GET_TICKET_PRICES);
+        const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
         const isTickets = ref<boolean>(false);
         const setAmountToNull = ref<boolean>(false);
-        
+
         watch(result, (value) => {
             console.log(value.ticketPrices);
             ticketPrices.value = value.ticketPrices;
@@ -93,7 +98,7 @@ export default {
         };
 
         const handleSetAmountToNull = (setAmountToNull: any) => {
-            console.log('setAmountToNull in tickets', setAmountToNull)
+            // console.log('setAmountToNull in tickets', setAmountToNull)
             if (setAmountToNull) setAmountToNull.value = false;
         }
 
@@ -123,6 +128,33 @@ export default {
             setAmountToNull.value = true;
         };
 
+        const handleCheckOut = async () => {
+            const tickets = ref<any>([]);
+            soldTickets.value.map((ticket: any) => {
+                for (let i = 0; i < ticket.amount; i++) {
+                    const qrCode = useQRCode('')
+
+                    tickets.value.push({
+                        name: ticket.name,
+                        price: ticket.price,
+                        personId: customPerson.value?.id,
+                    });
+                }
+            })
+            
+            mutate({
+                ticketsInput: tickets.value,
+            })
+
+            soldTickets.value.map((ticket: any) => {
+                ticket.amount = 0;
+            });
+        };
+
+        onDone((result) => {
+            console.log(result);
+        });
+
         return {
             isTickets,
             setAmountToNull,
@@ -130,11 +162,11 @@ export default {
             ticketPrices,
             toPayPrice,
 
+            handleCheckOut,
             handleDeleteTicketAmount,
             handleSetAmountToNull,
             handleWatchCount,
         };
     },
 };
-
 </script>
