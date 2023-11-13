@@ -19,6 +19,7 @@ export class ShopsResolver {
 
   @Mutation(() => Shop)
   createShop(@Args('createShopInput') createShopInput: CreateShopInput) {
+    console.log(createShopInput)
     return this.shopsService.create(createShopInput)
   }
 

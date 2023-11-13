@@ -40,28 +40,18 @@ import { ZonesModule } from './zones/zones.module';
     AlertsModule,
     AuthenticationModule,
     PersonsModule,
-
     SeedModule,
-
     AlertsModule,
-
     ShopsModule,
-
     CategoriesModule,
-
     ProductsModule,
-
     IngredientsModule,
-
     SoldProductsModule,
-
     OrdersModule,
-
     StocksModule,
-
     TasksModule,
-
     ZonesModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
