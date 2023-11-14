@@ -8,7 +8,7 @@ export const CREATE_TICKETS = gql`
             price
             personId
             isActive
-            expiresAt
+            usableOn
             createdAt
             updatedAt
         }

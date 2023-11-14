@@ -19,16 +19,17 @@ export class TicketsService {
     try {
       const t = new Ticket()
       const today = new Date()
-      const expirationDate = new Date(today)
-      expirationDate.setFullYear(today.getFullYear() + 1)
+      const usableDate = new Date(t.usableOn)
+      usableDate.setHours(0,0,0,0)
 
       t.price = createTicketInput.price
       t.name = createTicketInput.name
       t.personId = createTicketInput.personId
       t.isActive = false
-      t.expiresAt = expirationDate
+      t.usableOn = usableDate
       t.createdAt = new Date(today)
       t.updatedAt = new Date(today)
+      t.qrCode = createTicketInput.qrCode
 
       return this.ticketRepository.save(t)
     }
@@ -42,22 +43,23 @@ export class TicketsService {
   createTickets(@Body() createTicketsInput: CreateTicketInput[]): Promise<Ticket[]> {
     try {
       const today = new Date()
-      const expirationDate = new Date(today)
-      expirationDate.setFullYear(today.getFullYear() + 1)
 
       const tickets = createTicketsInput.map(t => {
         const ticket = new Ticket()
+        const usableDate = new Date(t.usableOn)
+        usableDate.setHours(0,0,0,0)
+
         ticket.price = t.price
         ticket.name = t.name
         ticket.personId = t.personId
         ticket.isActive = false
         ticket.qrCode = t.qrCode
-        ticket.expiresAt = expirationDate
+        ticket.usableOn = usableDate
         ticket.createdAt = new Date(today)
         ticket.updatedAt = new Date(today)
         return ticket
       })
-
+      
       return this.ticketRepository.save(tickets)
     }
     catch (error) {

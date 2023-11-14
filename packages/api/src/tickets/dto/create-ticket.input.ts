@@ -1,5 +1,5 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
+import { InputType, Field } from '@nestjs/graphql';
+import { IsDate, IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTicketInput {
@@ -19,4 +19,8 @@ export class CreateTicketInput {
   @IsString()
   @Field()
   qrCode: string;
+
+  @IsDate()
+  @Field()
+  usableOn: Date;
 }

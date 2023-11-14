@@ -73,6 +73,7 @@ export default {
         const loadingTickets = ref<number[]>([1,2])
         const soldTickets = ref<any>([]);
         const toPayPrice = ref<number>(0);
+        const dateToUse = ref<Date>(new Date());
         const { result, loading: ticketPriceLoading } = useQuery(GET_TICKET_PRICES);
         const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
         const isTickets = ref<boolean>(false);
@@ -160,6 +161,7 @@ export default {
                             price: ticket.price,
                             personId: customPerson.value?.id,
                             qrCode: qrCode,
+                            usableOn: dateToUse.value, 
                         });
                     }
                 })

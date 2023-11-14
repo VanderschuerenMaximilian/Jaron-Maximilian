@@ -38,7 +38,7 @@ export class Ticket {
   @IsDate()
   @Field()
   @Column()
-  expiresAt: Date;
+  usableOn: Date;
 
   @IsDate()
   @Field()

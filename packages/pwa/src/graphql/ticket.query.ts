@@ -8,7 +8,7 @@ export const GET_TICKETS_BY_PERSON_ID = gql`
             price
             personId
             qrCode
-            expiresAt
+            usableOn
         }
     }
 `;
