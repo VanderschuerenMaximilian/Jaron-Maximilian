@@ -1,0 +1,71 @@
+<template>
+    <section @click="openPopUp" class="flex justify-between w-[600px] h-[160px] px-8 py-6 bg-white rounded-md hover:cursor-pointer">
+            <div class="">
+                <h5 class="h5 mb-3">{{ ticket.name }}</h5>
+                <p>Valid until: <span class="font-semibold">{{ expireDate }}</span></p>
+            </div>
+            <div class="w-[100px] h-full flex items-center"> 
+                <img :src="ticket.qrCode" alt="QrCode of the ticket">
+            </div>
+    </section>
+    <div v-if="showPopUp" class="z-50 absolute w-full h-[97.8%] top-0 left-0 bg-black bg-opacity-60 flex justify-center items-center">
+        <div class="flex flex-col gap-4 justify-center items-end p-5 bg-black w-fit rounded-xl">
+            <X @click="closePopUp" class="cursor-pointer scale-125 text-slate-100"/>
+            <div class="w-[400px] h-[400px] bg-slate-100 p-5 rounded-lg">
+                <img :src="ticket.qrCode" alt="QrCode of the ticket"
+                class="w-full h-full">
+            </div>
+            <div class="w-full flex flex-col justify-center items-center">
+                <h5 class="h4 text-slate-100">{{ ticket.name }}</h5>
+                <p class="text-xs text-slate-100">{{ ticket.id }}</p>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { ref } from 'vue';
+import { X } from 'lucide-vue-next';
+export default {
+    props: ['ticket'],
+    components: {
+        X,
+    },
+    setup(props) {
+        const ticket = ref(props.ticket);
+        const showPopUp = ref<boolean>(false);
+        const handleExpireDate = (inputDateString: string) => {
+            const inputDate = new Date(inputDateString);
+
+            // Date options (English month)
+            const dateOptions = { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' };
+            const dateString = inputDate.toLocaleDateString('en-US', dateOptions as Intl.DateTimeFormatOptions);
+
+            // Time options
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Paris' };
+            const timeString = inputDate.toLocaleTimeString('en-US', timeOptions as Intl.DateTimeFormatOptions);
+            // console.log(`${dateString} || ${timeString}`);
+            return dateString;
+        }
+
+        const openPopUp = () => {
+            showPopUp.value = true;
+        }
+
+        const closePopUp = () => {
+            showPopUp.value = false;
+        }
+
+        const expireDate = ref<String>(handleExpireDate(ticket.value.expiresAt));
+
+        return {
+            expireDate,
+            showPopUp,
+            ticket,
+
+            closePopUp,
+            openPopUp,
+        }
+    }
+}
+</script>

@@ -52,7 +52,8 @@ const login = async (email: string, password: string, router: Router): Promise<U
                     router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
                 }
                 else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
-                    router.push("/auth/employee/" + firebaseUser.value?.uid + '/profile')
+                    // TODO: change to profile after finishing tickets
+                    router.push("/auth/employee/" + firebaseUser.value?.uid + '/qrscanner')
                 } else if (splitEmail?.[1].includes("management.bellewaerde.be")) {
                     router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
                 } else {

@@ -1,9 +1,10 @@
-import { Body, Injectable, Post } from '@nestjs/common';
+import { Body, Get, Injectable, Post } from '@nestjs/common';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
 import { Repository } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 
 @Injectable()
@@ -50,6 +51,7 @@ export class TicketsService {
         ticket.name = t.name
         ticket.personId = t.personId
         ticket.isActive = false
+        ticket.qrCode = t.qrCode
         ticket.expiresAt = expirationDate
         ticket.createdAt = new Date(today)
         ticket.updatedAt = new Date(today)
@@ -63,19 +65,32 @@ export class TicketsService {
     }
   }
 
-  findAll() {
-    return `This action returns all tickets`;
+  @Get()
+  findAll(): Promise<Ticket[]> {
+    return this.ticketRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  @Get(':personId')
+  findAllByPersonId(personId: string): Promise<Ticket[]> {
+    if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
+
+    // @ts-ignore
+    return this.ticketRepository.find({ where: { personId: personId } })
   }
 
-  update(id: number, updateTicketInput: UpdateTicketInput) {
-    return `This action updates a #${id} ticket`;
+  @Get(':id')
+  findOne(@Body('id') id: string): Promise<Ticket> {
+      if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+      // @ts-ignore
+      return this.ticketRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
-  }
+  // update(id: number, updateTicketInput: UpdateTicketInput) {
+  //   return `This action updates a #${id} ticket`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} ticket`;
+  // }
 }

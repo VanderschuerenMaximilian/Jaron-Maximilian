@@ -2,7 +2,7 @@
     <section class="flex justify-between w-[600px] h-[160px] px-8 py-6 bg-white rounded-md">
         <div class="h-full">
             <h5 class="h5 mb-3">{{ ticketPrice.name }}</h5>
-            <p><span>{{ ticketPrice.price }}</span>$</p>
+            <p>€ <span>{{ ticketPrice.price }}</span></p>
             <!-- {{ setAmountToNull }} -->
         </div>
         <div class="flex items-end justify-center w-1/3 gap-2">

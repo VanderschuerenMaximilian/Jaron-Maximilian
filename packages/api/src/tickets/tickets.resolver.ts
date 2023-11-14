@@ -23,18 +23,23 @@ export class TicketsResolver {
     return this.ticketsService.findAll();
   }
 
+  @Query(() => [Ticket], { name: 'ticketsByPersonId' })
+  findAllByPersonId(@Args('personId', { type: () => String }) personId: string) {
+    return this.ticketsService.findAllByPersonId(personId);
+  }
+
   @Query(() => Ticket, { name: 'ticket' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('ticketId', { type: () => String }) id: string) {
     return this.ticketsService.findOne(id);
   }
 
-  @Mutation(() => Ticket)
-  updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
-    return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
-  }
+  // @Mutation(() => Ticket)
+  // updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
+  //   return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
+  // }
 
-  @Mutation(() => Ticket)
-  removeTicket(@Args('id', { type: () => Int }) id: number) {
-    return this.ticketsService.remove(id);
-  }
+  // @Mutation(() => Ticket)
+  // removeTicket(@Args('id', { type: () => Int }) id: number) {
+  //   return this.ticketsService.remove(id);
+  // }
 }

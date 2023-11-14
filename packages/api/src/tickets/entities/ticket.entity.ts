@@ -30,15 +30,22 @@ export class Ticket {
   @Column()
   isActive: boolean;
 
+  @IsString()
+  @Field()
+  @Column()
+  qrCode: string;
+  
   @IsDate()
   @Field()
   @Column()
   expiresAt: Date;
 
+  @IsDate()
   @Field()
   @CreateDateColumn({ type: 'timestamp', nullable: true })
   createdAt: Date;
 
+  @IsDate()
   @Field()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt: Date;

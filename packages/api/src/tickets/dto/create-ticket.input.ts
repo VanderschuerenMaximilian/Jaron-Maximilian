@@ -15,4 +15,8 @@ export class CreateTicketInput {
   @IsMongoId()
   @Field()
   personId: string;
+
+  @IsString()
+  @Field()
+  qrCode: string;
 }
