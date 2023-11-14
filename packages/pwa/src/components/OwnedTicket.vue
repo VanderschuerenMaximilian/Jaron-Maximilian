@@ -2,7 +2,7 @@
     <section @click="openPopUp" class="flex justify-between w-[600px] h-[160px] px-8 py-6 bg-white rounded-md hover:cursor-pointer">
             <div class="">
                 <h5 class="h5 mb-3">{{ ticket.name }}</h5>
-                <p>Valid until: <span class="font-semibold">{{ expireDate }}</span></p>
+                <p>Valid on: <span class="font-semibold">{{ usableDate }}</span></p>
             </div>
             <div class="w-[100px] h-full flex items-center"> 
                 <img :src="ticket.qrCode" alt="QrCode of the ticket">
@@ -56,10 +56,10 @@ export default {
             showPopUp.value = false;
         }
 
-        const expireDate = ref<String>(handleExpireDate(ticket.value.expiresAt));
+        const usableDate = ref<String>(handleExpireDate(ticket.value.usableOn));
 
         return {
-            expireDate,
+            usableDate,
             showPopUp,
             ticket,
 
