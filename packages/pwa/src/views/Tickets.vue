@@ -15,36 +15,27 @@
                         </div>
                     </div>
                     <div class="flex justify-center" v-else v-for="ticket in result.ticketPrices">
-                        <Ticket :ticketPrice="ticket" :setAmountToNull="setAmountToNull" @watchCount="handleWatchCount" @setAmountToNull="handleSetAmountToNull"/>
+                        <Ticket :ticketPrice="ticket" :setAmountToNull="setAmountToNull" @watchCount="handleWatchCount"/>
                     </div>
                 </div>
             </section>
             <aside>
                         <div class=" w-100 h-full bg-slate-200 flex flex-col py-1">
                             <h3 class="h3 text-center mt-8">Your Tickets</h3>
-                            <div  v-if="isTickets"  class="flex flex-col scroll max-h-60vh overflow-auto px-2 gap-4 mt-8 mx-auto" ref="scrollContainer">
+                            <div v-if="toPay > 0" class="flex flex-col scroll max-h-60vh overflow-auto px-2 gap-4 mt-8 mx-auto" ref="scrollContainer">
                                 <div v-for="soldTicket of soldTickets">
-                                    <div v-if="soldTicket.amount > 0" class="flex relative w-90 bg-white items-center p-4 gap-3 rounded-2xl">
-                                        <div>
-                                            <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">Ticket</p>
-                                            <p class="text-3">{{ soldTicket.name }}</p>
-                                            <p class="text-3">amount: {{ soldTicket.amount }}</p>
-                                            <p class="text-3 text-primary-green font-bold mt-2">{{ "€ " + soldTicket.price }}</p>
-                                        </div>
-                                        <X class="absolute right-4 top-4 cursor-pointer" @click="handleDeleteTicketAmount"/>
-                                    </div>
+                                    <SoldTicket :soldTicket="soldTicket"/>
                                 </div> 
                             </div>
                             <div v-else class="">
                                 <p class="text-center mt-8">No items in cart</p>
                             </div>
 
-
                             <div class="mt-auto p-6">
                             <hr class="border-t-2 border-dotted border-black">
                             <div class="flex justify-between font-bold py-4">
                                 <p>Total:</p>
-                                <p>{{ "€ " + toPayPrice }}</p>
+                                <p>{{ "€ " + toPay }}</p>
                             </div>
                             <button @click="goToDate" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Next</button>
                             <p v-if="!isTickets" class="absolute right-20 text-red-600 font-medium select-none">There are no tickets selected.</p> 
@@ -76,13 +67,14 @@
     </main>
 </template>
 <script lang="ts">
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { X, MoveLeft } from 'lucide-vue-next';
-import { GET_TICKET_PRICES } from '@/graphql/ticket-price.query';
 import { CREATE_TICKETS } from '@/graphql/ticket.mutation';
-import { useMutation, useQuery } from '@vue/apollo-composable';
+import { useMutation } from '@vue/apollo-composable';
 import Ticket from '@/components/Ticket.vue';
+import SoldTicket from '@/components/SoldTicket.vue';
 import useCustomPerson from '@/composables/useCustomPerson';
+import useTicketPurchase from '@/composables/useTicketPurchase';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { RouterLink } from 'vue-router';
 import type { Rules } from 'async-validator'
@@ -92,6 +84,7 @@ import router from '@/bootstrap';
 export default {
     components: {
         Ticket,
+        SoldTicket,
         X,
         MoveLeft,
         RouterLink,
@@ -113,30 +106,11 @@ export default {
         }
         const { pass, errorFields } = useAsyncValidator(newTicketData, rules)
         const { customPerson } = useCustomPerson();
-        const ticketPrices = ref();
+        const { calcTotalPrice, soldTickets, result, ticketPriceLoading, isTickets, toPay } = useTicketPurchase();
         const loadingTickets = ref<number[]>([1,2])
-        const soldTickets = ref<any>([]);
-        const toPayPrice = ref<number>(0);
         const chooseDate = ref<boolean>(false);
-        const { result, loading: ticketPriceLoading } = useQuery(GET_TICKET_PRICES);
         const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
-        const isTickets = ref<boolean>(false);
         const setAmountToNull = ref<boolean>(false);
-
-        watchEffect(() => {
-            if (result.value) {
-                ticketPrices.value = result.value.ticketPrices;
-
-                soldTickets.value = result.value.ticketPrices.map((ticket: any) => {
-                    return {
-                        id: ticket.id,
-                        amount: 0,
-                        price: ticket.price,
-                        name: ticket.name,
-                    };
-                });
-            }
-        });
 
         const handleWatchCount = (payload: any) => {
             soldTickets.value.map((ticket: any) => {
@@ -154,23 +128,10 @@ export default {
             console.log(soldTickets.value)
         };
 
-        const handleSetAmountToNull = (setAmountToNull: any) => {
-            // console.log('setAmountToNull in tickets', setAmountToNull)
-            if (setAmountToNull) setAmountToNull.value = false;
-        }
-
-        const calcTotalPrice = () => {
-            isTickets.value = true;
-            let totalPrice = 0;
-            soldTickets.value.forEach((ticket: any) => {
-                totalPrice += ticket.amount * ticket.price;
-            });
-            toPayPrice.value = Math.round(totalPrice * 100) / 100;
-
-            if (toPayPrice.value === 0) {
-                isTickets.value = false;
-            }
-        };
+        // const handleSetAmountToNull = (setAmountToNull: any) => {
+        //     console.log('setAmountToNull in tickets', setAmountToNull)
+        //     if (setAmountToNull) setAmountToNull.value = false;
+        // }
 
         watchEffect(() => {
             if (soldTickets) {
@@ -246,13 +207,14 @@ export default {
             setAmountToNull,
             soldTickets,
             ticketPriceLoading,
-            ticketPrices,
-            toPayPrice,
+            // ticketPrices,
+            // toPayPrice,
+            toPay,
 
             goToDate,
             handleCheckOut,
             handleDeleteTicketAmount,
-            handleSetAmountToNull,
+            // handleSetAmountToNull,
             handleWatchCount,
             returnToTickets,
         };
