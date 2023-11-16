@@ -1,51 +1,114 @@
 <template>
-    <main class="pt-[70px] min-h-screen flex justify-center items-center">
-        <div class="w-[350px]">
-            <!-- hey -->
-            <QrcodeStream @decode="onDecode"/>
-            {{ something }}
-        </div>
+    <main class="pt-[70px] min-h-screen">
+      <div>
+        <p class="decode-result px-[5%]">
+          Last result: <b class="text-xs break-all">{{ result }}</b>
+        </p>
+        <p>
+            ticketId: <b class="text-xs break-all">{{ ticketId }}</b>
+        </p>
+
+        <qrcode-stream class="h-1/2" :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
+          <div v-if="validationSuccess" class="validation-success">This is a URL</div>
+
+          <div v-if="validationFailure" class="validation-failure">This is NOT a URL!</div>
+
+          <div v-if="validationPending" class="validation-pending">Long validation in progress...</div>
+        </qrcode-stream>
+      </div>
+      <button v-if="goNext" @click="toggleNext" class="px-5 py-3 bg-secondary-green text-slate-100 hover:bg-primary-green transition-colors">Scan Next</button>
     </main>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
 import { QrcodeStream } from 'vue-qrcode-reader';
+import { UPDATE_TICKET } from '@/graphql/ticket.mutation';
+import { useMutation } from '@vue/apollo-composable';
 
 export default {
-    // methods: {
-    //     onDecode(result: any) {
-    //         // Send the result (ticket ID) to your server
-    //         this.verifyTicket(result);
-    //     },
-    //     verifyTicket(ticketId: string) {
-    //         console.log(ticketId);
-    //         // Make an API call to your backend to check if the ticket exists
-    //         // and perform necessary actions
-    //         // You might want to use a Vuex store to manage state and communicate
-    //         // between components.
-    //     },
-    // },
-    components: {
-        QrcodeStream,
-    },
-    setup() {
-        const something = ref<string>('');
-        const verifyTicket = (ticketId: string) => {
-            console.log(ticketId);
-            something.value = ticketId;
-        }
+    components: { QrcodeStream },
 
-        const onDecode = (result: any) => {
-            console.log(result)
-            verifyTicket(result);
-        }
-
+    data() {
         return {
-            something,
+            isValid: false,
+            paused: false,
+            goNext: false,
+            result: '',
+            ticketId: '',
+        }
+    },
 
-            onDecode,
+    computed: {
+        validationPending() {
+            return this.isValid === undefined && this.paused
+        },
+
+        validationSuccess() {
+            return this.isValid === true
+        },
+
+        validationFailure() {
+            return this.isValid === false
+        }
+    },
+
+    methods: {
+        onError: console.error,
+
+        resetValidationState() {
+            this.isValid = false
+        },
+
+        onDetect([firstDetectedCode] :any) {
+            const { mutate: updateTicket } = useMutation(UPDATE_TICKET)
+            this.result = firstDetectedCode.rawValue
+            this.paused = true
+
+            this.isValid = this.result.startsWith('http')
+
+            if (this.isValid) {
+                const params = new URLSearchParams(this.result)
+                const ticketId = params.get('ticketId')
+                this.ticketId = ticketId as string
+                updateTicket({id: ticketId}).then(() => {
+                    this.goNext = true
+                })
+            }
+        },
+
+        toggleNext() {
+            this.goNext = false
+            this.paused = false
         }
     }
-};
+}
 </script>
+
+<style scoped>
+.validation-success,
+.validation-failure,
+.validation-pending {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: black;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+.validation-success {
+    color: green;
+}
+
+.validation-failure {
+    color: red;
+}
+</style>

@@ -33,10 +33,10 @@ export class TicketsResolver {
     return this.ticketsService.findOne(id);
   }
 
-  // @Mutation(() => Ticket)
-  // updateTicket(@Args('updateTicketInput') updateTicketInput: UpdateTicketInput) {
-  //   return this.ticketsService.update(updateTicketInput.id, updateTicketInput);
-  // }
+  @Mutation(() => Ticket)
+  updateTicket(@Args('ticketId', { type: () => String }) id: string) {
+    return this.ticketsService.update(id);
+  }
 
   // @Mutation(() => Ticket)
   // removeTicket(@Args('id', { type: () => Int }) id: number) {

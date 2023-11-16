@@ -24,7 +24,7 @@ import useTicketPurchase from '@/composables/useTicketPurchase';
 import type { ITicketPurchase } from '@/interfaces/ITicketPurchase';
 
 export default {
-    props: ['ticketPrice', 'setAmountToNull'],
+    props: ['ticketPrice'],
     setup(props) {
         const { soldTickets } = useTicketPurchase();
         

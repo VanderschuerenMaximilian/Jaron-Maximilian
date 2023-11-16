@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     <div class="flex justify-center" v-else v-for="ticket in result.ticketPrices">
-                        <Ticket :ticketPrice="ticket" :setAmountToNull="setAmountToNull" @watchCount="handleWatchCount"/>
+                        <Ticket :ticketPrice="ticket"/>
                     </div>
                 </div>
             </section>
@@ -110,28 +110,6 @@ export default {
         const loadingTickets = ref<number[]>([1,2])
         const chooseDate = ref<boolean>(false);
         const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
-        const setAmountToNull = ref<boolean>(false);
-
-        const handleWatchCount = (payload: any) => {
-            soldTickets.value.map((ticket: any) => {
-                if (ticket.id === payload.id) {
-                    if (payload.amount === 0) {
-                        ticket.amount = 0;
-                    } else if (payload.amount > ticket.amount) {
-                        ticket.amount++;
-                    } else if (payload.amount < ticket.amount) {
-                        ticket.amount--;
-                    }
-                }
-            });
-
-            console.log(soldTickets.value)
-        };
-
-        // const handleSetAmountToNull = (setAmountToNull: any) => {
-        //     console.log('setAmountToNull in tickets', setAmountToNull)
-        //     if (setAmountToNull) setAmountToNull.value = false;
-        // }
 
         watchEffect(() => {
             if (soldTickets) {
@@ -143,7 +121,6 @@ export default {
             soldTickets.value.map((ticket: any) => {
                 ticket.amount = 0;
             });
-            setAmountToNull.value = true;
         };
 
         const goToDate = () => {
@@ -159,8 +136,7 @@ export default {
                 const tickets = ref<any>([]);
                 soldTickets.value.map((ticket: any) => {
                     for (let i = 0; i < ticket.amount; i++) {
-                        // TODO: change url here from ngrok
-                        const qrCode = useQRCode(`https://218c-2001-6a8-2480-6dba-e5c0-e4fa-102-f0ef.ngrok-free.app/ticket_detail?id=${customPerson.value?.id}&ticketId=${ticket.id}`, {
+                        const qrCode = useQRCode(`https://aa59-178-51-40-7.ngrok-free.app/ticket_detail?id=${customPerson.value?.id}&ticketId=${ticket.id}`, {
                             size: 200,
                             level: 'M',
                             margin: 0,
@@ -204,18 +180,13 @@ export default {
             newTicketData,
             pass,
             result,
-            setAmountToNull,
             soldTickets,
             ticketPriceLoading,
-            // ticketPrices,
-            // toPayPrice,
             toPay,
 
             goToDate,
             handleCheckOut,
             handleDeleteTicketAmount,
-            // handleSetAmountToNull,
-            handleWatchCount,
             returnToTickets,
         };
     },

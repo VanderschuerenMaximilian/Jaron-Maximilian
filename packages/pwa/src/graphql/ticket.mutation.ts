@@ -14,3 +14,13 @@ export const CREATE_TICKETS = gql`
         }
     }
 `;
+
+export const UPDATE_TICKET = gql`
+    mutation updateTicket ($ticketId: String!) {
+        updateTicket(ticketId: $ticketId) {
+            id
+            name
+            isActive
+        }
+    }
+`;

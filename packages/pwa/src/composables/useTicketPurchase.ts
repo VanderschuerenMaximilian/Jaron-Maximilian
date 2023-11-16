@@ -7,11 +7,12 @@ import { ref } from "vue";
 const soldTickets = ref<ITicketPurchase[]>([]);
 const toPay = ref<number>(0);
 const isTickets = ref<boolean>(false);
+const createSoldTickets = ref<boolean>(false);
 
 export default () => {
     const { result, loading: ticketPriceLoading } = useQuery(GET_TICKET_PRICES);
     
-    if (result.value) {
+    if (result.value && !createSoldTickets.value) {
         soldTickets.value = result.value.ticketPrices.map((ticket: ITicketPrices) => {
             return {
                 id: ticket.id,
@@ -20,6 +21,7 @@ export default () => {
                 name: ticket.name,
             };
         });
+        createSoldTickets.value = true;
     }
 
     const calcTotalPrice = () => {

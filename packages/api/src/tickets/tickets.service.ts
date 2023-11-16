@@ -77,7 +77,7 @@ export class TicketsService {
     if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
 
     // @ts-ignore
-    return this.ticketRepository.find({ where: { personId: personId } })
+    return this.ticketRepository.find({ where: { personId: personId, isActive: false } })
   }
 
   @Get(':id')
@@ -88,9 +88,20 @@ export class TicketsService {
       return this.ticketRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  // update(id: number, updateTicketInput: UpdateTicketInput) {
-  //   return `This action updates a #${id} ticket`;
-  // }
+  @Post()
+  async update(@Body('id') id: string) {
+    if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+    // @ts-ignore
+    const ticket = await this.ticketRepository.findOne({ _id: new ObjectId(id) })
+
+    if (!ticket) throw new Error('Ticket not found')
+
+    if (ticket.isActive) throw new Error('Ticket already used')
+    else ticket.isActive = true, ticket.updatedAt = new Date()
+
+    return this.ticketRepository.save(ticket)
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} ticket`;
