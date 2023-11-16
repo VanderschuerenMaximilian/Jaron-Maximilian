@@ -16,10 +16,6 @@ export class CreateTicketInput {
   @Field()
   personId: string;
 
-  @IsString()
-  @Field()
-  qrCode: string;
-
   @IsDate()
   @Field()
   usableOn: Date;

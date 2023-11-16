@@ -33,6 +33,11 @@ export class Ticket {
   @IsString()
   @Field()
   @Column()
+  validationId: string;
+
+  @IsString()
+  @Field()
+  @Column()
   qrCode: string;
   
   @IsDate()

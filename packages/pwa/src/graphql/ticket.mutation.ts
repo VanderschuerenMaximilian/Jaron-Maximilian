@@ -16,9 +16,11 @@ export const CREATE_TICKETS = gql`
 `;
 
 export const UPDATE_TICKET = gql`
-    mutation updateTicket ($ticketId: String!) {
-        updateTicket(ticketId: $ticketId) {
+    mutation updateTicket ($updateTicketInput: UpdateTicketInput!) {
+        updateTicket(updateTicketInput: $updateTicketInput) {
             id
+            validationId
+            qrCode
             name
             isActive
         }

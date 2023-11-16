@@ -5,7 +5,7 @@
           Last result: <b class="text-xs break-all">{{ result }}</b>
         </p>
         <p>
-            ticketId: <b class="text-xs break-all">{{ ticketId }}</b>
+            ticketId: <b class="text-xs break-all">{{ toValidateId }}</b>
         </p>
 
         <qrcode-stream class="h-1/2" :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
@@ -23,18 +23,24 @@
 <script lang="ts">
 import { QrcodeStream } from 'vue-qrcode-reader';
 import { UPDATE_TICKET } from '@/graphql/ticket.mutation';
+import { GET_TICKET_BY_VALIDATION_ID } from '@/graphql/ticket.query';
 import { useMutation } from '@vue/apollo-composable';
+import { useQuery } from '@vue/apollo-composable';
+import type { ITicket } from '@/interfaces/ITicket';
 
 export default {
-    components: { QrcodeStream },
+    components: { 
+        QrcodeStream,
+    },
 
     data() {
         return {
-            isValid: false,
-            paused: false,
-            goNext: false,
-            result: '',
-            ticketId: '',
+            isValid: undefined as boolean | undefined,
+            paused: false as boolean,
+            goNext: false as boolean,
+            result: '' as string,
+            toValidateId: '' as string,
+            ticket: {} as ITicket,
         }
     },
 
@@ -56,24 +62,61 @@ export default {
         onError: console.error,
 
         resetValidationState() {
-            this.isValid = false
+            this.isValid = undefined
         },
 
-        onDetect([firstDetectedCode] :any) {
-            const { mutate: updateTicket } = useMutation(UPDATE_TICKET)
-            this.result = firstDetectedCode.rawValue
-            this.paused = true
+        async onDetect([firstDetectedCode]: any) {
 
-            this.isValid = this.result.startsWith('http')
+                this.result = firstDetectedCode.rawValue;
+                this.paused = true;
 
-            if (this.isValid) {
-                const params = new URLSearchParams(this.result)
-                const ticketId = params.get('ticketId')
-                this.ticketId = ticketId as string
-                updateTicket({id: ticketId}).then(() => {
-                    this.goNext = true
-                })
-            }
+                // @ts-ignore
+                this.isValid = this.result.startsWith('http');
+
+                if (this.isValid) {
+                    const url = new URL(this.result);
+                    const ticketId = url.searchParams.get('ticketId');
+                    this.toValidateId = ticketId as string;
+                }
+
+                if (this.toValidateId !== '') {
+                    await this.fetchDetectedTicket(this.toValidateId);
+                    console.log('Ticket after the function:', this.ticket);
+                    if (this.ticket.validationId && this.toValidateId) {
+                        await this.updateDetectedTicket(this.ticket.id, this.toValidateId);
+                    }
+                }
+        },
+
+        async fetchDetectedTicket(validationId: string): Promise<void> {
+            return new Promise<void>(resolve => {
+                const { onResult } = useQuery(GET_TICKET_BY_VALIDATION_ID,{ validationId });
+                
+                onResult((result) => {
+                    if (result.data) {
+                        console.log('Ticket:', result);
+                        this.ticket = result.data.ticketByValidationId;
+                        resolve();
+                    }
+                });
+            })
+        },
+
+        async updateDetectedTicket(ticketId: string, validationId: string): Promise<void> {
+            return new Promise<void>(resolve => {
+                const { mutate: updateTicket, onDone } = useMutation(UPDATE_TICKET);
+                updateTicket({
+                    updateTicketInput: {
+                        id: ticketId,
+                        validationId,
+                    }
+                });
+                onDone((result) => {
+                    console.log('Ticket Result:', result);
+                    this.goNext = true;
+                    resolve();
+                });
+            })
         },
 
         toggleNext() {

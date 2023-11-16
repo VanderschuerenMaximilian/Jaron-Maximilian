@@ -12,3 +12,17 @@ export const GET_TICKETS_BY_PERSON_ID = gql`
         }
     }
 `;
+
+export const GET_TICKET_BY_VALIDATION_ID = gql`
+    query ticketByValidationId ($validationId: String!) {
+        ticketByValidationId (validationId: $validationId) {
+            id
+            name
+            personId
+            validationId
+            qrCode
+            isActive
+            usableOn
+        }
+    }
+`;

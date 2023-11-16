@@ -28,14 +28,19 @@ export class TicketsResolver {
     return this.ticketsService.findAllByPersonId(personId);
   }
 
+  @Query(() => Ticket, { name: 'ticketByValidationId' })
+  findOneByValidationId(@Args('validationId', { type: () => String }) validationId: string) {
+    return this.ticketsService.findOneByValidationId(validationId);
+  }
+
   @Query(() => Ticket, { name: 'ticket' })
   findOne(@Args('ticketId', { type: () => String }) id: string) {
     return this.ticketsService.findOne(id);
   }
 
   @Mutation(() => Ticket)
-  updateTicket(@Args('ticketId', { type: () => String }) id: string) {
-    return this.ticketsService.update(id);
+  updateTicket(@Args('updateTicketInput') updateAlertInput: UpdateTicketInput) {
+    return this.ticketsService.update(updateAlertInput);
   }
 
   // @Mutation(() => Ticket)

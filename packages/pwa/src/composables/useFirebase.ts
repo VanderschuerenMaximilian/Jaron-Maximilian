@@ -9,8 +9,6 @@ import {
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import type { Router } from 'vue-router';
-import router from '@/bootstrap';
-// import useCustomPerson from './useCustomPerson';
 
 const app = initializeApp({
     apiKey: import.meta.env.VITE_apiKey,
@@ -25,7 +23,6 @@ const auth = getAuth(app);
 // om te zorgen dat de gebruiker ingelogd blijft
 setPersistence(auth, browserLocalPersistence)
 const firebaseUser = ref<User | null>(auth.currentUser)
-// const { customPerson } = useCustomPerson()
 
 const restoreUser = async () => {
     return new Promise((resolve, reject) => {

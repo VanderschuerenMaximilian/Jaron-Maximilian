@@ -45,7 +45,10 @@
         </section>
         <section v-else class="mt-36 w-full flex justify-center">
             <MoveLeft @click="returnToTickets" class="absolute left-12 top-25 scale-150 cursor-pointer"/>
+            <!-- <form @submit.prevent="handleCheckOut" action="https://formsubmit.co/bearbanner00@gmail.com" method="POST" class="flex flex-col items-center justify-between w-fit h-3/4 bg-white py-8 px-6 rounded-md"> -->
             <form @submit.prevent="handleCheckOut" class="flex flex-col items-center justify-between w-fit h-3/4 bg-white py-8 px-6 rounded-md">
+                <!-- <input type="hidden" name="_autoresponse" value="Thank you for wanting to visit Bellewaerde! Your tickets have been succesfully bought. You can find them under the 'My Tickets' tab on your account."/> -->
+
                 <div class="flex flex-col">
                     <label for="usableOn">Please select the day you want to visit</label>
                     <input type="date" name="usableOn" id="usableOn" v-model="newTicketData.usableOn" class="bg-[#E7E7E7] w-[498px] py-2 px-3 rounded-md" :class="{ 'border-red-500': errorFields?.usableOn }">
@@ -75,7 +78,6 @@ import Ticket from '@/components/Ticket.vue';
 import SoldTicket from '@/components/SoldTicket.vue';
 import useCustomPerson from '@/composables/useCustomPerson';
 import useTicketPurchase from '@/composables/useTicketPurchase';
-import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { RouterLink } from 'vue-router';
 import type { Rules } from 'async-validator'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
@@ -136,20 +138,10 @@ export default {
                 const tickets = ref<any>([]);
                 soldTickets.value.map((ticket: any) => {
                     for (let i = 0; i < ticket.amount; i++) {
-                        const qrCode = useQRCode(`https://aa59-178-51-40-7.ngrok-free.app/ticket_detail?id=${customPerson.value?.id}&ticketId=${ticket.id}`, {
-                            size: 200,
-                            level: 'M',
-                            margin: 0,
-                            color: '#000000',
-                            background: '#ffffff',
-                            mime: 'image/png',
-                        })
-                        
                         tickets.value.push({
                             name: ticket.name,
                             price: ticket.price,
                             personId: customPerson.value?.id,
-                            qrCode: qrCode,
                             usableOn: newTicketData.value.usableOn, 
                         });
                     }
@@ -165,9 +157,10 @@ export default {
             }
         };
 
-        onDone((result) => {
-            console.log(result);
-            router.push(`/auth/visitor/${customPerson.value?.id}`);
+        onDone(() => {
+            setTimeout(() => {
+                router.replace(`/auth/visitor/${customPerson.value?.id}`);
+            }, 1000);
         });
 
         return {

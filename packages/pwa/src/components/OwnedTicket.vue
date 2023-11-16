@@ -11,7 +11,7 @@
     <div v-if="showPopUp" class="z-50 absolute w-full h-[97.8%] top-0 left-0 bg-black bg-opacity-60 flex justify-center items-center">
         <div class="flex flex-col gap-4 justify-center items-end p-5 bg-black w-fit rounded-xl">
             <X @click="closePopUp" class="cursor-pointer scale-125 text-slate-100"/>
-            <div class="w-[400px] h-[400px] bg-slate-100 p-5 rounded-lg">
+            <div class="w-[400px] h-[400px] bg-white p-5 rounded-lg">
                 <img :src="ticket.qrCode" alt="QrCode of the ticket"
                 class="w-full h-full">
             </div>
@@ -44,7 +44,7 @@ export default {
             // Time options
             const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Europe/Paris' };
             const timeString = inputDate.toLocaleTimeString('en-US', timeOptions as Intl.DateTimeFormatOptions);
-            // console.log(`${dateString} || ${timeString}`);
+
             return dateString;
         }
 
