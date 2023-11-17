@@ -109,11 +109,16 @@ export class TicketsService {
 
     // @ts-ignore
     const ticket = await this.ticketRepository.findOne({ _id: new ObjectId(updateTicketInput.id) })
-    console.log('updateTicketInput', updateTicketInput)
-    console.log('ticket', ticket)
+
     if (!ticket) throw new Error('Ticket not found')
     if (ticket.validationId !== updateTicketInput.validationId && ticket.id !== updateTicketInput.id) throw new Error('Invalid ticket')
     
+    const today = new Date()
+    today.setHours(0,0,0,0)
+    const usableDate = new Date(ticket.usableOn)
+    usableDate.setHours(0,0,0,0)
+    if (usableDate.getTime() !== today.getTime()) throw new Error('Ticket is not usable today')
+
     ticket.isActive = true
     ticket.updatedAt = new Date()
 
