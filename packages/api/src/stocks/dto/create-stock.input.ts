@@ -14,6 +14,9 @@ export class CreateStockInput {
   @Field(() => Int)
   stock: number;
 
+  @Field()
+  pending: number;
+
   @Field(() => Int)
   stockReduction: number;
 

@@ -265,6 +265,7 @@ export class SeedService {
       s.name = stock.name
       s.price = stock.price
       s.stock = stock.stock
+      s.pending = stock.pending
       s.stockReduction = stock.stockReduction
       s.unit = stock.unit
       s.minStock = stock.minStock
