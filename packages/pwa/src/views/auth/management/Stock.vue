@@ -115,9 +115,9 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import {  
     GET_STOCKS_BY_FACILITYNAME,
     GET_FACILITYNAMES,
-    UPDATE_STOCK_WITH_PENDING
-    // @ts-ignore
-} from '@/graphql/Stock.query'
+    UPDATE_STOCK_WITH_PENDING,
+} from '@/graphql/stock.query'
+import { CREATE_TASK } from '@/graphql/task.mutation'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
 import { AlertTriangle, X } from 'lucide-vue-next';
 import useFirebase from '@/composables/useFirebase'
@@ -223,7 +223,8 @@ export default {
         const { loading: stocksLoading, result: stocks, error: stocksError, refetch: refetchStocks } = useQuery(GET_STOCKS_BY_FACILITYNAME, { facilityName: selectedFacility.value });
         const { loading: mainStockLoading, result: mainStocks, error: mainStocksError } = useQuery(GET_STOCKS_BY_FACILITYNAME, { facilityName: 'Main Stock' });
         const { loading: facilityNamesLoading, result: facilityNames, error: facilityNamesError} = useQuery(GET_FACILITYNAMES);
-        const { mutate: updateStockWithPendingMutation } = useMutation(UPDATE_STOCK_WITH_PENDING);        
+        const { mutate: updateStockWithPendingMutation } = useMutation(UPDATE_STOCK_WITH_PENDING);      
+        const { mutate: createTaskMutation } = useMutation(CREATE_TASK);
         const selectedStocks = ref<any>({});
         const checkedStocks = ref<any>({});
         const isStockChanged = ref(false);
@@ -278,10 +279,33 @@ export default {
             isOrderChanged.value = true;
             isStockChanged.value = false;
 
-            await updateStockWithPendingMutation({
-                    facilityName: selectedFacility.value,
-                    ingredients: stockDifference,
+            try {
+                console.log({
+                        personId: customPerson.value?.id,
+                        title: 'Stock adjustment',
+                        description: 'A stock adjustment has been made.',
+                        shopName: selectedFacility.value,
+                        stockItems: stockDifference,
+                },);
+                await createTaskMutation({
+                    createTaskInput: {
+                        personId: customPerson.value?.id,
+                        title: 'Stock adjustment',
+                        description: 'A stock adjustment has been made.',
+                        shopName: selectedFacility.value,
+                        stockItems: stockDifference,
+                    },
+                    
                 });
+            } catch (error) {
+                console.error(error);
+            }
+
+            // ❗❗❗ ERROR eruit halen als je de mutation wilt testen ❗❗❗
+            await updateStockWithPendingMutation({
+                facilityName: selectedFacility.value,
+                ingredients: stockDifference,
+            });
 
             
         };

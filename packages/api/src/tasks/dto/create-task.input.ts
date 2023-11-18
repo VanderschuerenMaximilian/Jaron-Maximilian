@@ -6,7 +6,7 @@ class StockItemInput {
   name: string;
 
   @Field(() => Int)
-  stock: number;
+  difference: number;
 }
 
 @InputType()
@@ -14,7 +14,7 @@ export class CreateTaskInput {
   @Field()
   personId: string;
 
-  @Field()
+  @Field({ nullable: true })
   workblockId: string;
 
   @Field()
@@ -23,7 +23,7 @@ export class CreateTaskInput {
   @Field()
   description: string;
 
-  @Field({ defaultValue: new Date()})
+  @Field({ defaultValue: new Date() })
   createdAt: Date;
 
   @Field({ nullable: true })
