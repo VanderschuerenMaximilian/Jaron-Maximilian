@@ -8,6 +8,7 @@ export const ALL_STOCKS = gql`
         name
         price
         stock
+        pending
         stockReduction
         unit
         minStock
@@ -24,6 +25,7 @@ export const GET_STOCKS_BY_FACILITYNAME = gql`
         name
         price
         stock
+        pending
         stockReduction
         unit
         minStock
@@ -37,3 +39,21 @@ query uniqueFacilityNames {
     uniqueFacilityNames
   }
 `;
+
+export const UPDATE_STOCK_WITH_PENDING = gql`
+mutation UpdateStockWithPending($facilityName: String!, $ingredients: [StockInput!]!) {
+    updateStockWithPending(facilityName: $facilityName, ingredients: $ingredients) {
+      id
+      facilityName
+      name
+      price
+      stock
+      pending
+      stockReduction
+      unit
+      minStock
+      maxStock
+    }
+  }  
+`;
+

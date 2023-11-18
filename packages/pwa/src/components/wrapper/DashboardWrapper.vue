@@ -46,10 +46,10 @@
                             <span>Attrations</span>
                     </li>
                 </RouterLink>
-                <RouterLink to="shops" class="w-full dashboard-link" @click="checkPath('shops')" :class="{ 'bg-secondary-green': path === 'shops' }">
+                <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Shops</span>
+                            <span>Store Management</span>
                     </li>
                 </RouterLink>
                 <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">

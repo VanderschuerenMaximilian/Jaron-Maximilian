@@ -25,6 +25,10 @@ export class Stock {
   stock: number
 
   @Column()
+  @Field()
+  pending: number
+
+  @Column()
   @Field(() => Int)
   stockReduction: number
 

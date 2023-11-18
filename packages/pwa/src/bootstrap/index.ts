@@ -107,8 +107,8 @@ const router = createRouter({
                   component: import('../views/auth/management/Overview.vue'),
                 },
                 {
-                  path: 'shops',
-                  component: import('../views/auth/management/Shops.vue'),
+                  path: 'storeManagement',
+                  component: import('../views/auth/management/StoreManagement.vue'),
                 },
                 {
                   path: 'stock',

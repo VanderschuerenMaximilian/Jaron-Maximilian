@@ -7,7 +7,7 @@ class StockItem {
   name: string;
 
   @Field()
-  stock: number;
+  difference: number;
 }
 
 @Entity()
@@ -22,7 +22,7 @@ export class Task {
   personId: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   workblockId: string;
 
   @Column()
@@ -34,7 +34,7 @@ export class Task {
   description: string;
 
   @Column()
-  @Field()
+  @Field({ defaultValue: new Date()})
   createdAt: Date;
 
   @Column()

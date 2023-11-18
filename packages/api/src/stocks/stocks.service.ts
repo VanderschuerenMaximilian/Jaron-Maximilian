@@ -4,6 +4,8 @@ import { UpdateStockInput } from './dto/update-stock.input';
 import { Stock } from './entities/stock.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { get } from 'http';
+import { log } from 'console';
 
 @Injectable()
 export class StocksService {
@@ -25,11 +27,20 @@ export class StocksService {
     s.facilityName = createStockInput.facilityName
     s.price = createStockInput.price
     s.stock = createStockInput.stock
+    s.pending = createStockInput.pending
     s.stockReduction = createStockInput.stockReduction
     s.unit = createStockInput.unit
     s.minStock = createStockInput.minStock
     s.maxStock = createStockInput.maxStock
     return this.stockRepository.save(s)
+  }
+
+  async findByNameAndFacility(name: string, facilityName?: string): Promise<Stock | null> {
+    const stocks = await this.findAll();
+
+    const filteredStock = stocks.find(stock => stock.name === name && (!facilityName || stock.facilityName === facilityName));
+
+    return filteredStock || null;
   }
 
   async updateStockByName(name: string, newStock: number): Promise<Stock> {
@@ -54,6 +65,22 @@ export class StocksService {
   
     return await this.stockRepository.save(stock);
   }
+
+  async updatePending(name: string, facilityName: string, newStock: number): Promise<Stock> {
+
+    const stock = await this.stockRepository.findOne({ where: { name, facilityName } });
+  
+    if (!stock) {
+      throw new NotFoundException(`Stock with name ${name} and facilityName ${facilityName} not found`);
+    }
+    
+      stock.pending = stock.pending + newStock;
+  
+    return await this.stockRepository.save(stock);
+  }
+  
+  
+
   
 
   async findByName(name: string): Promise<Stock | null> {

@@ -3,6 +3,9 @@ import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateStockInput extends PartialType(CreateStockInput) {
-  @Field(() => Int)
-  id: number;
+  @Field()
+  name?: string;
+  
+  @Field()
+  difference?: number;
 }

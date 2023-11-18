@@ -1,5 +1,11 @@
 <template>
     <main v-if="firebaseUser" class="flex flex-col pl-20 pr-4 pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto">
+        <div v-if="isOrderChanged" class="absolute z-50 left-1/2 transform -translate-x-30 top-20">
+            <div class="border-2 border-primary-green bg-primary-green bg-opacity-25 py-3 px-6 rounded-md max-w-lg flex flex-col gap-2">
+                <X @click="isOrderChanged = false" class="absolute right-4 h-6 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
+                <p class="text-primary-green font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="shops" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
+            </div>
+        </div>
         <!-- Alert message -->
         <div class="hidden">
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -48,8 +54,8 @@
                         <td v-if="selectedFacility !== 'Main Stock'" class="py-1 px-4 w-45">
                             <div class="flex-col mt-2">
                                 <div class="relative h-6 mx-auto rounded-full overflow-hidden flex items-center bg-white">
-                                    <div class="absolute h-full opacity-30" :style="{ width: (checkedStocks[item.name] / item.maxStock) * 100 + '%', background: calculateColor(checkedStocks[item.name], item.maxStock) }"></div>
-                                    <div class="absolute h-full" :style="{ width: (checkedStocks[item.name] / item.maxStock) * 100 + '%', background: calculateColor(item.stock, item.maxStock) }"></div>
+                                    <div class="absolute h-full opacity-30" :style="{ width: (checkedStocks[item.name] / item.maxStock) * 100 + '%', background: calculateColor(checkedStocks[item.name] + item.pending, item.maxStock) }"></div>
+                                    <div class="absolute h-full" :style="{ width: (checkedStocks[item.name] / item.maxStock) * 100 + '%', background: calculateColor(item.stock + item.pending, item.maxStock) }"></div>
                                     <p class="absolute w-full text-center font-medium">{{ checkedStocks[item.name] + ' ' + item.unit }}</p>
                                 </div>
                                 <p class="text-3">Maximum stock: <span class="font-medium">{{ item.maxStock }}</span></p>
@@ -77,10 +83,10 @@
                         <td class="py-4 px-4 flex justify-center">
                             <div class="flex items-center">
                                 <div v-if="selectedFacility !== 'Main Stock'">
-                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock" :max="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock <= selectedStocks[item.name]?'':'text-red-500'">
-                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock" :max="item.stock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock?'':'text-red-500'">
+                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
+                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500'">
                                 </div>
-                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock?'':'text-red-500'">
+                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500'">
                                 <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover-bg-secondary-green">Change</button>
                             </div>
                         </td>
@@ -105,24 +111,28 @@
 }
 </style>
 <script lang="ts">
-import { useQuery } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import {  
     GET_STOCKS_BY_FACILITYNAME,
     GET_FACILITYNAMES,
-    // @ts-ignore
-} from '@/graphql/Stock.query'
+    UPDATE_STOCK_WITH_PENDING,
+} from '@/graphql/stock.query'
+import { CREATE_TASK } from '@/graphql/task.mutation'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
-import { AlertTriangle } from 'lucide-vue-next';
+import { AlertTriangle, X } from 'lucide-vue-next';
 import useFirebase from '@/composables/useFirebase'
 import { ref, watchEffect, type Ref, watch } from 'vue'
+import { isTypeSystemDefinitionNode } from 'graphql';
+import useCustomPerson from '@/composables/useCustomPerson';
 
 const { firebaseUser } = useFirebase()
-
+const { customPerson } = useCustomPerson()
 
 export default {
     components: {
         DashboardTitle,
         AlertTriangle,
+        X,
     },
     methods: {
         calculateColor(stock: number, maxStock: number) {
@@ -143,6 +153,7 @@ export default {
                 if (mainStock + item.stock - this.selectedStocks[item.name] >= 0) {
                     if (!isNaN(this.selectedStocks[item.name]) && this.selectedStocks[item.name] >= item.stock && this.selectedStocks[item.name] <= item.maxStock) {
                         this.checkedStocks[item.name] = this.selectedStocks[item.name];
+                        this.perviousStocks[item.name] = this.selectedStocks[item.name];
                         this.isStockChanged = true;
                     } else {
                         console.error(`Invalid stock value for ${item.name}`);
@@ -156,6 +167,7 @@ export default {
                 if (!isNaN(this.selectedStocks[item.name]) && this.selectedStocks[item.name] >= item.stock && this.selectedStocks[item.name] <= item.maxStock) {
                     this.checkedStocks[item.name] = this.selectedStocks[item.name];
                     this.isStockChanged = true;
+                    this.perviousStocks[item.name] = this.selectedStocks[item.name];
 
                 } else {
                     console.error(`Invalid stock value for ${item.name}`);
@@ -167,15 +179,18 @@ export default {
                 if (bellewaerdeStock + item.stock < item.maxStock) {
                     this.selectedStocks[item.name] = item.stock + bellewaerdeStock;
                     this.checkedStocks[item.name] = item.stock + bellewaerdeStock;
+                    this.perviousStocks[item.name] = item.stock + bellewaerdeStock;
                     this.isStockChanged = true;
                 } else {
                     this.selectedStocks[item.name] = item.maxStock;
                     this.checkedStocks[item.name] = item.maxStock;
+                    this.perviousStocks[item.name] = item.maxStock;
                     this.isStockChanged = true;
                 }
             } else {
                 this.selectedStocks[item.name] = item.maxStock;
                 this.checkedStocks[item.name] = item.maxStock;
+                this.perviousStocks[item.name] = item.maxStock;
                 this.isStockChanged = true;
             }
         },
@@ -184,6 +199,7 @@ export default {
                 if (this.selectedFacility === 'Main Stock') {
                     this.selectedStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
                     this.checkedStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
+                    this.perviousStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
                 }
                 else {
                     const correspondingStock = stocks.find((stockItem: any) => stockItem.name === bellewaerdeItem.name);
@@ -191,9 +207,11 @@ export default {
                     if (correspondingStock.maxStock > bellewaerdeItem.stock + correspondingStock.stock) {
                         this.selectedStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
                         this.checkedStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
+                        this.perviousStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
                     } else {
                         this.selectedStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
                         this.checkedStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
+                        this.perviousStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
                     }
                 }
             }
@@ -205,10 +223,15 @@ export default {
         const { loading: stocksLoading, result: stocks, error: stocksError, refetch: refetchStocks } = useQuery(GET_STOCKS_BY_FACILITYNAME, { facilityName: selectedFacility.value });
         const { loading: mainStockLoading, result: mainStocks, error: mainStocksError } = useQuery(GET_STOCKS_BY_FACILITYNAME, { facilityName: 'Main Stock' });
         const { loading: facilityNamesLoading, result: facilityNames, error: facilityNamesError} = useQuery(GET_FACILITYNAMES);
+        const { mutate: updateStockWithPendingMutation } = useMutation(UPDATE_STOCK_WITH_PENDING);      
+        const { mutate: createTaskMutation } = useMutation(CREATE_TASK);
         const selectedStocks = ref<any>({});
         const checkedStocks = ref<any>({});
         const isStockChanged = ref(false);
+        const isOrderChanged = ref(false);
         let originalFacilityName = 'Main Stock';
+        let perviousStocks = ref<any>({});
+        let isFacilityChanged = ref(true);
 
         const handleFacilityChange = (newFacilityName: string) => {
             if (isStockChanged.value) {
@@ -218,43 +241,102 @@ export default {
                     refetchStocks({ facilityName: newFacilityName });
                     selectedStocks.value = {};
                     isStockChanged.value = false;
+                    isFacilityChanged.value = true;
 
                 } else {
                     selectedFacility.value = originalFacilityName;
+                    isFacilityChanged.value = false;
                 }
             } else {
                 refetchStocks({ facilityName: newFacilityName });
                 selectedStocks.value = {};
                 originalFacilityName = newFacilityName;
+                isFacilityChanged.value = true;
 
             }
         };
 
-        const handleSaveStock = (stocks: any) => {
+        const handleSaveStock = async (stocks: any) => {
+            //Alles met de main stock en de pending validation werkt normaal gezien
+            //TODO: Fix dat als je in de Boomerang Snack zit dat je controle doet met de pending inbegrepen
             const stockDifference = [];
-            for (const item of stocks) {
-                stockDifference.push({
-                    name: item.name,
-                    difference: checkedStocks.value[item.name] - item.stock,
-                });    
-            }
             if (selectedFacility.value === 'Main Stock') {
-                console.log('Dit moet toegevoegd worden aan de pending van de main: ' + stockDifference)
-                console.log('Dit moet meegeven worden met de (task) entity: ' + stockDifference)
+                for (const item of stocks) {
+                    await stockDifference.push({
+                        name: item.name,
+                        difference: checkedStocks.value[item.name] - item.stock,
+                    });    
+                }
             }
             else {
-                console.log('Dit moet toegevoegd worden aan de pending van de shop: ' + stockDifference);
-                console.log('Dit moet worden afgetrokken van de pending van de main: ' + stockDifference);
-                console.log('Dit moet meegeven worden met de (task) entity: ' + stockDifference)
-
+                for (const item of stocks) {
+                    await stockDifference.push({
+                        name: item.name,
+                        difference: checkedStocks.value[item.name] - item.stock - item.pending,
+                    });    
+                }
             }
+            isOrderChanged.value = true;
+            isStockChanged.value = false;
+
+            try {
+                console.log({
+                        personId: customPerson.value?.id,
+                        title: 'Stock adjustment',
+                        description: 'A stock adjustment has been made.',
+                        shopName: selectedFacility.value,
+                        stockItems: stockDifference,
+                },);
+                await createTaskMutation({
+                    createTaskInput: {
+                        personId: customPerson.value?.id,
+                        title: 'Stock adjustment',
+                        description: 'A stock adjustment has been made.',
+                        shopName: selectedFacility.value,
+                        stockItems: stockDifference,
+                    },
+                    
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
+            // ❗❗❗ ERROR eruit halen als je de mutation wilt testen ❗❗❗
+            await updateStockWithPendingMutation({
+                facilityName: selectedFacility.value,
+                ingredients: stockDifference,
+            });
+
+            
         };
 
         watchEffect(() => {
-            if (stocks.value) {
-                for (const item of stocks.value.stocksByFacilityName) {
-                    selectedStocks.value[item.name] = item.stock;
-                    checkedStocks.value[item.name] = item.stock;
+            if (!isFacilityChanged.value) {
+
+                for (let itemName in checkedStocks.value) {
+                    if (perviousStocks.value[itemName] !== undefined) {
+                        checkedStocks.value[itemName] = perviousStocks.value[itemName];
+                        selectedStocks.value[itemName] = perviousStocks.value[itemName];
+                    }
+                }
+
+            }
+            else {
+                if (selectedFacility.value === 'Main Stock') { 
+                    if (stocks.value) {
+                        for (const item of stocks.value.stocksByFacilityName) {
+                            selectedStocks.value[item.name] = item.stock;
+                            checkedStocks.value[item.name] = item.stock;
+                        }
+                    }
+                }
+                else {
+                    if (stocks.value) {
+                        for (const item of stocks.value.stocksByFacilityName) {
+                            selectedStocks.value[item.name] = item.stock + item.pending;
+                            checkedStocks.value[item.name] = item.stock + item.pending;
+                        }
+                    }
                 }
             }
         });
@@ -271,12 +353,15 @@ export default {
             mainStocksError,
             facilityNamesError,
             firebaseUser,
+            customPerson,
             selectedStocks,
+            perviousStocks,
             checkedStocks,
             handleFacilityChange,
             handleSaveStock,
             isStockChanged,
             selectedFacility,
+            isOrderChanged,
         }
     }   
 }
