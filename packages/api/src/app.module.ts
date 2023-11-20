@@ -18,6 +18,9 @@ import { OrdersModule } from './orders/orders.module';
 import { StocksModule } from './stocks/stocks.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ZonesModule } from './zones/zones.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
+// import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -26,6 +29,10 @@ import { ZonesModule } from './zones/zones.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      subscriptions: {
+        'graphql-ws': true,
+        'subscriptions-transport-ws': true,
+      }
     }),
 
     TypeOrmModule.forRoot({
@@ -36,6 +43,16 @@ import { ZonesModule } from './zones/zones.module';
         useNewUrlParser: true,
         useUnifiedTopology: true, // Disable deprecated warnings
     }),
+
+    // MailerModule.forRoot({
+    //   transport: {
+    //     host: 'smtp.gmail.com',
+    //     auth: {
+    //       user: 'bearbanner00@gmail.com',
+    //       pass: 'Bannerbear00',
+    //     },
+    //   }
+    // }),
     
     AlertsModule,
     AuthenticationModule,
@@ -51,7 +68,8 @@ import { ZonesModule } from './zones/zones.module';
     StocksModule,
     TasksModule,
     ZonesModule,
-
+    TicketsModule,
+    TicketPricesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

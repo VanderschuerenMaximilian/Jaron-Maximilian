@@ -27,7 +27,7 @@ export class PersonsResolver {
   @AllowedPersonTypes(PersonType.ADMIN)
   @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Person], { name: 'persons' })
-  getPersons(@FirebaseUser() currentUser: UserRecord) {
+  getPersons() {
     return this.personsService.findAll();
   }
 
