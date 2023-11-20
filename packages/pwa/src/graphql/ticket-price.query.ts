@@ -7,6 +7,8 @@ query getTicketPrices {
         name
         description
         price
+        minHeight
+        maxHeight
     }
 }
 `;

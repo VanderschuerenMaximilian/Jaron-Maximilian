@@ -1,17 +1,19 @@
 <template>
-    <section @click="openPopUp" class="flex justify-between w-[600px] h-[160px] px-8 py-6 bg-white rounded-md hover:cursor-pointer">
+    <section @click="openPopUp" class="flex sm:flex-row flex-col sm:items-start items-center justify-between sm:w-[600px] w-fit sm:h-[160px] h-[320px] px-8 py-6 bg-white rounded-md hover:cursor-pointer">
             <div class="">
-                <h5 class="h5 mb-3">{{ ticket.name }}</h5>
-                <p>Valid on: <span class="font-semibold">{{ usableDate }}</span></p>
+                <h5 class="h5 mb-3 sm:text-start text-center">{{ ticket.name }}</h5>
+                <p class="sm:text-start text-center">Valid on: <span class="font-semibold">{{ usableDate }}</span></p>
             </div>
-            <div class="w-[100px] h-full flex items-center"> 
+            <div class="sm:w-[100px] w-full h-full flex items-center justify-center"> 
                 <img :src="ticket.qrCode" alt="QrCode of the ticket">
             </div>
     </section>
     <div v-if="showPopUp" class="z-50 absolute w-full h-[97.8%] top-0 left-0 bg-black bg-opacity-60 flex justify-center items-center">
         <div class="flex flex-col gap-4 justify-center items-end p-5 bg-black w-fit rounded-xl">
-            <X @click="closePopUp" class="cursor-pointer scale-125 text-slate-100"/>
-            <div class="w-[400px] h-[400px] bg-white p-1 rounded-lg">
+            <div class="cursor-pointer rounded-full p-2 hover:bg-slate-100 hover:bg-opacity-30 transition-colors">
+                <X @click="closePopUp" class="scale-125 text-slate-100"/>
+            </div>
+            <div class="sm:min-w-[400px] sm:h-[400px] h-[300px] bg-white p-1 rounded-lg">
                 <img :src="ticket.qrCode" alt="QrCode of the ticket"
                 class="w-full h-full">
             </div>

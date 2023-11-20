@@ -16,6 +16,7 @@ export class DatabaseSeedCommand {
   // npx nestjs-command seed:reset:sold-products
   // npx nestjs-command seed:reset:orders
   // npx nestjs-command seed:reset:stocks
+  // npx nestjs-command seed:reset:ticket-prices
 
   // ------------ ALL COMMANDS - ADD ------------
   // npx nestjs-command seed:database:persons
@@ -27,7 +28,7 @@ export class DatabaseSeedCommand {
   // npx nestjs-command seed:database:sold-products
   // npx nestjs-command seed:database:orders
   // npx nestjs-command seed:database:stocks
-
+  // npx nestjs-command seed:database:ticket-prices
 
   // ------------ Person ------------
   // npx nestjs-command seed:database:persons

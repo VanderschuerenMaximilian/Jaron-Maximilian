@@ -1,17 +1,26 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { Column } from 'typeorm';
+import { IsNumber, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTicketPriceInput {
+  @IsString()
   @Field()
-  @Column()
   name: string;
 
+  @IsString()
   @Field()
-  @Column()
   description: string;
 
+  @IsPositive()
+  @IsNumber()
   @Field()
-  @Column()
   price: number;
+
+  @IsNumber()
+  @Field({ nullable: true })
+  maxHeight: number;
+
+  @IsNumber()
+  @Field({ nullable: true })
+  minHeight: number;
 }

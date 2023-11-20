@@ -140,6 +140,8 @@ export class SeedService {
       tp.price = ticketPrice.price
       tp.name = ticketPrice.name
       tp.description = ticketPrice.description
+      tp.maxHeight = ticketPrice.maxHeight || null
+      tp.minHeight = ticketPrice.minHeight || null
       tp.createdAt = new Date()
       tp.updatedAt = new Date()
 

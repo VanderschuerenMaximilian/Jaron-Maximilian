@@ -1,7 +1,10 @@
 <template v-if="soldTicketChange">
     <section class="flex justify-between w-[600px] h-[160px] px-8 py-6 bg-white rounded-md">
-        <div class="h-full">
-            <h5 class="h5 mb-3">{{ ticketPrice.name }}</h5>
+        <div class="h-full flex flex-col justify-between">
+            <div>
+                <h5 class="h5 mb-1">{{ ticketPrice.name }}</h5>
+                <p class="opacity-70 text-sm">{{ showHeightRequirement() }}</p>
+            </div>
             <p>€ <span>{{ ticketPrice.price }}</span></p>
         </div>
         <div class="flex items-end justify-center w-1/3 gap-2">
@@ -48,11 +51,24 @@ export default {
             });
         };
 
+        const showHeightRequirement = () => {
+            if (props.ticketPrice.maxHeight && props.ticketPrice.minHeight === null) {
+                return `Smaller then ${props.ticketPrice.maxHeight} cm`;
+            } else if (props.ticketPrice.minHeight && props.ticketPrice.maxHeight === null) {
+                return `Taller then ${props.ticketPrice.minHeight} cm`;
+            } else if (props.ticketPrice.minHeight && props.ticketPrice.maxHeight) {
+                return `${props.ticketPrice.minHeight} - ${props.ticketPrice.maxHeight} cm`;
+            } else {
+                return 'Geen lengte vereist';
+            }
+        };
+
         return {
             soldTicketChange,
 
             addTicket,
             removeTicket,
+            showHeightRequirement,
         };
     },
 };

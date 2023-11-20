@@ -7,13 +7,6 @@
                         <img src="../../assets/logo.jpg" alt="Logo" loading="lazy" class="w-52">
                     </picture>
                 </RouterLink>
-                <!-- TODO: Add text in the sheets -->
-                <!-- <select class="h-6 bg-slate-100" name="language" id="language"
-                @change="setLanguage" :value="locale">
-                    <option v-for="(value, key) in SUPPORTED_LOCALES" :value="key">
-                        {{ key }}
-                    </option>
-                </select> -->
             </div>
             <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
                 <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">

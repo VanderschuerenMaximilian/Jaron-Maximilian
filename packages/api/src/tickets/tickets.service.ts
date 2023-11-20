@@ -1,54 +1,28 @@
-import { Body, Get, Injectable, Post } from '@nestjs/common';
+import { Body, Delete, Get, Injectable, Post } from '@nestjs/common';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './entities/ticket.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import * as qrcode from 'qrcode';
+// import { MailerService } from '@nestjs-modules/mailer';
+import { UserRecord } from 'firebase-admin/auth';
 
 @Injectable()
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket)
-    private readonly ticketRepository: Repository<Ticket>,
+    private readonly ticketRepository: MongoRepository<Ticket>,
+    // private readonly mailerService: MailerService,
   ) {}
 
   @Post()
-  async create(@Body() createTicketInput: CreateTicketInput): Promise<Ticket> {
+  async createTickets(@Body() createTicketsInput: CreateTicketInput[], currentUser: UserRecord): Promise<Ticket[]> {
     try {
-      const t = new Ticket()
-      const today = new Date()
-      const usableDate = new Date(t.usableOn)
-      usableDate.setHours(0,0,0,0)
+        const today = new Date()
 
-      const validationId = new ObjectId()
-      const qrCode = await this.generateQrCode(`https://ef5a-178-51-40-7.ngrok-free.app/ticket_detail?ticketId=${validationId}`)
-
-      t.price = createTicketInput.price
-      t.name = createTicketInput.name
-      t.personId = createTicketInput.personId
-      t.isActive = false
-      t.validationId = validationId.toString()
-      t.qrCode = qrCode
-      t.usableOn = usableDate
-      t.createdAt = new Date(today)
-      t.updatedAt = new Date(today)
-
-      return this.ticketRepository.save(t)
-    }
-    catch (error) {
-      throw error
-    }
-    
-  }
-
-  @Post()
-  async createTickets(@Body() createTicketsInput: CreateTicketInput[]): Promise<Ticket[]> {
-    try {
-      const today = new Date()
-
-      const tickets = await Promise.all(createTicketsInput.map(async t => {
+        const tickets = await Promise.all(createTicketsInput.map(async t => {
         const ticket = new Ticket()
         const usableDate = new Date(t.usableOn)
         usableDate.setHours(0,0,0,0)
@@ -66,7 +40,8 @@ export class TicketsService {
         ticket.updatedAt = new Date(today)
         return ticket
       }))
-      
+      // this.sendTicketVerificationMail(currentUser.email)
+      // this.sendTicketVerificationMail('bearbanner00@gmail.com')
       return this.ticketRepository.save(tickets)
     }
     catch (error) {
@@ -80,18 +55,23 @@ export class TicketsService {
   }
 
   @Get(':personId')
-  findAllByPersonId(personId: string): Promise<Ticket[]> {
+  async findAllByPersonId(personId: string, orderBy: string): Promise<Ticket[]> {
     if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
 
-    // @ts-ignore
-    return this.ticketRepository.find({ where: { personId: personId, isActive: false } })
+    const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: false } })
+    if (orderBy === 'usableOn_ASC') {
+      return tickets.sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
+    } else if (orderBy === 'usableOn_DESC') {
+      return tickets.sort((a, b) => b.usableOn.getTime() - a.usableOn.getTime())
+    } else {
+      return tickets
+    }
   }
 
   @Get(':validationId')
   findOneByValidationId(validationId: string): Promise<Ticket> {
     if (!ObjectId.isValid(validationId)) throw new Error('Invalid ObjectId')
 
-    // @ts-ignore
     return this.ticketRepository.findOne({ where: { validationId: validationId }})
   }
 
@@ -99,7 +79,7 @@ export class TicketsService {
   findOne(@Body('id') id: string): Promise<Ticket> {
       if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
 
-      // @ts-ignore
+      //@ts-ignore
       return this.ticketRepository.findOne({ _id: new ObjectId(id) })
   }
 
@@ -107,7 +87,8 @@ export class TicketsService {
   async update(@Body() updateTicketInput: UpdateTicketInput): Promise<Ticket> {
     if (!ObjectId.isValid(updateTicketInput.id)) throw new Error('Invalid ObjectId')
 
-    // @ts-ignore
+    //TODO: why does mongoRepository not fix ts error?
+    //@ts-ignore
     const ticket = await this.ticketRepository.findOne({ _id: new ObjectId(updateTicketInput.id) })
 
     if (!ticket) throw new Error('Ticket not found')
@@ -125,9 +106,16 @@ export class TicketsService {
     return this.ticketRepository.save(ticket)
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} ticket`;
-  // }
+  @Delete(':id')
+  async remove(id: string) {
+    try {
+      const alert = await this.ticketRepository.delete(id);
+      
+      return alert
+    } catch (error) {
+      throw error
+    }
+  }
 
   // ------ extra functions ------
 
@@ -139,4 +127,14 @@ export class TicketsService {
       throw new Error('Failed to generate QR code.');
     }
   }
+
+  // sendTicketVerificationMail(receivingMail: string): void {
+  //   this.mailerService.sendMail({
+  //     to: receivingMail,
+  //     from: 'bellewaerde@hulp.be',
+  //     subject: 'Ticket verification',
+  //     text: 'You succesfully bought tickets!',
+  //     html: '<b>You succesfully bought tickets!</b>',
+  //   })
+  // }
 }

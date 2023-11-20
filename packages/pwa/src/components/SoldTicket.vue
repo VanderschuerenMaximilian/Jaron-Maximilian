@@ -1,12 +1,14 @@
 <template>
-    <div v-if="soldTicket.amount > 0" class="flex relative w-90 bg-white items-center p-4 gap-3 rounded-2xl">
+    <div v-if="soldTicket.amount > 0" class="flex relative sm:w-3/4 w-72 bg-white items-center p-4 gap-3 rounded-2xl">
         <div>
             <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">Ticket</p>
             <p class="text-3">{{ soldTicket.name }}</p>
             <p class="text-3">amount: {{ soldTicket.amount }}</p>
             <p class="text-3 text-primary-green font-bold mt-2">{{ "€ " + soldTicket.price }}</p>
         </div>
-        <X class="absolute right-4 top-4 cursor-pointer" @click="handleDeleteTicketAmount"/>
+        <button @click="handleDeleteTicketAmount" class="p-1 rounded-full hover:bg-gray-100 absolute right-4 top-4 cursor-pointer">
+            <X/>
+        </button>
     </div> 
 </template>
 

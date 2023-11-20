@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const GET_TICKETS_BY_PERSON_ID = gql`
     query ticketsByPersonId ($personId: String!) {
-        ticketsByPersonId(personId: $personId) {
+        ticketsByPersonId(personId: $personId, orderBy: "usableOn_ASC") {
             id
             name
             price
