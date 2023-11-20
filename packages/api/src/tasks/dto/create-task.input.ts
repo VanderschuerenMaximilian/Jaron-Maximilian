@@ -11,9 +11,6 @@ class StockItemInput {
 
 @InputType()
 export class CreateTaskInput {
-  @Field()
-  personId: string;
-
   @Field({ nullable: true })
   workblockId: string;
 

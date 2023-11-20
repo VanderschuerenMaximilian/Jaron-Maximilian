@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Get, Injectable, Param } from '@nestjs/common';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { Task } from './entities/task.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class TasksService {
@@ -18,7 +19,6 @@ export class TasksService {
   
   async create(createTaskInput: CreateTaskInput): Promise<Task> {
     const t = new Task()
-    t.personId = createTaskInput.personId
     t.workblockId = createTaskInput.workblockId
     t.title = createTaskInput.title
     t.description = createTaskInput.description
@@ -36,9 +36,22 @@ export class TasksService {
     return `This action returns a #${id} task`;
   }
 
-  update(id: number, updateTaskInput: UpdateTaskInput) {
-    return `This action updates a #${id} task`;
+  @Get(':id')
+  findOneById(@Param('id') id: string): Promise<Task> {
+
+      if (!ObjectId.isValid(id)) throw new Error('Invalid ObjectId')
+
+      // @ts-ignore
+      return this.taskRepository.findOne({ _id: new ObjectId(id) })
   }
+
+  async update(updateTaskInput: UpdateTaskInput) {
+    const task = await this.findOneById(updateTaskInput.id)
+    console.log(task)
+    task.persons = updateTaskInput.persons
+
+    return await this.taskRepository.save(task);
+    }
 
   remove(id: number) {
     return `This action removes a #${id} task`;

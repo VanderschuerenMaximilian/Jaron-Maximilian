@@ -285,7 +285,8 @@ export class SeedService {
     let theTasks: Task[] = []
     for (let task of tasks) {
       const t = new Task()
-      t.personId = task.personId
+      t.persons = task.persons
+      t.shopName = task.shopName
       t.workblockId = task.workblockId
       t.title = task.title
       t.description = task.description
