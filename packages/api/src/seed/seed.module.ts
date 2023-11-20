@@ -16,7 +16,7 @@ import { ZonesModule } from 'src/zones/zones.module';
 import { TicketPricesModule } from 'src/ticket-prices/ticket-prices.module';
 
 @Module({
-    imports: [PersonsModule, AlertsModule, ZonesModule, TicketPricesModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, OrdersModule, StocksModule, CommandModule],
+    imports: [PersonsModule, AlertsModule, ZonesModule, TicketPricesModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, OrdersModule, StocksModule, TasksModule, CommandModule],
     providers: [DatabaseSeedCommand, SeedService],
 })
 export class SeedModule {}
