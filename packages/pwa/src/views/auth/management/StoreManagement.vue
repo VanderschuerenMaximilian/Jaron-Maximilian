@@ -3,22 +3,24 @@
       <DashboardTitle currentRoute="Store Management" />
       <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
       <div v-for="task of tasksResult" class="flex-col">
-        <div v-for="item of task" class="flex p-6 bg-white mt-5 w-8/10 justify-between rounded-lg">
-          <div class="flex flex-col">
-            <p class="text-5">{{ item.shopName }}</p>
-            <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
-          </div>
-          <div class="flex gap-5">
-            <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-95 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
-            <div v-else class="flex gap-5">
-              <button @click="printPDF(item)" class="p-4 w-50 bg-primary-green color-white font-medium rounded-lg">Print stock overview</button>
-              <button @click="completeTask(item.id)" class="p-4 w-40 bg-primary-green color-white font-medium rounded-lg">Done</button>
+        <div v-for="item of task"  class="mt-5 w-8/10">
+          <div v-if="item.completed !== true && item.completed !== undefined" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white flex p-6 justify-between rounded-lg">
+            <div class="flex flex-col">
+              <p class="text-5">{{ item.shopName }}</p>
+              <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
             </div>
-            <div class="relative w-12 h-12 mt-1">
-              <UserCircle2 class="absolute w-full h-full"/>
-              <!-- Hier moet er dan een controle of er een image is, zoja toon die -->
-              <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
-              <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
+            <div class="flex gap-5">
+              <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-95 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
+              <div v-else class="flex gap-5">
+                <button @click="printPDF(item)" class="p-4 w-50 bg-primary-green color-white font-medium rounded-lg">Print stock overview</button>
+                <button @click="completeTask(item.id)" class="p-4 w-40 bg-primary-green color-white font-medium rounded-lg">Done</button>
+              </div>
+              <div class="relative w-12 h-12 mt-1">
+                <UserCircle2 class="absolute w-full h-full"/>
+                <!-- Hier moet er dan een controle of er een image is, zoja toon die -->
+                <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
+                <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
+              </div>
             </div>
           </div>
         </div>
@@ -67,6 +69,7 @@
     setup() {
       const { result: tasksResult } = useQuery(GET_TASKS)
       const { mutate: updateTaskInput } = useMutation(UPDATE_TASK)
+      const removedTasks = ref([])
       const showPopup = ref(false);
       const currentTaskId = ref('');
 
@@ -162,10 +165,16 @@
         showPopup.value = true;
       }
 
-      const completeTask = ( itemId: any ) => {
-        console.log(itemId)
-        // TODO: Dit moet uit de database gaan, mss met een status ofzo
-      }
+      const completeTask = (itemId: any) => {
+        removedTasks.value.push(itemId as never);
+        console.log(removedTasks.value);
+        setTimeout(() => {
+          updateTaskInput({updateTaskInput: {
+            id: itemId,
+            completed: true
+          }})
+        }, 500);
+      };
 
   
       return {
@@ -178,7 +187,8 @@
         completeTask,
         showPopup,
         currentTaskId,
-        updateTaskInput
+        updateTaskInput,
+        removedTasks
       }
     }
   }

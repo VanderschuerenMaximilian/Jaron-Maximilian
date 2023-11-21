@@ -8,6 +8,7 @@ query {
       workblockId
       title
       description
+      completed
       createdAt
       shopName
       stockItems {

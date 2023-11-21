@@ -34,6 +34,10 @@ export class Task {
   description: string;
 
   @Column()
+  @Field({ nullable: true })
+  completed: boolean;
+
+  @Column()
   @Field({ defaultValue: new Date()})
   createdAt: Date;
 

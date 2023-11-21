@@ -47,8 +47,18 @@ export class TasksService {
 
   async update(updateTaskInput: UpdateTaskInput) {
     const task = await this.findOneById(updateTaskInput.id)
-    console.log(task)
-    task.persons = updateTaskInput.persons
+    if (updateTaskInput.persons !== undefined) {
+      task.persons = updateTaskInput.persons
+    }
+    else {
+      if (updateTaskInput.completed !== undefined) {
+        task.completed = updateTaskInput.completed
+      }
+      else {
+        throw new Error('No update parameters provided')
+      }
+    }
+    
 
     return await this.taskRepository.save(task);
     }

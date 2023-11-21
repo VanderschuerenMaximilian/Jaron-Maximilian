@@ -7,6 +7,9 @@ export class UpdateTaskInput extends PartialType(CreateTaskInput) {
   @Field(() => ID)
   id: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   persons?: string[];
+
+  @Field({ nullable: true })
+  completed?: boolean;
 }
