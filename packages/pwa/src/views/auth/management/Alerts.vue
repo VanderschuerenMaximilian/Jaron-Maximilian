@@ -24,10 +24,10 @@
                 <section v-else>
                     <template v-if="search.length > 0 && selectedJobType !== 'ALL'">
                         <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
-                            v-if="searchEmployees && searchEmployees.personsBySearchString.length > 0 && selectedJobType">
+                            v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType">
 
-                            <Employee :employee="employee" :selectedJobType="selectedJobType"
-                                v-for="employee in searchEmployees.personsBySearchString" :key="employee.id" />
+                            <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType"
+                                v-for="employee in searchEmployees" :key="employee.id" />
 
                         </section>
                         <div v-else>
@@ -36,10 +36,10 @@
                     </template>
                     <template v-else-if="search.length > 0 && selectedJobType === 'ALL'">
                         <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
-                            v-if="searchEmployees && searchEmployees.personsBySearchString.length > 0 && selectedJobType">
+                            v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType">
 
-                            <Employee :employee="employee" :selectedJobType="selectedJobType"
-                                v-for="employee in searchEmployees.personsBySearchString" :key="employee.id" />
+                            <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType"
+                                v-for="employee in searchEmployees" :key="employee.id" />
 
                         </section>
                         <div v-else>
@@ -47,10 +47,16 @@
                         </div>
                     </template>
                     <template v-else>
-                        <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
-                            <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees"
-                                v-for="employee in employees.personsByPersonType" :key="employee.id" />
-                        </section>
+                        <!-- <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"> -->
+                            <!-- <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees"
+                                v-for="employee in employees" :key="employee.id" /> -->
+                        <!-- </section> -->    
+                        <draggable v-model="employees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                            <template #item="{element: employee}">
+                                <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
+                            </template>
+                        </draggable>
+
                     </template>
                 </section>
             </section>
@@ -62,14 +68,17 @@
                     <p>Error: {{ alertsError.message }}</p>
                 </section>
                 <section v-else>
-                    <section v-if="alerts && alerts.alerts.length > 0"
+                    <section v-if="alerts && alerts.length > 0"
                         class="flex flex-col gap-2 h-[550px] overflow-y-scroll px-6 c-employees">
-                        <div v-for="alert in alerts.alerts" :key="alert.id"
-                        class="bg-gray-200 px-2 py-2">
-                            <p>{{ alert.title }}</p>
-                            <p>{{ alert.description }}</p>
-                        </div>
+                        <AlertDraggable :alert="alert" v-for="alert in alerts" :key="alert.id" :selectedJobType="selectedJobType" />
                     </section>
+                    <!-- <draggable v-if="alerts && alerts.length > 0"
+                        class="flex flex-col gap-2 h-[550px] overflow-y-scroll px-6 c-employees"
+                        v-model="alerts" tag="section" group="employees">
+                        <template #item="{element: alert}">
+                            <AlertDraggable :alert="alert" />
+                        </template>
+                    </draggable> -->
                     <section v-else>
                         <p>No alerts found.</p>
                     </section>
@@ -89,7 +98,7 @@
 }
 </style>
 <script lang="ts">
-import { ref, watch, } from 'vue';
+import { computed, ref, watch, } from 'vue';
 import { useLazyQuery, useQuery } from '@vue/apollo-composable'
 import {
     ALL_EMPLOYEES,
@@ -101,10 +110,11 @@ import { JobType } from '../../../interfaces/IJobType'
 import { RouterLink } from 'vue-router'
 import { ChevronDown } from 'lucide-vue-next'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
-import Employee from '@/components/dashboard/Employee.vue';
-import type { Persons as IPersons } from '@/interfaces/IPersons'
-
+import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
+import AlertDraggable from '@/components/dashboard/AlertDraggable.vue';
+import type { Persons as IPersons, Person } from '@/interfaces/IPersons'
 import useFirebase from '@/composables/useFirebase'
+import draggable from 'vuedraggable'
 
 const { firebaseUser } = useFirebase()
 
@@ -127,18 +137,55 @@ export default {
         RouterLink,
         ChevronDown,
         DashboardTitle,
-        Employee
+        EmployeeDraggable,
+        draggable,
+        AlertDraggable
+    },
+    data() {
+        return {
+            drag: false
+        }
     },
     setup() {
         const search = ref<String>('')
         const jobEnumArray = ref<JobType[]>(Object.values(JobType))
         const selectedJobType = ref<JobType>(JobType.ALL)
-        const { loading: employeesLoading, result: employees, error: employeesError } = useQuery<IPersons>(ALL_EMPLOYEES, { personType: PersonType.EMPLOYEE })
-        const { loading: alertsLoading, result: alerts, error: alertsError } = useQuery<Alerts>(ALL_ALERTS)
-        const { document, result: searchEmployees, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
+        const { loading: employeesLoading, result: employeesResult, error: employeesError } = useQuery<IPersons>(ALL_EMPLOYEES, { personType: PersonType.EMPLOYEE })
+        const { loading: alertsLoading, result: alertsResult, error: alertsError } = useQuery<Alerts>(ALL_ALERTS)
+        const { document, result: searchEmployeesResult, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
         const skeletons = ref<number[]>(Array(10))
+        // const employees = computed(() => {
+        //     if (employeesResult.value) {
+        //         return employeesResult.value.personsByPersonType
+        //     }
+        // })
+        const employees = ref<Person[] | undefined>([])
+        // const searchEmployees = computed(() => {
+        //     if (searchEmployeesResult.value) {
+        //         return searchEmployeesResult.value.personsBySearchString
+        //     }
+        // })
+        const searchEmployees = ref<Person[]>([])
+        const alerts = ref<Alert[] | undefined>([])
+        watch(employeesLoading, () => {
+            if (!employeesLoading.value) {
+                employees.value = employeesResult.value?.personsByPersonType
+            }
+        })
+
+        watch(searchEmployeesResult, () => {
+            if (searchEmployeesResult.value) {
+                searchEmployees.value = searchEmployeesResult.value.personsBySearchString
+            }
+        })
+
+        watch(alertsLoading, () => {
+            if (!alertsLoading.value) {
+                alerts.value = alertsResult.value?.alerts
+            }
+        })
 
         watch(search, () => {
             load(document.value, {

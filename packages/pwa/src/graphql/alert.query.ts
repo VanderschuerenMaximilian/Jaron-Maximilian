@@ -3,10 +3,16 @@ import gql from 'graphql-tag';
 export const ALL_ALERTS = gql`
     query {
         alerts {
+            id
             title
             description
             zoneId
             state
+            persons {
+                id
+                firstName
+                lastName
+            }
             createdBy
     }
     }

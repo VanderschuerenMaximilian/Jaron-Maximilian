@@ -143,6 +143,7 @@ export default {
                     title: '',
                     description: '',
                     zoneId: '',
+                    persons: [],
                 }
                 isCreated.value = true
             })
