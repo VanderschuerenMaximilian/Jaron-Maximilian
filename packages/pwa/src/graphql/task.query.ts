@@ -4,7 +4,7 @@ export const GET_TASKS = gql`
 query {
     tasks {
       id
-      persons { id, fullName }
+      persons { id, fullName, profilePicture }
       workblockId
       title
       description

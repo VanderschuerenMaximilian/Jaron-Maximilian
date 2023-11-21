@@ -73,6 +73,7 @@ export class SeedService {
       p.firstName = person.firstName
       p.lastName = person.lastName
       p.fullName = person.fullName
+      p.profilePicture = person.profilePicture
       p.workEmail = person.workEmail
       p.personalEmail = person.personalEmail
       p.phone = person.phone

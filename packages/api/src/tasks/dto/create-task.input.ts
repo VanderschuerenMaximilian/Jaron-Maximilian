@@ -20,6 +20,9 @@ export class CreateTaskInput {
   @Field()
   description: string;
 
+  @Field(() => [String], { nullable: true })
+  persons: string[];
+
   @Field({ defaultValue: new Date() })
   createdAt: Date;
 

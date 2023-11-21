@@ -42,10 +42,16 @@ export class TasksResolver {
   @ResolveField(() => [Person], { name: 'persons' })
   async getProductsForShop(@Parent() task: Task): Promise<Person[]> {
     const personId = task.persons;
-    const perons = await Promise.all(
-      personId.map((personId) => this.personsService.findOneById(personId)),
-    );
-    return perons;
+      if (personId !== null && personId !== undefined) {
+        console.log(personId)
+      const perons = await Promise.all(
+        personId.map((personId) => this.personsService.findOneById(personId)),
+      );
+      return perons;
+    }
+    else {
+      return [];
+    }
   }
 }
 

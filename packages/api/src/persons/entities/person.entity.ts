@@ -15,6 +15,10 @@ export class Person {
   uid: string;
 
   @Column()
+  @Field({ nullable: true })
+  profilePicture: string;
+
+  @Column()
   @Field()
   firstName: string;
 

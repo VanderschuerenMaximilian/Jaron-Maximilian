@@ -7,6 +7,7 @@ export const ALL_PERSONS = gql`
             firstName
             lastName
             fullName
+            profilePicture
             personalEmail
             workEmail
             phone
@@ -24,6 +25,7 @@ export const FIND_PERSON_BY_ID = gql`
             firstName
             lastName
             fullName
+            profilePicture
             personType
             jobType
             personalEmail
@@ -41,6 +43,7 @@ export const FIND_PERSON_BY_UID = gql`
             firstName
             lastName
             fullName
+            profilePicture
             personType
             jobType
             personalEmail
@@ -59,6 +62,7 @@ export const ALL_EMPLOYEES = gql`
             firstName
             lastName
             fullName
+            profilePicture
             personalEmail
             workEmail
             phone
@@ -75,6 +79,7 @@ export const FIND_EMPLOYEES_BY_SEARCH = gql`
             firstName
             lastName
             fullName
+            profilePicture
             personalEmail
             workEmail
             personType
