@@ -12,3 +12,7 @@ export interface Alert {
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+export interface Alerts {
+    alerts: Alert[];
+}

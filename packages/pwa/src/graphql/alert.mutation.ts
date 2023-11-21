@@ -30,3 +30,17 @@ export const UPDATE_ALERT_STATE = gql`
         }
     }
 `;
+
+export const ADD_PERSON_TO_ALERT = gql`
+    mutation addPersonToAlert ($alertId: String!, $personId: String!){
+        addPersonToAlert (alertId: $alertId, personId: $personId) {
+            title
+            description
+            persons {
+                firstName
+                lastName
+                assignedAlerts
+            }
+        }
+    }
+`;

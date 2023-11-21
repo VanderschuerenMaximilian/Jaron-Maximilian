@@ -25,6 +25,7 @@ export class AlertsService {
       a.state = AlertState.OPEN
       a.createdBy = createAlertInput.createdBy
       a.zoneId = createAlertInput.zoneId
+      a.persons = []
       a.createdAt = new Date()
       a.updatedAt = new Date()
       return this.alertRepository.save(a)
@@ -58,22 +59,25 @@ export class AlertsService {
 
   @Post()
   async addPersonToAlert(@Param() alertId: string,@Param() personId: string): Promise<Alert> {
-    const alert = await this.findOneById(alertId)
-
-    if (!alert) throw new Error('Alert not found')
-
-    const personExists = await this.personService.findOneById(personId)
-
-    if (!personExists) throw new Error('Person not found')
-
-    if (!alert.assignedPersonId) {
-      alert.persons = []
-      alert.persons.push(personExists)
-      this.personService.assignAlertId(personId, alertId)
+    try {
+      const alert = await this.findOneById(alertId)
+      console.log('Alert you want to add employees to: ',alert)
+      if (!alert) throw new Error('Alert not found')
+      
+      const personExists = await this.personService.findOneById(personId)
+      console.log('Person you want to add: ',personExists)
+      if (!personExists) throw new Error('Person not found')
+      
+      if (!alert.assignedPersonId) {
+        alert.persons.push(personExists)
+        this.personService.assignAlertId(personId, alertId)
+      }
+      else throw new Error('Alert already has an assigned person')
+      
+      return this.alertRepository.save(alert)
+    } catch (error) {
+      throw new Error(error)
     }
-    else throw new Error('Alert already has an assigned person')
-
-    return this.alertRepository.save(alert)
   }
 
   @Get()

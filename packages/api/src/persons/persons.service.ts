@@ -76,7 +76,7 @@ export class PersonsService {
       p.assignedAlerts.push(alertId)
       await this.personRepository.save(p)
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   }
 

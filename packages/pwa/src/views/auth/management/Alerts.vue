@@ -23,40 +23,40 @@
                 </section>
                 <section v-else>
                     <template v-if="search.length > 0 && selectedJobType !== 'ALL'">
-                        <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
-                            v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType">
-
-                            <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType"
-                                v-for="employee in searchEmployees" :key="employee.id" />
-
-                        </section>
+                        <draggable v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType" v-model="searchEmployees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                            <template #item="{ element: employee }">
+                                <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
+                            </template>
+                        </draggable>
                         <div v-else>
                             <p class="opacity-60">No employees found.</p>
                         </div>
                     </template>
                     <template v-else-if="search.length > 0 && selectedJobType === 'ALL'">
-                        <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
-                            v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType">
-
-                            <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType"
-                                v-for="employee in searchEmployees" :key="employee.id" />
-
-                        </section>
+                        <draggable v-if="searchEmployees && searchEmployees.length > 0 && selectedJobType" v-model="searchEmployees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                            <template #item="{ element: employee }">
+                                <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
+                            </template>
+                        </draggable>
                         <div v-else>
                             <p class="opacity-60">No employees found.</p>
                         </div>
                     </template>
-                    <template v-else>
-                        <!-- <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"> -->
-                            <!-- <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees"
-                                v-for="employee in employees" :key="employee.id" /> -->
-                        <!-- </section> -->    
-                        <draggable v-model="employees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
-                            <template #item="{element: employee}">
-                                <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
-                            </template>
-                        </draggable>
-
+                    <template v-else> 
+                        <template v-if="selectedJobType === 'ALL'">
+                            <draggable v-model="employees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                                <template #item="{element: employee}">
+                                    <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
+                                </template>
+                            </draggable>
+                        </template>
+                        <template v-else>
+                            <draggable v-model="employees" tag="section" item-key="id" group="employees" class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                                <template #item="{ element: employee }">
+                                    <EmployeeDraggable :employee="employee" :selectedJobType="selectedJobType" />
+                                </template>
+                            </draggable>
+                        </template>
                     </template>
                 </section>
             </section>
@@ -70,15 +70,8 @@
                 <section v-else>
                     <section v-if="alerts && alerts.length > 0"
                         class="flex flex-col gap-2 h-[550px] overflow-y-scroll px-6 c-employees">
-                        <AlertDraggable :alert="alert" v-for="alert in alerts" :key="alert.id" :selectedJobType="selectedJobType" />
+                        <Alert :alert="alert" v-for="alert in alerts" :key="alert.id" />
                     </section>
-                    <!-- <draggable v-if="alerts && alerts.length > 0"
-                        class="flex flex-col gap-2 h-[550px] overflow-y-scroll px-6 c-employees"
-                        v-model="alerts" tag="section" group="employees">
-                        <template #item="{element: alert}">
-                            <AlertDraggable :alert="alert" />
-                        </template>
-                    </draggable> -->
                     <section v-else>
                         <p>No alerts found.</p>
                     </section>
@@ -87,7 +80,7 @@
         </section>
     </main>
 </template>
-<style>
+<style scoped>
 .c-employees::-webkit-scrollbar {
     width: 4px;
 }
@@ -106,31 +99,18 @@ import {
 } from '@/graphql/person.query'
 import { ALL_ALERTS } from '@/graphql/alert.query'
 import { PersonType } from '../../../interfaces/IPersonType'
-import { JobType } from '../../../interfaces/IJobType'
+import { JobType as IJobType } from '../../../interfaces/IJobType'
 import { RouterLink } from 'vue-router'
 import { ChevronDown } from 'lucide-vue-next'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
 import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
-import AlertDraggable from '@/components/dashboard/AlertDraggable.vue';
-import type { Persons as IPersons, Person } from '@/interfaces/IPersons'
+import Alert from '@/components/dashboard/Alert.vue';
+import type { Persons as IPersons } from '@/interfaces/IPersons'
+import type { Alert as IAlert, Alerts as IAlerts } from '@/interfaces/IAlert'
 import useFirebase from '@/composables/useFirebase'
 import draggable from 'vuedraggable'
 
 const { firebaseUser } = useFirebase()
-
-interface Alerts {
-    alerts: Alert[]
-}
-
-interface Alert {
-    id: string,
-    title: string,
-    description: string,
-    state: string,
-    createdBy: string,
-    createdAt: string,
-    updatedAt: string
-}
 
 export default {
     components: {
@@ -139,53 +119,31 @@ export default {
         DashboardTitle,
         EmployeeDraggable,
         draggable,
-        AlertDraggable
-    },
-    data() {
-        return {
-            drag: false
-        }
+        Alert
     },
     setup() {
         const search = ref<String>('')
-        const jobEnumArray = ref<JobType[]>(Object.values(JobType))
-        const selectedJobType = ref<JobType>(JobType.ALL)
+        const jobEnumArray = ref<IJobType[]>(Object.values(IJobType))
+        const selectedJobType = ref<IJobType>(IJobType.ALL)
         const { loading: employeesLoading, result: employeesResult, error: employeesError } = useQuery<IPersons>(ALL_EMPLOYEES, { personType: PersonType.EMPLOYEE })
-        const { loading: alertsLoading, result: alertsResult, error: alertsError } = useQuery<Alerts>(ALL_ALERTS)
+        const { loading: alertsLoading, result: alertsResult, error: alertsError } = useQuery<IAlerts>(ALL_ALERTS)
         const { document, result: searchEmployeesResult, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
         const skeletons = ref<number[]>(Array(10))
-        // const employees = computed(() => {
-        //     if (employeesResult.value) {
-        //         return employeesResult.value.personsByPersonType
-        //     }
-        // })
-        const employees = ref<Person[] | undefined>([])
-        // const searchEmployees = computed(() => {
-        //     if (searchEmployeesResult.value) {
-        //         return searchEmployeesResult.value.personsBySearchString
-        //     }
-        // })
-        const searchEmployees = ref<Person[]>([])
-        const alerts = ref<Alert[] | undefined>([])
-        watch(employeesLoading, () => {
-            if (!employeesLoading.value) {
-                employees.value = employeesResult.value?.personsByPersonType
-            }
+        const employees = computed(() => {
+            return employeesResult.value?.personsByPersonType
         })
-
-        watch(searchEmployeesResult, () => {
-            if (searchEmployeesResult.value) {
-                searchEmployees.value = searchEmployeesResult.value.personsBySearchString
-            }
+        const searchEmployees = computed(() => {
+            return searchEmployeesResult.value?.personsBySearchString
         })
+        const alerts = ref<IAlert[]>([])
 
         watch(alertsLoading, () => {
-            if (!alertsLoading.value) {
-                alerts.value = alertsResult.value?.alerts
+            if (!alertsLoading.value && alertsResult.value) {
+                alerts.value = alertsResult.value.alerts
             }
-        })
+        }, { immediate: true })
 
         watch(search, () => {
             load(document.value, {

@@ -12,6 +12,12 @@ export const ALL_ALERTS = gql`
                 id
                 firstName
                 lastName
+                fullName
+                personalEmail
+                workEmail
+                phone
+                personType
+                jobType
             }
             createdBy
     }
