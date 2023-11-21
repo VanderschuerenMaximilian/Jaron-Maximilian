@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Child",
+        "description": "A ticket for a child, aged 18 or younger.",
+        "price": 24.99,
+        "minHeight": 105,
+        "maxHeight": 120
+    },
+    {
+        "name": "Adult",
+        "description": "A ticket for an adult, aged 18 or older.",
+        "price": 34.99,
+        "minHeight": 120
+    }
+]

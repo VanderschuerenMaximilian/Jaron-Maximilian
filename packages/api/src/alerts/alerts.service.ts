@@ -3,7 +3,7 @@ import { CreateAlertInput } from './dto/create-alert.input';
 import { UpdateAlertInput } from './dto/update-alert.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alert } from './entities/alert.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { AlertState } from 'src/interfaces/IAlertState';
 import { PersonsService } from 'src/persons/persons.service';
@@ -12,7 +12,7 @@ import { PersonsService } from 'src/persons/persons.service';
 export class AlertsService {
   constructor(
     @InjectRepository(Alert)
-    private readonly alertRepository: Repository<Alert>,
+    private readonly alertRepository: MongoRepository<Alert>,
     private readonly personService: PersonsService,
   ) {}
 
@@ -94,7 +94,7 @@ export class AlertsService {
   async remove(id: string) {
     try {
       const alert = await this.alertRepository.delete(id);
-      console.log(alert)
+      
       return alert
     } catch (error) {
       throw error
@@ -103,7 +103,7 @@ export class AlertsService {
 
   //seeding alerts
 
-  saveAllAlerts(alerts: any[]) {
+  saveAllAlerts(alerts: Alert[]) {
     return this.alertRepository.save(alerts)
   }
 

@@ -43,6 +43,7 @@
                         <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">{{ $t('navigation.profile') }}</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">{{ $t('navigation.shops') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>
@@ -109,6 +110,7 @@
                         <div v-else-if="customPerson.personType === PersonType.EMPLOYEE" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">{{ $t('navigation.profile') }}</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">{{ $t('navigation.shops') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>

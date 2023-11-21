@@ -15,6 +15,10 @@ import { AlertState } from 'src/interfaces/IAlertState'
 import * as zones from './data/zones.json'
 import { Zone } from 'src/zones/entities/zone.entity'
 import { ZonesService } from 'src/zones/zones.service'
+// TicketPrice
+import * as ticketPrices from './data/ticket-prices.json'
+import { TicketPrice } from 'src/ticket-prices/entities/ticket-price.entity'
+import { TicketPricesService } from 'src/ticket-prices/ticket-prices.service'
 // Shop
 import * as shops from './data/shops.json'
 import { Shop } from 'src/shops/entities/shop.entity'
@@ -54,6 +58,7 @@ export class SeedService {
     private personsService: PersonsService,
     private alertsService: AlertsService,
     private zonesService: ZonesService,
+    private ticketPricesService: TicketPricesService,
     private shopsService: ShopsService,
     private categoriesService: CategoriesService,
     private productsService: ProductsService,
@@ -131,6 +136,29 @@ export class SeedService {
 
   async deleteAllZones(): Promise<void> {
     return this.zonesService.truncate()
+  }
+
+  // -------------------- TicketPrice --------------------
+  async addTicketPricesFromJson(): Promise<TicketPrice[]> {
+    let theTicketPrices: TicketPrice[] = []
+    for (let ticketPrice of ticketPrices) {
+      const tp = new TicketPrice()
+      tp.price = ticketPrice.price
+      tp.name = ticketPrice.name
+      tp.description = ticketPrice.description
+      tp.maxHeight = ticketPrice.maxHeight || null
+      tp.minHeight = ticketPrice.minHeight || null
+      tp.createdAt = new Date()
+      tp.updatedAt = new Date()
+
+      theTicketPrices.push(tp)
+    }
+
+    return this.ticketPricesService.saveAllTicketPrices(theTicketPrices)
+  }
+
+  async deleteAllTicketPrices(): Promise<void> {
+    return this.ticketPricesService.truncate()
   }
 
   // -------------------- Shop --------------------

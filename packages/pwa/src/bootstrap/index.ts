@@ -46,6 +46,11 @@ const router = createRouter({
           component: () => import('../views/Tickets.vue'),
         },
         {
+          path: 'ticket_detail',
+          component: () => import('../views/TicketDetail.vue'),
+          props: true,
+        },
+        {
           path: 'alerts',
           component: () => import('../views/Alerts.vue'),
         },
@@ -58,7 +63,7 @@ const router = createRouter({
       children: [
         {
           path: 'visitor/:id',
-          component: () => import('../views/auth/visitor/index.vue'),
+          component: () => import('../views/auth/visitor/Profile.vue')
         },
         {
           path: 'employee/:id',
@@ -76,6 +81,10 @@ const router = createRouter({
               component: () =>
                 import('../views/auth/employee/ShopDetail.vue'),
             },
+            {
+              path: 'qrscanner',
+              component: () => import('../views/auth/employee/QrScanner.vue'),
+            }
           ]
         },
         {
