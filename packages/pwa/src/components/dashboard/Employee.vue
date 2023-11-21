@@ -36,7 +36,7 @@ export default {
     props: ['employee', 'selectedJobType'], 
     methods: {
         showPassport() {
-            this.$emit('show-passport', { employee: this.employee, value: true });
+            this.$emit('show-passport', this.employee);
         },
         chooseEmployee() {
             this.$emit('choose-employee', this.employee);

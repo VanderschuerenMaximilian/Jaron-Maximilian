@@ -98,6 +98,7 @@ export const FIND_EMPLOYEES_BY_JOB_TYPE = gql`
             personalEmail
             personType
             jobType
+            phone
         }
     }
 `;
