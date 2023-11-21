@@ -30,6 +30,8 @@ export class DatabaseSeedCommand {
   // npx nestjs-command seed:database:sold-products
   // npx nestjs-command seed:database:orders
   // npx nestjs-command seed:database:stocks
+  // npx nestjs-command seed:database:ticket-prices
+
 
 
   // ------------ Person ------------
