@@ -97,7 +97,7 @@ import {
     ALL_EMPLOYEES,
     FIND_EMPLOYEES_BY_SEARCH,
 } from '@/graphql/person.query'
-import { ALL_ALERTS } from '@/graphql/alert.query'
+import { ALL_NON_ASSIGNED_ALERTS } from '@/graphql/alert.query'
 import { PersonType } from '../../../interfaces/IPersonType'
 import { JobType as IJobType } from '../../../interfaces/IJobType'
 import { RouterLink } from 'vue-router'
@@ -126,7 +126,7 @@ export default {
         const jobEnumArray = ref<IJobType[]>(Object.values(IJobType))
         const selectedJobType = ref<IJobType>(IJobType.ALL)
         const { loading: employeesLoading, result: employeesResult, error: employeesError } = useQuery<IPersons>(ALL_EMPLOYEES, { personType: PersonType.EMPLOYEE })
-        const { loading: alertsLoading, result: alertsResult, error: alertsError } = useQuery<IAlerts>(ALL_ALERTS)
+        const { loading: alertsLoading, result: alertsResult, error: alertsError } = useQuery<IAlerts>(ALL_NON_ASSIGNED_ALERTS)
         const { document, result: searchEmployeesResult, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
@@ -141,7 +141,7 @@ export default {
 
         watch(alertsLoading, () => {
             if (!alertsLoading.value && alertsResult.value) {
-                alerts.value = alertsResult.value.alerts
+                alerts.value = alertsResult.value.nonAssignedAlerts
             }
         }, { immediate: true })
 

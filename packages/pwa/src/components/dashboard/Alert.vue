@@ -48,10 +48,10 @@ export default {
                 ))
             )
             if (props.alert.persons?.find((person) => person.id !== event.id)) {
-                addPersonToAlert({
-                    alertId: props.alert.id,
-                    personId: event.id,
-                })
+                // addPersonToAlert({
+                //     alertId: props.alert.id,
+                //     personId: event.id,
+                // })
             }
             assignedEmployees.value = uniqueEmployees
         }

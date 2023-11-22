@@ -94,6 +94,11 @@ export class AlertsService {
       return this.alertRepository.findOne({ _id: new ObjectId(id) })
   }
 
+  @Get()
+  findNonAssignedAlerts(): Promise<Alert[]> {
+    return this.alertRepository.find({ assignedPersonId: null, state: AlertState.OPEN })
+  }
+
   @Delete(':id')
   async remove(id: string) {
     try {

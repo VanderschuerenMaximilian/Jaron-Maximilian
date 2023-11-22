@@ -36,6 +36,11 @@ export class AlertsResolver {
     return this.alertsService.findOneById(id);
   }
 
+  @Query(() => [Alert], { name: 'nonAssignedAlerts' })
+  findNonAssignedAlerts() {
+    return this.alertsService.findNonAssignedAlerts();
+  }
+
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)

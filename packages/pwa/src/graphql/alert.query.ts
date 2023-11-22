@@ -24,6 +24,28 @@ export const ALL_ALERTS = gql`
     }
 `;
 
+export const ALL_NON_ASSIGNED_ALERTS = gql`
+query nonAssignedAlerts {
+    nonAssignedAlerts {
+        id
+        title
+        description
+        zoneId
+        state
+        assignedPersonId
+        persons {
+            id
+            firstName
+            lastName
+            fullName
+            workEmail
+            phone
+            jobType
+        }
+    }
+}
+`;
+
 export const FIND_ALERT_BY_ID = gql`
     query alertById($alertId: String!) {
         alert (id: $alertId) {

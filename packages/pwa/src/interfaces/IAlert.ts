@@ -15,4 +15,5 @@ export interface Alert {
 
 export interface Alerts {
     alerts: Alert[];
+    nonAssignedAlerts: Alert[];
 }
