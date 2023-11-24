@@ -36,6 +36,11 @@ export class AlertsResolver {
     return this.alertsService.findOneById(id);
   }
 
+  @Query(() => [Alert], { name: 'nonResolvedAlertsByEmployee' })
+  findNonResolvedAlertsByEmployee(@Args('employeeId', { type: () => String }) employeeId: string) {
+    return this.alertsService.findNonResolvedAlertsByEmployee(employeeId);
+  }
+
   @Query(() => [Alert], { name: 'nonAssignedAlerts' })
   findNonAssignedAlerts() {
     return this.alertsService.findNonAssignedAlerts();

@@ -62,3 +62,23 @@ export const FIND_ALERT_BY_ID = gql`
         }
     }
 `;
+
+export const GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE = gql`
+query nonResolvedAlertsByEmployee($employeeId: String!) {
+  nonResolvedAlertsByEmployee(employeeId: $employeeId) {
+	id
+    title
+    description
+    zoneId
+    state
+    persons {
+      id
+      firstName
+      lastName
+      fullName
+      workEmail
+      phone
+      jobType
+    }
+  }
+}`;

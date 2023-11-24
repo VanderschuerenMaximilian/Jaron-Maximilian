@@ -67,6 +67,7 @@ const router = createRouter({
         },
         {
           path: 'employee/:id',
+          component: () => import('../components/wrapper/EmployeeWrapper.vue'),
           children: [
             {
               path: 'profile',

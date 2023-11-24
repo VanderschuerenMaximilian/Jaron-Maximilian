@@ -32,7 +32,7 @@ export class Alert {
 
   @IsOptional()
   @IsNotEmpty()
-  @Field(() => [Person], { nullable: 'itemsAndList' })
+  @Field(() => [Person], { nullable: true })
   @Column({ nullable: true })
   persons: Person[];
 

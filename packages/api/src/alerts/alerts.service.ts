@@ -85,6 +85,27 @@ export class AlertsService {
     return this.alertRepository.find();
   }
 
+  @Get(':employeeId')
+  async findNonResolvedAlertsByEmployee(@Param('employeeId') employeeId: string): Promise<Alert[]> {
+    try {
+
+      const employee = await this.personService.findOneById(employeeId)
+      
+      if (!employee) throw new Error('Employee not found')
+
+      const nonResolvedAlerts = await Promise.all(employee.assignedAlerts.map(async (alertId) => {
+        const alert = await this.findOneById(alertId)
+        if (alert.state !== AlertState.RESOLVED) {
+          return alert
+        }
+      }))
+    
+      return nonResolvedAlerts
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   @Get(':id')
   findOneById(@Param('id') id: string): Promise<Alert> {
 
