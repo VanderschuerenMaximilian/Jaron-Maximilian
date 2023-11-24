@@ -46,7 +46,7 @@ export default {
         const currentAlert = ref<IAlert>(props.alert);
         const zone = ref<IZone>();
         const isVisible = ref<boolean>(true);
-        const { mutate: updateAlertState, loading: acceptingAlert, error } = useMutation(UPDATE_ALERT_STATE);
+        const { mutate: updateAlertState, loading: acceptingAlert, onDone } = useMutation(UPDATE_ALERT_STATE);
         // const { onResult } = useQuery(GET_ZONE_BY_ID, () => ({
         //     id: currentAlert.value.zoneId,
         // }));
@@ -70,9 +70,6 @@ export default {
                     assignedPersonId: customPerson.value?.id,
                 },
             })
-            // .then(() => {
-            //     isVisible.value = false;
-            // });
         }
 
         const completeAlert = async () => {
@@ -80,11 +77,9 @@ export default {
                 updateAlertInput: {
                     id: currentAlert.value.id,
                     state: IAlertState.RESOLVED,
+                    assignedPersonId: customPerson.value?.id,
                 },
             })
-            // .then(() => {
-            //     isVisible.value = false;
-            // });
         }
 
         return {

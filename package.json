@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Project Advanced Full Stack Developement",
   "scripts": {
-    "dev": "todo",
-    "export:translations": "npm run export -w i18n-export",
-    "run:pwa": "npm run dev -w pwa",
-    "run:api": "npm run dev -w api"
+    "dev": "npx lerna run --scope={pwa,api} dev",
+    "export:translations": "npx lerna run --scope=i18n-export export",
+    "dev:api": "npx lerna run --scope=api dev",
+    "dev:pwa": "npx lerna run --scope=pwa dev"
   },
   "keywords": [],
   "author": "Jaron Maximilian",

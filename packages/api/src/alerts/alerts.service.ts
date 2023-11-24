@@ -48,7 +48,7 @@ export class AlertsService {
       a.persons = null
       a.createdBy = toUpdateAlert.createdBy
       a.updatedAt = new Date()
-
+      console.log(a)
       if (updateAlertInput.state === AlertState.RESOLVED) await this.personService.removeAssignedAlert(a.assignedPersonId, a.id)
 
       return this.alertRepository.save(a)
@@ -58,14 +58,14 @@ export class AlertsService {
   }
 
   @Post()
-  async addPersonToAlert(@Param() alertId: string,@Param() personId: string): Promise<Alert> {
+  async addPersonToAlert(@Param() alertId: string, @Param() personId: string): Promise<Alert> {
     try {
       const alert = await this.findOneById(alertId)
-      console.log('Alert you want to add employees to: ',alert)
+
       if (!alert) throw new Error('Alert not found')
       
       const personExists = await this.personService.findOneById(personId)
-      console.log('Person you want to add: ',personExists)
+
       if (!personExists) throw new Error('Person not found')
       
       if (!alert.assignedPersonId) {

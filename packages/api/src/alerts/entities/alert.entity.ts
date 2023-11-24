@@ -27,7 +27,7 @@ export class Alert {
   @IsEnum(IAlertState)
   @IsNotEmpty()
   @Column()
-  @Field()
+  @Field(() => IAlertState)
   state: IAlertState;
 
   @IsOptional()

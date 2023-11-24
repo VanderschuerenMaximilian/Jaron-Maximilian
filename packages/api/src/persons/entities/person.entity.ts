@@ -43,11 +43,11 @@ export class Person {
   phone: string;
 
   @Column()
-  @Field()
+  @Field(() => IPersonType)
   personType: IPersonType;
 
   @Column()
-  @Field({ nullable: true })
+  @Field(() => IJobType, { nullable: true })
   jobType: IJobType;
 
   @Field(() => [String], { nullable: 'itemsAndList' })
