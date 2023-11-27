@@ -1,21 +1,27 @@
-import { Resolver, Query, Mutation, Args, Int, Parent, ResolveField } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Parent, ResolveField, Subscription } from '@nestjs/graphql';
 import { TasksService } from './tasks.service';
 import { Task } from './entities/task.entity';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { PersonsService } from 'src/persons/persons.service';
 import { Person } from 'src/persons/entities/person.entity';
+//@ts-ignore
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver(() => Task)
 export class TasksResolver {
   constructor(
     private readonly tasksService: TasksService,
     private readonly personsService: PersonsService,
-    ) {}
+  ) {}
 
   @Mutation(() => Task)
-  createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput) {
-    return this.tasksService.create(createTaskInput);
+  async createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput) {
+    const task = await this.tasksService.create(createTaskInput);
+    pubSub.publish('taskAdded', { taskAdded: task });
+    return task;
   }
 
   @Query(() => [Task], { name: 'tasks' })
@@ -30,7 +36,9 @@ export class TasksResolver {
 
   @Mutation(() => Task)
   updateTask(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
-    return this.tasksService.update(updateTaskInput);
+    const task = this.tasksService.update(updateTaskInput);
+    pubSub.publish('tasksUpdated', { tasksUpdated: task });
+    return task;
   }
 
   @Mutation(() => Task)
@@ -38,20 +46,29 @@ export class TasksResolver {
     return this.tasksService.remove(id);
   }
 
-  
   @ResolveField(() => [Person], { name: 'persons' })
-  async getProductsForShop(@Parent() task: Task): Promise<Person[]> {
-    const personId = task.persons;
-      if (personId !== null && personId !== undefined) {
-        console.log(personId)
-      const perons = await Promise.all(
-        personId.map((personId) => this.personsService.findOneById(personId)),
+  async getPersonsForTask(@Parent() task: Task): Promise<Person[]> {
+    const personIds = task.persons;
+    if (personIds !== null && personIds !== undefined) {
+      const persons = await Promise.all(
+        personIds.map((personId) => this.personsService.findOneById(personId)),
       );
-      return perons;
-    }
-    else {
+      return persons;
+    } else {
       return [];
     }
   }
-}
 
+  @Subscription(() => Task, {
+    name: 'tasksUpdated',
+  })
+  tasksUpdated() {
+    return pubSub.asyncIterator('tasksUpdated');
+  }
+  @Subscription(() => Task, {
+    name: 'taskAdded',
+  })
+  taskAdded() {
+    return pubSub.asyncIterator('taskAdded');
+  }
+}

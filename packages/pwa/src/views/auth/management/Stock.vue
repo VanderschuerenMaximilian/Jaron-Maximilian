@@ -299,6 +299,7 @@ export default {
                 ingredients: stockDifference,
             });
 
+            await location.reload();
             
         };
 

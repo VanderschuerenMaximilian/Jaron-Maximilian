@@ -42,18 +42,18 @@ query uniqueFacilityNames {
 
 export const UPDATE_STOCK_WITH_PENDING = gql`
 mutation UpdateStockWithPending($facilityName: String!, $ingredients: [StockInput!]!) {
-    updateStockWithPending(facilityName: $facilityName, ingredients: $ingredients) {
-      id
-      facilityName
-      name
-      price
-      stock
-      pending
-      stockReduction
-      unit
-      minStock
-      maxStock
-    }
-  }  
+  updateStockWithPending(facilityName: $facilityName, ingredients: $ingredients) {
+    id
+    facilityName
+    name
+    price
+    stock
+    pending
+    stockReduction
+    unit
+    minStock
+    maxStock
+  }
+}
 `;
 

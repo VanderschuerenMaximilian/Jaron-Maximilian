@@ -4,10 +4,13 @@ export const CREATE_TASK = gql`
 mutation ($createTaskInput: CreateTaskInput!) {
     createTask(createTaskInput: $createTaskInput) {
       id
-      shopName
+      persons { id, fullName, profilePicture }
+      workblockId
       title
       description
+      completed
       createdAt
+      shopName
       stockItems {
         name
         difference
@@ -20,7 +23,7 @@ export const UPDATE_TASK = gql`
 mutation updateTaskInput ($updateTaskInput: UpdateTaskInput!) {
   updateTask (updateTaskInput: $updateTaskInput) {
     id
-    persons { id, fullName }
+    persons { id, fullName, profilePicture }
   }
 }
 `;

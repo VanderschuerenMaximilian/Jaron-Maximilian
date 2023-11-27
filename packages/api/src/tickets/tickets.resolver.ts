@@ -7,6 +7,7 @@ import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard
 import { UseGuards } from '@nestjs/common';
 import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+//@ts-ignore
 import { PubSub } from 'graphql-subscriptions';
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
