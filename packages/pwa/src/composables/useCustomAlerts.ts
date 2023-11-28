@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import useGraphql from "./useGraphql";
 import { useQuery, provideApolloClient } from "@vue/apollo-composable";
-import { FIND_ALERT_BY_ID } from "@/graphql/alert.query";
+import { FIND_ALERT_BY_ID } from "../graphql/alert.query";
 import useCustomPerson from "./useCustomPerson";
 import type { Alert } from "@/interfaces/IAlert";
 

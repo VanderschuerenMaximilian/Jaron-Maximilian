@@ -1,5 +1,5 @@
 import { useQuery, provideApolloClient } from '@vue/apollo-composable';
-import { FIND_PERSON_BY_UID } from '@/graphql/person.query';
+import { FIND_PERSON_BY_UID } from '../graphql/person.query';
 import { ref } from 'vue';
 import useFirebase from './useFirebase';
 import useGraphql from './useGraphql';
