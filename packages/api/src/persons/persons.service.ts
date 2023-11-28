@@ -3,7 +3,7 @@ import { CreatePersonInput } from './dto/create-person.input';
 import { UpdatePersonInput } from './dto/update-person.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from './entities/person.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { PersonType } from 'src/interfaces/IPersonType';
 import { JobType } from 'src/interfaces/IJobType';
 import { ObjectId } from 'mongodb';
@@ -12,7 +12,7 @@ import { ObjectId } from 'mongodb';
 export class PersonsService {
   constructor(
     @InjectRepository(Person)
-    private readonly personRepository: Repository<Person>,
+    private readonly personRepository: MongoRepository<Person>,
   ) {}
 
   create(uid: string, createPersonInput: CreatePersonInput): Promise<Person> {

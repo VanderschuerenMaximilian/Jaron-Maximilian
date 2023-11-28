@@ -65,13 +65,11 @@ export class StocksResolver {
       return this.stocksService.updateStock(name, facilityName, newStock);
     }
 
-    @Mutation(() => Stock)
+    @Mutation(() => [Stock])
       async updateStockWithPending(
         @Args('facilityName') facilityName: string,
         @Args('ingredients', { type: () => [StockInput] }) ingredients: StockInput[],
-      ) {
-        console.log(ingredients);
-        console.log(facilityName);
+      ): Promise<Stock[]> {
         const stocks = await this.stocksService.findAll();
         const uniqueFacilityNames = Array.from(new Set(stocks.map(stock => stock.facilityName)));
 
@@ -104,10 +102,10 @@ export class StocksResolver {
             if (allIngredientsValid) {
               for (const ingredient in correctIngredients) {
                 this.stocksService.updateStock(ingredient, facilityName, correctIngredients[ingredient]);
-              }     
+              }    
               const updatedStocks = await this.getStocksByFacilityName(facilityName);
-              console.log(updatedStocks);
-              return updatedStocks.toString();
+              return updatedStocks;
+              // const updatedStocks = await this.getStocksByFacilityName(facilityName);
             }
             else {
               throw new Error(`Stocks not updated`);
@@ -151,12 +149,13 @@ export class StocksResolver {
             }
             if (allIngredientsValid) {
               for (const ingredient in correctIngredients) {
-                this.stocksService.updatePending(ingredient, facilityName, correctIngredients[ingredient]);
-                this.stocksService.updatePending(ingredient, "Main Stock", correctIngredients2[ingredient]);
+                await this.stocksService.updatePending(ingredient, facilityName, correctIngredients[ingredient]);
+                await this.stocksService.updatePending(ingredient, "Main Stock", correctIngredients2[ingredient]);
               }     
+              // const updatedStocks = await this.getStocksByFacilityName(facilityName);
               const updatedStocks = await this.getStocksByFacilityName(facilityName);
-              console.log(updatedStocks);
-              return updatedStocks.toString();
+              return updatedStocks;
+              
             }
             else {
               throw new Error(`Stocks not updated`);

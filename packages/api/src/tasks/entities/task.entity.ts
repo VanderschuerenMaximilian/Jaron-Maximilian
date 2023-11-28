@@ -2,11 +2,11 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Column, Entity, ObjectIdColumn } from 'typeorm';
 
 @ObjectType()
-class StockItem {
-  @Field()
+class stockItems {
+  @Field({ nullable: true })
   name: string;
 
-  @Field()
+  @Field({ nullable: true})
   difference: number;
 }
 
@@ -18,8 +18,8 @@ export class Task {
   id: string;
 
   @Column()
-  @Field()
-  personId: string;
+  @Field(() => [String], { nullable: true })
+  persons: string[];
 
   @Column()
   @Field({ nullable: true })
@@ -34,6 +34,10 @@ export class Task {
   description: string;
 
   @Column()
+  @Field({ nullable: true })
+  completed: boolean;
+
+  @Column()
   @Field({ defaultValue: new Date()})
   createdAt: Date;
 
@@ -41,7 +45,7 @@ export class Task {
   @Field({ nullable: true })
   shopName: string;
 
-  @Column(type => StockItem)
-  @Field(() => [StockItem], { nullable: true })
-  stockItems: StockItem[];
+  @Column()
+  @Field(() => [stockItems], { nullable: true })
+  stockItems: stockItems[];
 }

@@ -13,9 +13,10 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { StocksModule } from 'src/stocks/stocks.module';
 import { TasksModule } from 'src/tasks/tasks.module';
 import { ZonesModule } from 'src/zones/zones.module';
+import { TicketPricesModule } from 'src/ticket-prices/ticket-prices.module';
 
 @Module({
-    imports: [PersonsModule, AlertsModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, OrdersModule, StocksModule, TasksModule, ZonesModule, CommandModule],
+    imports: [PersonsModule, AlertsModule, TicketPricesModule, ShopsModule, CategoriesModule, ProductsModule, IngredientsModule, SoldProductsModule, OrdersModule, StocksModule, TasksModule, ZonesModule, CommandModule],
     providers: [DatabaseSeedCommand, SeedService],
 })
 export class SeedModule {}

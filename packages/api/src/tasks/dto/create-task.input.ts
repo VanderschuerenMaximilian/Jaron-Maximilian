@@ -11,9 +11,6 @@ class StockItemInput {
 
 @InputType()
 export class CreateTaskInput {
-  @Field()
-  personId: string;
-
   @Field({ nullable: true })
   workblockId: string;
 
@@ -22,6 +19,9 @@ export class CreateTaskInput {
 
   @Field()
   description: string;
+
+  @Field(() => [String], { nullable: true })
+  persons: string[];
 
   @Field({ defaultValue: new Date() })
   createdAt: Date;

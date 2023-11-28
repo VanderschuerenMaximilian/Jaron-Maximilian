@@ -3,7 +3,7 @@
         <div v-if="isOrderChanged" class="absolute z-50 left-1/2 transform -translate-x-30 top-20">
             <div class="border-2 border-primary-green bg-primary-green bg-opacity-25 py-3 px-6 rounded-md max-w-lg flex flex-col gap-2">
                 <X @click="isOrderChanged = false" class="absolute right-4 h-6 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
-                <p class="text-primary-green font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="shops" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
+                <p class="text-primary-green font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="storeManagement" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
             </div>
         </div>
         <!-- Alert message -->
@@ -280,16 +280,8 @@ export default {
             isStockChanged.value = false;
 
             try {
-                console.log({
-                        personId: customPerson.value?.id,
-                        title: 'Stock adjustment',
-                        description: 'A stock adjustment has been made.',
-                        shopName: selectedFacility.value,
-                        stockItems: stockDifference,
-                },);
                 await createTaskMutation({
                     createTaskInput: {
-                        personId: customPerson.value?.id,
                         title: 'Stock adjustment',
                         description: 'A stock adjustment has been made.',
                         shopName: selectedFacility.value,
@@ -307,6 +299,7 @@ export default {
                 ingredients: stockDifference,
             });
 
+            await location.reload();
             
         };
 
