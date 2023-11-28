@@ -48,7 +48,7 @@ export class AlertsService {
       a.persons = null
       a.createdBy = toUpdateAlert.createdBy
       a.updatedAt = new Date()
-      console.log(a)
+
       if (updateAlertInput.state === AlertState.RESOLVED) await this.personService.removeAssignedAlert(a.assignedPersonId, a.id)
 
       return this.alertRepository.save(a)

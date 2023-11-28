@@ -37,8 +37,14 @@ export const ADD_PERSON_TO_ALERT = gql`
             title
             description
             persons {
+                id
                 firstName
                 lastName
+                fullName
+                personType
+                jobType
+                workEmail
+                phone
                 assignedAlerts
             }
         }

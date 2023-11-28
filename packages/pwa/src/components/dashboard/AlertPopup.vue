@@ -53,7 +53,6 @@ export default {
 
         watch(loadingZone, () => {
             if (!loadingZone.value && result.value) {
-                console.log(result.value);
                 currentZone.value = result.value.zoneById;
             }
         }, { immediate: true })

@@ -1,5 +1,5 @@
 <template>
-    <section class="w-full flex bg-primary-green min-h-screen">
+    <section class="relative w-full flex bg-primary-green min-h-screen overflow-x-hidden">
         <aside class="flex flex-col items-center ease-in-out"
         :class="navContainerState? 'w-[400px] transform transition-all duration-300':'w-[50px] transform transition-all duration-300'">
             <div class="h-[100px] w-full flex justify-between items-center"
@@ -70,6 +70,9 @@
             </ul>
         </aside>
         <RouterView />
+        <section v-if="successfullAssignedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
+            <AlertAssignment v-for="alert in successfullAssignedEmployees" :alert="alert" :key="alert.id" />
+        </section>
     </section>
 </template>
 
@@ -85,21 +88,25 @@
 </style>
 
 <script lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { Box, ChevronLeft } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import useFirebase from '@/composables/useFirebase';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import useCustomPerson from '@/composables/useCustomPerson';
 import { UPDATE_NAV_CONTAINER_STATE } from '@/graphql/person.mutation';
-import { useMutation } from '@vue/apollo-composable';
+import { PERSON_ASSIGNED_TO_ALERT } from '@/graphql/alert.subscription';
+import { useMutation, useSubscription } from '@vue/apollo-composable';
+import AlertAssignment from '../dashboard/AlertAssignment.vue';
+import type { Alert as IAlert } from '@/interfaces/IAlert';
 
 export default {
     components: {
-        RouterLink,
-        Box,
-        ChevronLeft,
-    },
+    RouterLink,
+    Box,
+    ChevronLeft,
+    AlertAssignment
+},
     setup() {
         const { signOutUser } = useFirebase()
         const { customPerson } = useCustomPerson()
@@ -107,10 +114,11 @@ export default {
         const router = useRouter()
         const navContainerState = ref<boolean>(true)
         const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
-
+        const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
         const checkPath = (route: string) => {
             path.value = route    
         }
+        const successfullAssignedEmployees = ref<IAlert[]>([])
 
         const handleNavContainer = () => {
             navContainerState.value = !navContainerState.value
@@ -137,9 +145,16 @@ export default {
             })
         })
 
+        watch(employeeAssigned, (data: any) => {
+            if (data.personAssignedToAlert) {
+                successfullAssignedEmployees.value = [...successfullAssignedEmployees.value, data.personAssignedToAlert]
+            }
+        })
+
         return {
             navContainerState,
             path,
+            successfullAssignedEmployees,
 
             checkPath,
             handleNavContainer,

@@ -4,14 +4,17 @@ export const ALL_PERSONS = gql`
     query {
         persons {
             id
+            userId
             firstName
             lastName
             fullName
+            personType
+            jobType
             personalEmail
             workEmail
             phone
-            personType
-            jobType
+            assignedAlerts
+            navContainerState
         }
     }
 `;

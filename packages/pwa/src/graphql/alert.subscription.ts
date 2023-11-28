@@ -23,18 +23,20 @@ subscription alertAdded {
 export const PERSON_ASSIGNED_TO_ALERT = gql`
 subscription personAssignedToAlert {
     personAssignedToAlert {
+        id
+        title
+        description
+        zoneId
+        state
+        persons {
             id
-            userId
             firstName
             lastName
             fullName
+            workEmail
             personType
             jobType
-            personalEmail
-            workEmail
-            phone
-            assignedAlerts
-            navContainerState
+        }
     }
 }
 `;

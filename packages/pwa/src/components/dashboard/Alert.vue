@@ -3,7 +3,7 @@
         <div class="flex gap-1 h-full justify-between items-center">
             <div>
                 <p class="font-bold max-w-[215px]">{{ alert.title }}</p>
-                <p class="text-sm line-clamp-2 max-w-md opacity-80">{{ alert.description }}</p>
+                <p class="text-xs break-all max-w-[225px] opacity-80">{{ alert.description }}</p>
             </div>
             <button @click="completeAssignment" :disabled="!hasChanged" class="mr-2 w-24 h-10 rounded-md flex justify-center items-center bg-secondary-green"
             :class="hasChanged ? 'transition-colors hover:bg-primary-green' : 'disabled:bg-opacity-60'">
@@ -29,7 +29,7 @@
     </section> 
 </template>
 <script lang="ts">
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watch } from 'vue';
 import draggableComponent from 'vuedraggable';
 import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
 import AssignedEmployee from '@/components/dashboard/AssignedEmployee.vue';
@@ -57,14 +57,19 @@ export default {
         const assignedEmployees = ref<IPerson[]>([]);
         const alreadyAssignedEmployees = ref<IPerson[]>([]);
         const hasChanged = ref<boolean>(false);
-        const { mutate: addPersonsToAlert, onDone, onError, loading } = useMutation(ADD_PERSON_TO_ALERT);
-        const onInput = (event: IAlert) => {
+        const { mutate: addPersonsToAlert, onDone, loading } = useMutation(ADD_PERSON_TO_ALERT);
+        const onInput = () => {
             const uniqueEmployees = assignedEmployees.value.filter((employee, index, self) =>
                 index === self.findIndex((t) => (
                     t.id === employee.id
                 ))
             )
             assignedEmployees.value = uniqueEmployees
+            if (assignedEmployees.value.length !== alreadyAssignedEmployees.value.length) {
+                hasChanged.value = true
+            } else {
+                hasChanged.value = false
+            }
         }
 
         watch(props, (newProps) => {
@@ -74,33 +79,30 @@ export default {
             }
         }, { immediate: true })
 
-        watchEffect(() => {
-            if (props.alert.persons && assignedEmployees.value.length !== props.alert.persons.length) {
-                hasChanged.value = true
-            } else {
-                hasChanged.value = false
-            }
-        })
-
         const completeAssignment = async () => {
             for (const employee of assignedEmployees.value) {
-                if (!alreadyAssignedEmployees.value.find((person) => person.id === employee.id)) {
+                if (!alreadyAssignedEmployees.value.some((person) => person.id === employee.id)) {
                     await addPersonsToAlert({
                         alertId: props.alert.id,
                         personId: employee.id,
                     })
                 }
+                // TODO: if employee is removed from alert, remove from alert`
             }
         }
 
         onDone((result) => {
-            console.log(result)
             hasChanged.value = false
-            alreadyAssignedEmployees.value = [result.data.addPersonToAlert, ...alreadyAssignedEmployees.value]
+            for (const employee of result.data.addPersonToAlert.persons) {
+                if (!alreadyAssignedEmployees.value.some((person) => person.id === employee.id)) {
+                    alreadyAssignedEmployees.value = [employee, ...alreadyAssignedEmployees.value]
+                }
+            }
         })
 
         return {
             assignedEmployees,
+            alreadyAssignedEmployees,
             hasChanged,
             loading,
 
