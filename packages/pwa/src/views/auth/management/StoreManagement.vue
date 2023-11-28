@@ -3,21 +3,53 @@
       <DashboardTitle currentRoute="Store Management" />
       <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
       <div class="flex-col mb-10">
-        <div v-for="item of socketTasks" class="mt-5 w-8/10">
-          <div v-if="item.completed !== true && item.completed !== undefined || item.completed == null" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white flex p-6 justify-between rounded-lg">
+        <button @click="toggleTasks" class="text-primary-green cursor-pointer">
+          <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
+          {{ showTasks ? 'Hide Tasks' : 'Show Tasks' }} 
+        </button>
+        <div v-show="showTasks">
+          <p v-if="filteredTasks.length === 0">No tasks available.</p>
+          <div v-for="item of socketTasks" class="mt-5 w-8/10">
+              <div v-if="shouldShowTask(item)" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white flex p-6 justify-between rounded-lg">
+                <div class="flex flex-col">
+                  <p class="text-5">{{ item.shopName }}</p>
+                  <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
+                </div>
+                <div class="flex gap-5">
+                  <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-95 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
+                  <div v-else class="flex gap-5">
+                    <button @click="printPDF(item)" class="p-4 w-50 bg-primary-green color-white font-medium rounded-lg">Print stock overview</button>
+                    <button @click="completeTask(item.id)" class="p-4 w-40 bg-primary-green color-white font-medium rounded-lg">Done</button>
+                  </div>
+                  <div class="relative w-12 h-12 mt-1">
+                    <UserCircle2 class="absolute w-full h-full"/>
+                    <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
+                    <div>
+                      <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
+                      <XCircle v-if="item.persons[0]?.profilePicture" @click="removeAssignPerson(item)" class="absolute w-full h-full opacity-0 hover:opacity-100 bg-white bg-opacity-20 rounded-full"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left">
+        <ChevronDown class="inline-block" :class="showCompletedTasks? 'rotate-180' : 'rotate-0'"/>
+        {{ showCompletedTasks ? 'Hide completed tasks' : 'Show completed tasks' }}
+      </button>
+      <div v-show="showCompletedTasks">
+        <p v-if="filteredCompletedTasks.length === 0">No tasks available.</p>
+        <div v-for="item of reversedCompletedTasks" class="mt-5 w-8/10 mb-10">
+          <div v-if="item.completed == true" class=" flex p-6 justify-between rounded-lg bg-slate-200">
             <div class="flex flex-col">
               <p class="text-5">{{ item.shopName }}</p>
               <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
             </div>
             <div class="flex gap-5">
-              <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-95 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
-              <div v-else class="flex gap-5">
-                <button @click="printPDF(item)" class="p-4 w-50 bg-primary-green color-white font-medium rounded-lg">Print stock overview</button>
-                <button @click="completeTask(item.id)" class="p-4 w-40 bg-primary-green color-white font-medium rounded-lg">Done</button>
-              </div>
+              <button @click="undoTask(item?.id)" class="py-4 w-40 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
               <div class="relative w-12 h-12 mt-1">
                 <UserCircle2 class="absolute w-full h-full"/>
-                <!-- Hier moet er dan een controle of er een image is, zoja toon die -->
                 <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
                 <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
               </div>
@@ -38,8 +70,8 @@
   import { GET_TASKS } from '@/graphql/task.query' 
   import { UPDATE_TASK } from '@/graphql/task.mutation'
   import { useMutation } from '@vue/apollo-composable'
-  import { UserCircle2 } from 'lucide-vue-next'
-  import { onBeforeMount, onMounted, ref, watch, watchEffect } from 'vue';
+  import { UserCircle2, ChevronDown, XCircle } from 'lucide-vue-next'
+  import { computed, ref, watch, watchEffect } from 'vue';
 
   
   const { firebaseUser } = useFirebase()
@@ -49,17 +81,31 @@
     components: {
       DashboardTitle,
       UserCircle2,
-      AssignPersonPopup
+      AssignPersonPopup,
+      ChevronDown,
+      XCircle
     },
     data() {
       return {
         showPopup: false
       }
     },
+    computed: {
+      filteredTasks() {
+        return this.socketTasks.filter((item: any) => this.shouldShowTask(item));
+      },
+      filteredCompletedTasks() {
+        return this.socketTasks.filter((item: any) => item.completed == true);
+      },
+    },
     methods: {
       closeAssignPersonPopup() {
         this.showPopup = false;
-      }
+      },
+      shouldShowTask(item: any) {
+        return item.completed !== true && item.completed !== undefined || item.completed == null &&
+          !this.removedTasks.includes(item.id as never);
+      },
     },
     setup() {
       const { result: tasksResult } = useQuery(GET_TASKS)
@@ -70,30 +116,31 @@
       const showPopup = ref(false);
       const currentTaskId = ref('');
       const socketTasks = ref([]) as any
+      const showTasks = ref(true)
+      const showCompletedTasks = ref(true)
+      const isSocketTasksMade = ref(false)  
+
+      const reversedCompletedTasks = computed(() => {
+        return [...socketTasks.value].reverse();
+      });
 
       watch(addedTasks, (data: any) => {
         socketTasks.value.push(data.taskAdded);
       });
 
-      watch(updatedTasks, (data: any) => {
-        const updatedTask = data.tasksUpdated;
-        const taskIndex = socketTasks.value.findIndex((task: { id: any }) => task.id === updatedTask.id);
-        if (taskIndex !== -1) {
-          socketTasks.value[taskIndex] = { ...socketTasks.value[taskIndex], persons: updatedTask.persons };
-        }
-        console.log(socketTasks.value)
-      })
-
       watchEffect(() => {
-        if (tasksResult.value) {
-          for (const task of tasksResult.value.tasks) {
-            const taskExists = socketTasks.value.some((existingTask: { id: any; }) => existingTask.id === task.id);
-            if (!taskExists) {
-              socketTasks.value.push(task);
+        if (!isSocketTasksMade.value) {
+          if (tasksResult.value) {
+            for (const task of tasksResult.value.tasks) {
+              const taskExists = socketTasks.value.some((existingTask: { id: any; }) => existingTask.id === task.id);
+              if (!taskExists) {
+                socketTasks.value.push(task);
+              }
             }
+            isSocketTasksMade.value = true;
           }
         }
-      });
+      })
 
       const handleAssignEmployee = (employee: any) => {
         updateTaskInput({updateTaskInput: {
@@ -102,6 +149,12 @@
         }})  
       }
 
+      const removeAssignPerson = (item: any) => {
+        updateTaskInput({updateTaskInput: {
+          id: item.id,
+          persons: null
+        }})
+      }
       
       const completeTask = (itemId: any) => {
         setTimeout(() => {
@@ -109,8 +162,26 @@
             id: itemId,
             completed: true
           }})
-          removedTasks.value.push(itemId as never);
+          if (!removedTasks.value.includes(itemId as never)) {
+            removedTasks.value.push(itemId as never);
+          }
+          const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+          if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+            task.completed = true;
+          }
         }, 500);
+      };
+
+      const undoTask = (itemId: any) => {
+        updateTaskInput({updateTaskInput: {
+          id: itemId,
+          completed: false
+        }})
+        removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
+        const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+        if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+          task.completed = false;
+        }
       };
 
       watch(updatedTasks, (data: any) => {
@@ -118,22 +189,29 @@
           const taskIndex = socketTasks.value.findIndex((task: { id: any }) => task.id === updatedTask.id);
           if (taskIndex !== -1) {
             socketTasks.value[taskIndex] = { ...socketTasks.value[taskIndex], persons: updatedTask.persons };
-
             if (updatedTask.completed) {
-              removedTasks.value.push(updatedTask.id as never);
-              setTimeout(() => {
-                socketTasks.value.splice(taskIndex, 1);
-              }, 500);
+              if (!removedTasks.value.includes(updatedTask.id as never)) {
+                removedTasks.value.push(updatedTask.id as never);
+              }
+              socketTasks.value[taskIndex].completed = true;
+            }
+            if (!updatedTask.completed) {
+              removedTasks.value.splice(removedTasks.value.indexOf(updatedTask.id as never), 1);
+              const task = socketTasks.value.find((task: { id: any }) => task.id === updatedTask.id)
+              if (socketTasks.value.findIndex((task: { id: any }) => task.id === updatedTask.id) !== -1) {
+                task.completed = false;
+              }
             }
           }
         });
 
-      // TODO: zorg ervoor dat als je op done klikt de task weg gaat en niet gewoon onzichtbaar word, want ik kan er nog op klikken
+      const toggleTasks = () => {
+        showTasks.value = !showTasks.value
+      }
 
-      // TODO: ALS JE OP DONE KLIKT MOET JE KIJKN OF JE AL OP DE PRINT BUTTON GEKLIKT HEBT
-
-      // TODO: ONDERAAN DE TASKS WIL IK EEN LIST MET DE VERWIJDERDE TASKS OP RECENTSTE DATUM MET EEN RESTORE BUTTON
-      // ZODAT JE ZE TERUG KAN ZETTEN MOET JE PERONGELIJK OP DONE GEKLIKT HEBBEN
+      const toggleCompletedTasks = () => {
+        showCompletedTasks.value = !showCompletedTasks.value
+      }
 
       const printPDF = (item: any) => {
         const stockItemsContent = ['']
@@ -200,7 +278,7 @@
     printWindow!.document.write(printContent);
     printWindow!.document.close();
     printWindow!.print();
-};
+      };
 
       const formatDateTime = (createdAt: string | number | Date) => {
         const dateObject = new Date(createdAt)
@@ -234,7 +312,14 @@
         updateTaskInput,
         removedTasks,
         socketTasks,
-        handleAssignEmployee
+        handleAssignEmployee,
+        toggleTasks,
+        toggleCompletedTasks,
+        showTasks,
+        showCompletedTasks,
+        reversedCompletedTasks,
+        undoTask,
+        removeAssignPerson,
       }
     }
   }
