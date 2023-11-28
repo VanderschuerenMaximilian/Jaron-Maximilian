@@ -1,8 +1,8 @@
 <template>
-    <main v-if="firebaseUser" class="flex flex-col pl-20 pr-4 pt-12 bg-slate-100 flex-1 rounded-l-3xl">
+    <main v-if="customPerson" class="flex flex-col pt-12 pl-20 pr-4 bg-slate-100 flex-1 rounded-l-3xl">
         <DashboardTitle currentRoute="Alerts" />
         <section class="flex">
-            <section class="flex flex-col border-r-2 border-r-slate-400 w-fit pr-4">
+            <section class="flex flex-col border-r-2 border-r-slate-400 pr-4">
                 <div class="flex gap-2">
                     <input type="text" class=" pl-1 mb-4 w-42" placeholder="Search employee" v-model="search">
                     <select v-model="selectedJobType" class="flex justify-center items-center h-fit w-20 rounded-md px-2">
@@ -60,7 +60,7 @@
                     </template>
                 </section>
             </section>
-            <section class="w-1/3 flex flex-col items-center">
+            <section class="flex flex-col items-center">
                 <section v-if="alertsLoading">
                     <p>Alerts are loading...</p>
                 </section>
@@ -92,12 +92,13 @@
 </style>
 <script lang="ts">
 import { computed, ref, watch, } from 'vue';
-import { useLazyQuery, useQuery } from '@vue/apollo-composable'
+import { useLazyQuery, useQuery, useSubscription } from '@vue/apollo-composable'
 import {
     ALL_EMPLOYEES,
     FIND_EMPLOYEES_BY_SEARCH,
 } from '@/graphql/person.query'
 import { ALL_NON_ASSIGNED_ALERTS } from '@/graphql/alert.query'
+import { CREATED_ALERT } from '@/graphql/alert.subscription'
 import { PersonType } from '../../../interfaces/IPersonType'
 import { JobType as IJobType } from '../../../interfaces/IJobType'
 import { RouterLink } from 'vue-router'
@@ -108,9 +109,11 @@ import Alert from '@/components/dashboard/Alert.vue';
 import type { Persons as IPersons } from '@/interfaces/IPersons'
 import type { Alert as IAlert, Alerts as IAlerts } from '@/interfaces/IAlert'
 import useFirebase from '@/composables/useFirebase'
+import useCustomPerson from '@/composables/useCustomPerson'
 import draggable from 'vuedraggable'
 
-const { firebaseUser } = useFirebase()
+// const { firebaseUser } = useFirebase()
+const { customPerson } = useCustomPerson()
 
 export default {
     components: {
@@ -130,6 +133,7 @@ export default {
         const { document, result: searchEmployeesResult, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
+        const { result: alertAdded } = useSubscription(CREATED_ALERT)
         const skeletons = ref<number[]>(Array(10))
         const employees = computed(() => {
             return employeesResult.value?.personsByPersonType
@@ -140,10 +144,21 @@ export default {
         const alerts = ref<IAlert[]>([])
 
         watch(alertsLoading, () => {
-            if (!alertsLoading.value && alertsResult.value) {
-                alerts.value = alertsResult.value.nonAssignedAlerts
+            if (!alertsLoading.value && alertsResult.value?.nonAssignedAlerts) {
+                alerts.value = [...alertsResult.value.nonAssignedAlerts]
+                const orderedAlerts= alerts.value.sort((a, b) => {
+                    //@ts-ignore
+                    return a.persons?.length - b.persons?.length
+                })
+                alerts.value = [...orderedAlerts]
             }
         }, { immediate: true })
+
+        watch(alertAdded, (data) => {
+            if (data.alertAdded) {
+                alerts.value = [data.alertAdded, ...alerts.value]
+            }
+        })
 
         watch(search, () => {
             load(document.value, {
@@ -155,10 +170,11 @@ export default {
             alerts,
             alertsError,
             alertsLoading,
+            customPerson,
             employeesLoading,
             employees,
             employeesError,
-            firebaseUser,
+            // firebaseUser,
             jobEnumArray,
             search,
             searchEmployees,

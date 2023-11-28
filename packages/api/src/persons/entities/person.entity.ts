@@ -2,6 +2,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from 'typeorm';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { JobType as IJobType } from 'src/interfaces/IJobType';
+import { IsBoolean } from 'class-validator';
 
 @Entity()
 @ObjectType()
@@ -53,6 +54,11 @@ export class Person {
   @Field(() => [String], { nullable: 'itemsAndList' })
   @Column()
   assignedAlerts: string[];
+
+  @IsBoolean()
+  @Field(() => Boolean, { nullable: true })
+  @Column()
+  navContainerState: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Field()

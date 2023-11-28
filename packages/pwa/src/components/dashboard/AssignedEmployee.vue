@@ -1,10 +1,7 @@
 <template>
-    <div class="cursor-pointer">
-        <p class="text-xs flex-wrap">
-            {{ employee.firstName }}
-            {{ employee.lastName }}
-        </p>
-    </div>
+    <button class="rounded-full px-[10px] py-2 bg-secondary-green">
+        <span class="text-slate-100">{{ getInitials(employee.fullName) }}</span>
+    </button>
 </template>
 
 <script lang="ts">
@@ -29,6 +26,21 @@ export default {
                 props.onInput(props.employee);
             }
         });
+
+        const getInitials = (name: string) => {
+            const names = name.split(' ');
+            let initials = names[0].substring(0, 1).toUpperCase();
+
+            if (names.length > 1) {
+                initials += names[names.length - 1].substring(0, 1).toUpperCase();
+            }
+
+            return initials;
+        }
+
+        return {
+            getInitials,
+        }
     }
 }
 </script>

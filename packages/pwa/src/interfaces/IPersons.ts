@@ -18,4 +18,5 @@ export interface Person {
     createdAt: string,
     updatedAt: string,
     assignedAlerts: string[]
+    navContainerState: boolean
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonInput } from './dto/create-person.input';
-import { UpdatePersonInput } from './dto/update-person.input';
+import { UpdatePersonInput, UpdateNavContainerStateInput } from './dto/update-person.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from './entities/person.entity';
 import { MongoRepository } from 'typeorm';
@@ -30,6 +30,10 @@ export class PersonsService {
       p.phone = createPersonInput.phone
       p.createdAt = new Date()
       p.updatedAt = new Date()
+
+      if(createPersonInput.personType === PersonType.MANAGER) {
+        p.navContainerState = true
+      }
       
       return this.personRepository.save(p)
     } catch (error) {
@@ -95,6 +99,16 @@ export class PersonsService {
       p.phone = updatePersonInput.phone? updatePersonInput.phone : null
       p.createdAt = updatePersonInput.createdAt? updatePersonInput.createdAt : null
       p.updatedAt = new Date()
+      return this.personRepository.save(p)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async updateNavContainerState(id: string, updateNavContainerStateInput: UpdateNavContainerStateInput): Promise<Person> {
+    try {
+      const p = await this.findOneById(id)
+      p.navContainerState = updateNavContainerStateInput.navContainerState
       return this.personRepository.save(p)
     } catch (error) {
       throw error

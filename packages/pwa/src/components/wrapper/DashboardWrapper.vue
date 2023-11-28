@@ -1,14 +1,20 @@
 <template>
     <section class="w-full flex bg-primary-green min-h-screen">
-        <aside class="w-[400px] flex flex-col items-center">
-            <div class="h-[100px] flex flex-col justify-center items-center">
-                <RouterLink to="/" class="overflow-hidden">
+        <aside class="flex flex-col items-center ease-in-out"
+        :class="navContainerState? 'w-[400px] transform transition-all duration-300':'w-[50px] transform transition-all duration-300'">
+            <div class="h-[100px] w-full flex justify-between items-center"
+            :class="navContainerState? 'px-8':'px-2 translate-x-1'">
+                <RouterLink to="/" class="overflow-hidden" v-if="navContainerState">
                     <picture>
                         <img src="../../assets/logo.jpg" alt="Logo" loading="lazy" class="w-52">
                     </picture>
                 </RouterLink>
+                <button @click="handleNavContainer">
+                    <ChevronLeft class="scale-150 text-slate-100 cursor-pointer rounded-full hover:bg-slate-100 hover:bg-opacity-10 transform transition-colors"
+                    :class="navContainerState? 'rotate-0 transfrom transition-transform duration-200':'-rotate-180 transform transition-transform duration-200'"/>
+                </button>
             </div>
-            <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
+            <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]" v-if="navContainerState">
                 <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
                 <li class="flex w-full gap-4">
                         <Box class="w-6 h-6 ml-[37%]" />
@@ -80,50 +86,64 @@
 
 <script lang="ts">
 import { RouterLink, useRoute } from 'vue-router'
-import { Box } from 'lucide-vue-next'
+import { Box, ChevronLeft } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import useFirebase from '@/composables/useFirebase';
-import useLanguage from '@/composables/useLanguage';
-import { useI18n } from 'vue-i18n';
-import { SUPPORTED_LOCALES } from '@/bootstrap/i18n';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import useCustomPerson from '@/composables/useCustomPerson';
+import { UPDATE_NAV_CONTAINER_STATE } from '@/graphql/person.mutation';
+import { useMutation } from '@vue/apollo-composable';
 
 export default {
     components: {
         RouterLink,
-        Box
+        Box,
+        ChevronLeft,
     },
     setup() {
         const { signOutUser } = useFirebase()
-        const { setLocale } = useLanguage()
-        const { locale } = useI18n()
+        const { customPerson } = useCustomPerson()
         const path = ref('overview')
         const router = useRouter()
+        const navContainerState = ref<boolean>(true)
+        const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
 
         const checkPath = (route: string) => {
             path.value = route    
+        }
+
+        const handleNavContainer = () => {
+            navContainerState.value = !navContainerState.value
         }
         
         const handleSignOut = () => {
             signOutUser(router)
         }
 
-        const setLanguage = (event: any) => {
-            const target = event.target as HTMLSelectElement
-            setLocale(target.value)
-        }
-
         onMounted(() => {
             checkPath(router.currentRoute.value.path.split('/')[router.currentRoute.value.path.split('/').length - 1])
         })
+        
+        watch(customPerson, () => {
+            if (customPerson.value) navContainerState.value = customPerson.value?.navContainerState
+        }, { immediate: true })
+
+        watch(navContainerState, () => {
+            updateNavContainerState({
+                updateNavContainerStateInput: {
+                    id: customPerson.value?.id,
+                    navContainerState: navContainerState.value,
+                }
+            })
+        })
 
         return {
-            locale,
-            SUPPORTED_LOCALES,
-            checkPath,
+            navContainerState,
             path,
+
+            checkPath,
+            handleNavContainer,
             handleSignOut,
-            setLanguage,
         }
     }
 }

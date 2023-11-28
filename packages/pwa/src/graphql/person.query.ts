@@ -29,6 +29,8 @@ export const FIND_PERSON_BY_ID = gql`
             personalEmail
             workEmail
             phone
+            assignedAlerts
+            navContainerState
         }
     }
 `;
@@ -48,6 +50,7 @@ export const FIND_PERSON_BY_UID = gql`
             locale
             phone
             assignedAlerts
+            navContainerState
         }
     }
 `;

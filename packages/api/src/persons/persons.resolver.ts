@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { PersonsService } from './persons.service';
 import { Person } from './entities/person.entity';
 import { CreatePersonInput } from './dto/create-person.input';
-import { UpdatePersonInput } from './dto/update-person.input';
+import { UpdatePersonInput, UpdateNavContainerStateInput } from './dto/update-person.input';
 import { UseGuards } from '@nestjs/common';
 import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
@@ -64,6 +64,13 @@ export class PersonsResolver {
   @Mutation(() => Person)
   updatePerson(@Args('updatePersonInput') updatePersonInput: UpdatePersonInput) {
     return this.personsService.update(updatePersonInput.id, updatePersonInput);
+  }
+
+  @AllowedPersonTypes(PersonType.ADMIN, PersonType.MANAGER)
+  @UseGuards(FirebaseGuard, RolesGuard)
+  @Mutation(() => Person)
+  updateNavContainerState(@Args('updateNavContainerStateInput') updateNavContainerStateInput: UpdateNavContainerStateInput) {
+    return this.personsService.updateNavContainerState(updateNavContainerStateInput.id, updateNavContainerStateInput);
   }
 
   @Mutation(() => Person)
