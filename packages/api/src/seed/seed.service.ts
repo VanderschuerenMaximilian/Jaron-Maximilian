@@ -78,6 +78,7 @@ export class SeedService {
       p.firstName = person.firstName
       p.lastName = person.lastName
       p.fullName = person.fullName
+      p.profilePicture = person.profilePicture
       p.workEmail = person.workEmail
       p.personalEmail = person.personalEmail
       p.phone = person.phone
@@ -313,7 +314,8 @@ export class SeedService {
     let theTasks: Task[] = []
     for (let task of tasks) {
       const t = new Task()
-      t.personId = task.personId
+      t.persons = task.persons
+      t.shopName = task.shopName
       t.workblockId = task.workblockId
       t.title = task.title
       t.description = task.description
