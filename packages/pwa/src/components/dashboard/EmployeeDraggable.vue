@@ -25,7 +25,6 @@ import type { JobType as IJobType } from '@/interfaces/IJobType';
 import type { Person as IPerson } from '@/interfaces/IPersons';
 
 export default {
-    // props: ['employee', 'selectedJobType'],
     props: {
         employee: {
             type: Object as () => IPerson,

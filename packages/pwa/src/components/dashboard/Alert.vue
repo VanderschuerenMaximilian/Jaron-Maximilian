@@ -31,7 +31,6 @@
 <script lang="ts">
 import { ref, watch } from 'vue';
 import draggableComponent from 'vuedraggable';
-import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
 import AssignedEmployee from '@/components/dashboard/AssignedEmployee.vue';
 import type { Alert as IAlert } from '@/interfaces/IAlert';
 import type { Person as IPerson } from '@/interfaces/IPersons';
@@ -48,7 +47,6 @@ export default {
     },
     components: {
         draggableComponent,
-        EmployeeDraggable,
         AssignedEmployee,
         Check,
         Loader2,
@@ -58,6 +56,8 @@ export default {
         const alreadyAssignedEmployees = ref<IPerson[]>([]);
         const hasChanged = ref<boolean>(false);
         const { mutate: addPersonsToAlert, onDone, loading } = useMutation(ADD_PERSON_TO_ALERT);
+
+        // this function removes duplicates from the assignedEmployees array when the user drags and drops the same employee multiple times
         const onInput = () => {
             const uniqueEmployees = assignedEmployees.value.filter((employee, index, self) =>
                 index === self.findIndex((t) => (
@@ -72,6 +72,7 @@ export default {
             }
         }
 
+        // this function adds the already assigned employees to the assignedEmployees array when the alert is called
         watch(props, (newProps) => {
             if (newProps.alert.persons) {
                 assignedEmployees.value = [...newProps.alert.persons]
@@ -79,6 +80,7 @@ export default {
             }
         }, { immediate: true })
 
+        // this function adds the assigned employees to the alert
         const completeAssignment = async () => {
             for (const employee of assignedEmployees.value) {
                 if (!alreadyAssignedEmployees.value.some((person) => person.id === employee.id)) {
@@ -91,6 +93,7 @@ export default {
             }
         }
 
+        // this function adds the assigned employees to the alreadyAssignedEmployees array when the mutation is done
         onDone((result) => {
             hasChanged.value = false
             for (const employee of result.data.addPersonToAlert.persons) {

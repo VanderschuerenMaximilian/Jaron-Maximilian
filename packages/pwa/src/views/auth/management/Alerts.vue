@@ -108,11 +108,9 @@ import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
 import Alert from '@/components/dashboard/Alert.vue';
 import type { Persons as IPersons } from '@/interfaces/IPersons'
 import type { Alert as IAlert, Alerts as IAlerts } from '@/interfaces/IAlert'
-import useFirebase from '@/composables/useFirebase'
 import useCustomPerson from '@/composables/useCustomPerson'
 import draggable from 'vuedraggable'
 
-// const { firebaseUser } = useFirebase()
 const { customPerson } = useCustomPerson()
 
 export default {
@@ -171,10 +169,9 @@ export default {
             alertsError,
             alertsLoading,
             customPerson,
-            employeesLoading,
             employees,
             employeesError,
-            // firebaseUser,
+            employeesLoading,
             jobEnumArray,
             search,
             searchEmployees,

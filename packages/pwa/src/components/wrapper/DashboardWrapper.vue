@@ -132,10 +132,12 @@ export default {
             checkPath(router.currentRoute.value.path.split('/')[router.currentRoute.value.path.split('/').length - 1])
         })
         
+        // handles the navContainerState when the user refreshes the page
         watch(customPerson, () => {
             if (customPerson.value) navContainerState.value = customPerson.value?.navContainerState
         }, { immediate: true })
 
+        // updates the navContainerState when the user changes it to his preference
         watch(navContainerState, () => {
             updateNavContainerState({
                 updateNavContainerStateInput: {
@@ -145,6 +147,7 @@ export default {
             })
         })
 
+        // handles the pop up when an employee is succesfully assigned to an alert
         watch(employeeAssigned, (data: any) => {
             if (data.personAssignedToAlert) {
                 successfullAssignedEmployees.value = [...successfullAssignedEmployees.value, data.personAssignedToAlert]
