@@ -27,12 +27,12 @@ export class Alert {
   @IsEnum(IAlertState)
   @IsNotEmpty()
   @Column()
-  @Field()
+  @Field(() => IAlertState)
   state: IAlertState;
 
   @IsOptional()
   @IsNotEmpty()
-  @Field(() => [Person], { nullable: 'itemsAndList' })
+  @Field(() => [Person], { nullable: true })
   @Column({ nullable: true })
   persons: Person[];
 

@@ -25,6 +25,7 @@ export class AlertsService {
       a.state = AlertState.OPEN
       a.createdBy = createAlertInput.createdBy
       a.zoneId = createAlertInput.zoneId
+      a.persons = []
       a.createdAt = new Date()
       a.updatedAt = new Date()
       return this.alertRepository.save(a)
@@ -57,28 +58,52 @@ export class AlertsService {
   }
 
   @Post()
-  async addPersonToAlert(@Param() alertId: string,@Param() personId: string): Promise<Alert> {
-    const alert = await this.findOneById(alertId)
+  async addPersonToAlert(@Param() alertId: string, @Param() personId: string): Promise<Alert> {
+    try {
+      const alert = await this.findOneById(alertId)
 
-    if (!alert) throw new Error('Alert not found')
+      if (!alert) throw new Error('Alert not found')
+      
+      const personExists = await this.personService.findOneById(personId)
 
-    const personExists = await this.personService.findOneById(personId)
-
-    if (!personExists) throw new Error('Person not found')
-
-    if (!alert.assignedPersonId) {
-      alert.persons = []
-      alert.persons.push(personExists)
-      this.personService.assignAlertId(personId, alertId)
+      if (!personExists) throw new Error('Person not found')
+      
+      if (!alert.assignedPersonId) {
+        alert.persons.push(personExists)
+        this.personService.assignAlertId(personId, alertId)
+      }
+      else throw new Error('Alert already has an assigned person')
+      
+      return this.alertRepository.save(alert)
+    } catch (error) {
+      throw new Error(error)
     }
-    else throw new Error('Alert already has an assigned person')
-
-    return this.alertRepository.save(alert)
   }
 
   @Get()
   findAll(): Promise<Alert[]> {
     return this.alertRepository.find();
+  }
+
+  @Get(':employeeId')
+  async findNonResolvedAlertsByEmployee(@Param('employeeId') employeeId: string): Promise<Alert[]> {
+    try {
+
+      const employee = await this.personService.findOneById(employeeId)
+      
+      if (!employee) throw new Error('Employee not found')
+
+      const nonResolvedAlerts = await Promise.all(employee.assignedAlerts.map(async (alertId) => {
+        const alert = await this.findOneById(alertId)
+        if (alert.state !== AlertState.RESOLVED) {
+          return alert
+        }
+      }))
+    
+      return nonResolvedAlerts
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   @Get(':id')
@@ -88,6 +113,11 @@ export class AlertsService {
 
       // @ts-ignore
       return this.alertRepository.findOne({ _id: new ObjectId(id) })
+  }
+
+  @Get()
+  findNonAssignedAlerts(): Promise<Alert[]> {
+    return this.alertRepository.find({ assignedPersonId: null, state: AlertState.OPEN })
   }
 
   @Delete(':id')

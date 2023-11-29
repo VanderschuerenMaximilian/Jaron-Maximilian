@@ -7,7 +7,7 @@
             <AlertCircle class="text-red-600 mt-2"/>
             <div class="w-10/12 flex flex-col justify-between h-full">
                 <h5 class="h5">{{ currentAlert.title }}</h5>
-                <p class="font-semibold text-sm">ADD ZONE!!</p>
+                <p class="font-semibold text-sm">ADD ZONE!!!!!!!!!!!!!!</p>
                 <p class="line-clamp-2">{{ currentAlert.description }}</p>
             </div>
         </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { AlertCircle, Check, X, Loader } from 'lucide-vue-next';
 import { UPDATE_ALERT_STATE } from '@/graphql/alert.mutation';
 import { useMutation } from '@vue/apollo-composable';
@@ -44,19 +44,18 @@ export default {
     setup(props) {
         const { customPerson } = useCustomPerson();
         const currentAlert = ref<IAlert>(props.alert);
-        const zone = ref<IZone>();
+        const currentZone = ref<IZone>();
         const isVisible = ref<boolean>(true);
-        const { mutate: updateAlertState, loading: acceptingAlert, error } = useMutation(UPDATE_ALERT_STATE);
-        // const { onResult } = useQuery(GET_ZONE_BY_ID, () => ({
-        //     id: currentAlert.value.zoneId,
-        // }));
+        const { mutate: updateAlertState, loading: acceptingAlert } = useMutation(UPDATE_ALERT_STATE);
+        const { result, loading: loadingZone } = useQuery(GET_ZONE_BY_ID, () => ({
+            id: currentAlert.value.zoneId,
+        }));
 
-        // onResult((result) => {
-        //     console.log(result);
-        //     if (result.data) {
-        //         zone.value = result.data?.zone;
-        //     } 
-        // });
+        watch(loadingZone, () => {
+            if (!loadingZone.value && result.value) {
+                currentZone.value = result.value.zoneById;
+            }
+        }, { immediate: true })
 
         const closePopUp = () => {
             isVisible.value = false;
@@ -70,9 +69,6 @@ export default {
                     assignedPersonId: customPerson.value?.id,
                 },
             })
-            // .then(() => {
-            //     isVisible.value = false;
-            // });
         }
 
         const completeAlert = async () => {
@@ -80,19 +76,17 @@ export default {
                 updateAlertInput: {
                     id: currentAlert.value.id,
                     state: IAlertState.RESOLVED,
+                    assignedPersonId: customPerson.value?.id,
                 },
             })
-            // .then(() => {
-            //     isVisible.value = false;
-            // });
         }
 
         return {
             acceptingAlert,
+            currentZone,
             IAlertState,
             currentAlert,
             isVisible,
-            zone,
 
             acceptAlert,
             closePopUp,

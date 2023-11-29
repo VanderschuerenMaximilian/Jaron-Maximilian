@@ -4,8 +4,11 @@
                 <section class="bg-white border-t-12 border-[#047143] my-20 mx-auto rounded-md px-8 pt-8">
                         <h2 class="h2-green text-center">Make an Alert</h2>
                         <form @submit.prevent="handleSubmitAlert" class="flex flex-col justify-center gap-8 py-8"> 
-                            <div v-if="isCreated" class="border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
+                            <div v-if="isCreated" class="relative h-fit border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
                                 <p class="text-primary-green font-semibold">Your alert is added!</p>
+                                <button class="absolute top-2 right-3 cursor-pointer" @click="closePopUp">
+                                    <X class="h-6 w-6 text-primary-green p-1 rounded-full transition-all hover:bg-primary-green hover:bg-opacity-10"/>
+                                </button>
                             </div>
     
                             <div class="flex flex-col max-w-lg">
@@ -63,8 +66,6 @@
                     </div>        
                 </section>
             </template>
-            <!-- TODO: Show the already made alerts code in dashboard!!! -->
-            <!-- <section class="w-1/5 mt-20">Show the already made alerts</section> -->
         </main>
 </template>
 <stlye>
@@ -81,12 +82,13 @@ import type { Alert } from '@/interfaces/IAlert'
 import type { Zones } from '@/interfaces/IZone'
 import type { Rules } from 'async-validator'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2, X } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
 export default {
     components: {
         Loader2,
+        X,
         RouterLink,
     },
     setup() {
@@ -130,7 +132,6 @@ export default {
         const { mutate: createAlert, loading } = useMutation(CREATE_ALERT)
 
         const handleSubmitAlert = () => {
-            console.log(newAlert.value)
             createAlert({ createAlertInput: 
                 {
                     title: newAlert.value.title,
@@ -143,9 +144,14 @@ export default {
                     title: '',
                     description: '',
                     zoneId: '',
+                    persons: [],
                 }
                 isCreated.value = true
             })
+        }
+
+        const closePopUp = () => {
+            isCreated.value = false
         }
         
         return {
@@ -159,6 +165,7 @@ export default {
             errorFields,
             zones,
 
+            closePopUp,
             createAlert,
             handleSubmitAlert,
         }

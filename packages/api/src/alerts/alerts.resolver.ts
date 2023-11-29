@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID, Subscription } from '@nestjs/graphql';
 import { AlertsService } from './alerts.service';
 import { Alert } from './entities/alert.entity';
 import { CreateAlertInput } from './dto/create-alert.input';
@@ -9,6 +9,10 @@ import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
 import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { PubSub } from 'graphql-subscriptions';
+import { RolesGuard } from 'src/persons/guards/personType.guard';
+
+const pubSub = new PubSub()
 
 @Resolver(() => Alert)
 export class AlertsResolver {
@@ -16,12 +20,13 @@ export class AlertsResolver {
 
   @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)
-  createAlert(@Args('createAlertInput') createAlertInput: CreateAlertInput) {
+  async createAlert(@Args('createAlertInput') createAlertInput: CreateAlertInput) {
     try {
-      return this.alertsService.create(createAlertInput);
+      const alert = await this.alertsService.create(createAlertInput);
+      pubSub.publish('alertAdded', { alertAdded: alert })
+      return alert
     }
     catch (error) {
-      console.log(error)
       return error
     }
   }
@@ -34,6 +39,16 @@ export class AlertsResolver {
   @Query(() => Alert, { name: 'alert' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.alertsService.findOneById(id);
+  }
+
+  @Query(() => [Alert], { name: 'nonResolvedAlertsByEmployee' })
+  findNonResolvedAlertsByEmployee(@Args('employeeId', { type: () => String }) employeeId: string) {
+    return this.alertsService.findNonResolvedAlertsByEmployee(employeeId);
+  }
+
+  @Query(() => [Alert], { name: 'nonAssignedAlerts' })
+  findNonAssignedAlerts() {
+    return this.alertsService.findNonAssignedAlerts();
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
@@ -52,16 +67,17 @@ export class AlertsResolver {
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Alert)
   addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
     @Args('personId', { type: () => String }) personId: string, 
   ) {
     try {
-      return this.alertsService.addPersonToAlert(alertId, personId);
+      const assignedPerson = this.alertsService.addPersonToAlert(alertId, personId);
+      pubSub.publish('personAssignedToAlert', { personAssignedToAlert: assignedPerson })
+      return assignedPerson
     }
     catch (error) {
-      console.log(error)
       return error
     }
   }
@@ -71,5 +87,15 @@ export class AlertsResolver {
   @Mutation(() => Alert)
   removeAlert(@Args('id', { type: () => ID }) id: string) {
     return this.alertsService.remove(id);
+  }
+
+  @Subscription(() => Alert)
+  alertAdded() {
+    return pubSub.asyncIterator('alertAdded')
+  }
+
+  @Subscription(() => Alert)
+  personAssignedToAlert() {
+    return pubSub.asyncIterator('personAssignedToAlert')
   }
 }

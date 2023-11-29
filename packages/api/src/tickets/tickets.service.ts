@@ -23,26 +23,26 @@ export class TicketsService {
         const today = new Date()
 
         const tickets = await Promise.all(createTicketsInput.map(async t => {
-        const ticket = new Ticket()
-        const usableDate = new Date(t.usableOn)
-        usableDate.setHours(0,0,0,0)
-        const validationId = new ObjectId()
-        const qrCode = await this.generateQrCode(`https://ef5a-178-51-40-7.ngrok-free.app/ticket_detail?ticketId=${validationId}`)
+          const ticket = new Ticket()
+          const usableDate = new Date(t.usableOn)
+          usableDate.setHours(0,0,0,0)
+          const validationId = new ObjectId()
+          const qrCode = await this.generateQrCode(`https://ef5a-178-51-40-7.ngrok-free.app/ticket_detail?ticketId=${validationId}`)
 
-        ticket.price = t.price
-        ticket.name = t.name
-        ticket.personId = t.personId
-        ticket.isActive = false
-        ticket.validationId = validationId.toString()
-        ticket.qrCode = qrCode
-        ticket.usableOn = usableDate
-        ticket.createdAt = new Date(today)
-        ticket.updatedAt = new Date(today)
-        return ticket
-      }))
-      // this.sendTicketVerificationMail(currentUser.email)
-      // this.sendTicketVerificationMail('bearbanner00@gmail.com')
-      return this.ticketRepository.save(tickets)
+          ticket.price = t.price
+          ticket.name = t.name
+          ticket.personId = t.personId
+          ticket.isActive = false
+          ticket.validationId = validationId.toString()
+          ticket.qrCode = qrCode
+          ticket.usableOn = usableDate
+          ticket.createdAt = new Date(today)
+          ticket.updatedAt = new Date(today)
+          return ticket
+        }))
+        // this.sendTicketVerificationMail(currentUser.email)
+        // this.sendTicketVerificationMail('bearbanner00@gmail.com')
+        return this.ticketRepository.save(tickets)
     }
     catch (error) {
       throw error

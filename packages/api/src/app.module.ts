@@ -68,9 +68,7 @@ import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
     StocksModule,
     TasksModule,
     ZonesModule,
-
     TicketsModule,
-
     TicketPricesModule,
   ],
   controllers: [AppController],

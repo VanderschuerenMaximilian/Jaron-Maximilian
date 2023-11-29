@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { PersonsService } from '../persons.service';
 import { Reflector } from '@nestjs/core';
-import { PersonType } from 'src/interfaces/IPersonType';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { PERSONTYPES_KEY } from '../decorators/personType.decorator';
 
@@ -15,7 +15,7 @@ export class RolesGuard implements CanActivate {
     }
     
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const requiredRoles = this.reflector.getAllAndOverride<PersonType[]>
+        const requiredRoles = this.reflector.getAllAndOverride<IPersonType[]>
         (PERSONTYPES_KEY, [
             context.getHandler(),
             context.getClass(),

@@ -4,15 +4,18 @@ export const ALL_PERSONS = gql`
     query {
         persons {
             id
+            userId
             firstName
             lastName
             fullName
+            personType
+            jobType
             profilePicture
             personalEmail
             workEmail
             phone
-            personType
-            jobType
+            assignedAlerts
+            navContainerState
         }
     }
 `;
@@ -31,6 +34,8 @@ export const FIND_PERSON_BY_ID = gql`
             personalEmail
             workEmail
             phone
+            assignedAlerts
+            navContainerState
         }
     }
 `;
@@ -51,6 +56,7 @@ export const FIND_PERSON_BY_UID = gql`
             locale
             phone
             assignedAlerts
+            navContainerState
         }
     }
 `;

@@ -1,14 +1,20 @@
 <template>
-    <section class="w-full flex bg-primary-green min-h-screen">
-        <aside class="w-[400px] flex flex-col items-center">
-            <div class="h-[100px] flex flex-col justify-center items-center">
-                <RouterLink to="/" class="overflow-hidden">
+    <section class="relative w-full flex bg-primary-green min-h-screen overflow-x-hidden">
+        <aside class="flex flex-col items-center ease-in-out"
+        :class="navContainerState? 'w-[400px] transform transition-all duration-300':'w-[50px] transform transition-all duration-300'">
+            <div class="h-[100px] w-full flex justify-between items-center"
+            :class="navContainerState? 'px-8':'px-2 translate-x-1'">
+                <RouterLink to="/" class="overflow-hidden" v-if="navContainerState">
                     <picture>
                         <img src="../../assets/logo.jpg" alt="Logo" loading="lazy" class="w-52">
                     </picture>
                 </RouterLink>
+                <button @click="handleNavContainer">
+                    <ChevronLeft class="scale-150 text-slate-100 cursor-pointer rounded-full hover:bg-slate-100 hover:bg-opacity-10 transform transition-colors"
+                    :class="navContainerState? 'rotate-0 transfrom transition-transform duration-200':'-rotate-180 transform transition-transform duration-200'"/>
+                </button>
             </div>
-            <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]">
+            <ul class="c-dash-nav flex flex-col items-center w-full gap-6 py-8 overflow-y-scroll h-[calc(100vh-100px)]" v-if="navContainerState">
                 <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
                 <li class="flex w-full gap-4">
                         <Box class="w-6 h-6 ml-[37%]" />
@@ -64,6 +70,9 @@
             </ul>
         </aside>
         <RouterView />
+        <section v-if="successfullAssignedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
+            <AlertAssignment v-for="alert in successfullAssignedEmployees" :alert="alert" :key="alert.id" />
+        </section>
     </section>
 </template>
 
@@ -79,51 +88,80 @@
 </style>
 
 <script lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
-import { Box } from 'lucide-vue-next'
+import { RouterLink } from 'vue-router'
+import { Box, ChevronLeft } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import useFirebase from '@/composables/useFirebase';
-import useLanguage from '@/composables/useLanguage';
-import { useI18n } from 'vue-i18n';
-import { SUPPORTED_LOCALES } from '@/bootstrap/i18n';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import useCustomPerson from '@/composables/useCustomPerson';
+import { UPDATE_NAV_CONTAINER_STATE } from '@/graphql/person.mutation';
+import { PERSON_ASSIGNED_TO_ALERT } from '@/graphql/alert.subscription';
+import { useMutation, useSubscription } from '@vue/apollo-composable';
+import AlertAssignment from '../dashboard/AlertAssignment.vue';
+import type { Alert as IAlert } from '@/interfaces/IAlert';
 
 export default {
     components: {
-        RouterLink,
-        Box
-    },
+    RouterLink,
+    Box,
+    ChevronLeft,
+    AlertAssignment
+},
     setup() {
         const { signOutUser } = useFirebase()
-        const { setLocale } = useLanguage()
-        const { locale } = useI18n()
+        const { customPerson } = useCustomPerson()
         const path = ref('overview')
         const router = useRouter()
-
+        const navContainerState = ref<boolean>(true)
+        const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
+        const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
         const checkPath = (route: string) => {
             path.value = route    
+        }
+        const successfullAssignedEmployees = ref<IAlert[]>([])
+
+        const handleNavContainer = () => {
+            navContainerState.value = !navContainerState.value
         }
         
         const handleSignOut = () => {
             signOutUser(router)
         }
 
-        const setLanguage = (event: any) => {
-            const target = event.target as HTMLSelectElement
-            setLocale(target.value)
-        }
-
         onMounted(() => {
             checkPath(router.currentRoute.value.path.split('/')[router.currentRoute.value.path.split('/').length - 1])
         })
+        
+        // handles the navContainerState when the user refreshes the page
+        watch(customPerson, () => {
+            if (customPerson.value) navContainerState.value = customPerson.value?.navContainerState
+        }, { immediate: true })
+
+        // updates the navContainerState when the user changes it to his preference
+        watch(navContainerState, () => {
+            updateNavContainerState({
+                updateNavContainerStateInput: {
+                    id: customPerson.value?.id,
+                    navContainerState: navContainerState.value,
+                }
+            })
+        })
+
+        // handles the pop up when an employee is succesfully assigned to an alert
+        watch(employeeAssigned, (data: any) => {
+            if (data.personAssignedToAlert) {
+                successfullAssignedEmployees.value = [...successfullAssignedEmployees.value, data.personAssignedToAlert]
+            }
+        })
 
         return {
-            locale,
-            SUPPORTED_LOCALES,
-            checkPath,
+            navContainerState,
             path,
+            successfullAssignedEmployees,
+
+            checkPath,
+            handleNavContainer,
             handleSignOut,
-            setLanguage,
         }
     }
 }

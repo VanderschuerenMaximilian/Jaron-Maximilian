@@ -38,3 +38,12 @@ export class UpdatePersonInput extends PartialType(CreatePersonInput) {
   @Field({ nullable: true })
   createdAt: Date;
 }
+
+@InputType()
+export class UpdateNavContainerStateInput {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  navContainerState: boolean;
+}
