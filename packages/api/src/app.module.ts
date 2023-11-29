@@ -20,6 +20,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { ZonesModule } from './zones/zones.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
+import { CommandModule } from 'nestjs-command';
 // import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
@@ -70,6 +71,8 @@ import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
     ZonesModule,
     TicketsModule,
     TicketPricesModule,
+    // TODO: Where is this in their code?
+    CommandModule,
   ],
   controllers: [AppController],
   providers: [AppService],
