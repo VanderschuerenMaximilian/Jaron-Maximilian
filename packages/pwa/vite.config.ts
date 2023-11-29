@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import { fileURLToPath } from 'url'
+import { url } from 'inspector'
 
 export default defineConfig({
   plugins: [
@@ -11,26 +12,20 @@ export default defineConfig({
     UnoCSS(),
     VitePWA({
       manifest: {
-        name: 'Birds observations',
-        short_name: 'Birds',
-        theme_color: '#000000',
+        name: 'Bellewaerde',
+        short_name: 'Bellewaerde',
         icons: [
           {
-            src: '/android-chrome-192x192.png',
+            src: './icons/android-chrome-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/android-chrome-512x512.png',
+            src: './icons/android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-          },
-        ],
-        background_color: '#ffffff',
-        display: 'standalone',
-        orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+          }
+        ]
       },
       workbox: {
         runtimeCaching: [
@@ -68,10 +63,10 @@ export default defineConfig({
                 maxEntries: 60,
               },
             },
-          },
-        ],
-      },
-    }),
+          }
+        ]
+      }
+    })
   ],
   resolve: {
     alias: {
@@ -80,7 +75,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["@/composables/useFirebase"],
+      external: ["./src/composables/useFirebase.ts"],
     },
   },
 })
