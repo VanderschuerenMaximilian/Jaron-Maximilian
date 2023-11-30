@@ -115,6 +115,16 @@ export class PersonsService {
     }
   }
 
+  async updateLocale(id: string, locale: string): Promise<Person> {
+    try {
+      const p = await this.findOneById(id)
+      p.locale = locale
+      return this.personRepository.save(p)
+    } catch (error) {
+      throw error
+    }
+  }
+
   async removeAssignedAlert(personId: string, alertId: string): Promise<void> {
     try {
       const p = await this.findOneById(personId)

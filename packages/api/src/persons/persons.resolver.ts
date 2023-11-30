@@ -73,6 +73,12 @@ export class PersonsResolver {
     return this.personsService.updateNavContainerState(updateNavContainerStateInput.id, updateNavContainerStateInput);
   }
 
+  @UseGuards(FirebaseGuard)
+  @Mutation(() => Person)
+  updateLocale(@Args('id', { type: () => String }) id: string, @Args('locale', { type: () => String }) locale: string) {
+    return this.personsService.updateLocale(id, locale);
+  }
+
   @Mutation(() => Person)
   removePerson(@Args('id', { type: () => String }) id: string) {
     return this.personsService.remove(id);

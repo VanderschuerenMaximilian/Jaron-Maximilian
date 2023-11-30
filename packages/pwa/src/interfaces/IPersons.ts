@@ -19,4 +19,6 @@ export interface Person {
     updatedAt: string,
     assignedAlerts: string[]
     navContainerState: boolean
+    locale: string,
+    profilePicture: string,
 }

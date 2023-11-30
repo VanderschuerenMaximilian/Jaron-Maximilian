@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client/core';
 
 export const CREATE_PERSON = gql`
     mutation ($createPersonInput: CreatePersonInput!) {
@@ -26,4 +26,15 @@ mutation updateNavContainerState ($updateNavContainerStateInput: UpdateNavContai
     navContainerState
   }
 }
-`
+`;
+
+export const UPDATE_LOCALE = gql`
+mutation updateLocale($personId: String!, $locale: String!){
+	updateLocale (id:$personId, locale: $locale) {
+    id
+    uid
+    fullName
+    locale
+  }
+}
+`;
