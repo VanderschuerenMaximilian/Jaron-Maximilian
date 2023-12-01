@@ -17,14 +17,19 @@ export class IngredientsService {
   }
 
   create(createIngredientInput: CreateIngredientInput): Promise<Ingredient> {
-    const i = new Ingredient()
-    i.name = createIngredientInput.name
-    i.price = createIngredientInput.price
-    i.stock = createIngredientInput.stock
-    i.unit = createIngredientInput.unit
-    i.minStock = createIngredientInput.minStock
-    i.maxStock = createIngredientInput.maxStock
-    return this.ingredientRepository.save(i)
+    try {
+      const i = new Ingredient()
+      i.name = createIngredientInput.name
+      i.price = createIngredientInput.price
+      i.stock = createIngredientInput.stock
+      i.unit = createIngredientInput.unit
+      i.minStock = createIngredientInput.minStock
+      i.maxStock = createIngredientInput.maxStock
+      return this.ingredientRepository.save(i)
+    }
+    catch (e) {
+      throw new Error(e)
+    }
   }
 
   async updateStockByName(name: string, newStock: number): Promise<Ingredient> {
