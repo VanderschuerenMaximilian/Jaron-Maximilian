@@ -22,23 +22,32 @@ export class StocksService {
   }
 
   create(createStockInput: CreateStockInput): Promise<Stock> {
-    const s = new Stock()
-    s.name = createStockInput.name
-    s.facilityName = createStockInput.facilityName
-    s.price = createStockInput.price
-    s.stock = createStockInput.stock
-    s.pending = createStockInput.pending
-    s.stockReduction = createStockInput.stockReduction
-    s.unit = createStockInput.unit
-    s.minStock = createStockInput.minStock
-    s.maxStock = createStockInput.maxStock
-    return this.stockRepository.save(s)
+    try {
+      const s = new Stock()
+      s.name = createStockInput.name
+      s.facilityName = createStockInput.facilityName
+      s.price = createStockInput.price
+      s.stock = createStockInput.stock
+      s.pending = createStockInput.pending
+      s.stockReduction = createStockInput.stockReduction
+      s.unit = createStockInput.unit
+      s.minStock = createStockInput.minStock
+      s.maxStock = createStockInput.maxStock
+      return this.stockRepository.save(s)
+    }
+    catch (e) {
+      throw new Error(e)
+    }
   }
 
   async findByNameAndFacility(name: string, facilityName?: string): Promise<Stock | null> {
     const stocks = await this.findAll();
-
+    if (!stocks || stocks.length === 0) {
+      throw new NotFoundException(`No stocks found`);
+    }
     const filteredStock = stocks.find(stock => stock.name === name && (!facilityName || stock.facilityName === facilityName));
+
+    if (!filteredStock) throw new NotFoundException(`Stock with name (${name}) not found in facility (${facilityName})`);
 
     return filteredStock || null;
   }

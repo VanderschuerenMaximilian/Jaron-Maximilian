@@ -18,15 +18,21 @@ export class OrdersService {
   }
 
   async create(CreateOrderInput: CreateOrderInput): Promise<Order> {
-    const o = new Order()
-    o.shopName = CreateOrderInput.shopName
-    o.totalPrice = CreateOrderInput.totalPrice
-    const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() + 1);
-    o.createdAt = currentDate;   
-    o.soldProducts = CreateOrderInput.soldProducts
-    await this.orderRepository.save(o)
-    return o
+    try {
+      const o = new Order()
+      o.shopName = CreateOrderInput.shopName
+      o.totalPrice = CreateOrderInput.totalPrice
+      const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() + 1);
+      o.createdAt = currentDate;   
+      o.soldProducts = CreateOrderInput.soldProducts
+      await this.orderRepository.save(o)
+      return o
+    }
+    catch (e) {
+      throw new Error(e)
+    }
+    
   }
 
   async findOne(id: string): Promise<Order> {
