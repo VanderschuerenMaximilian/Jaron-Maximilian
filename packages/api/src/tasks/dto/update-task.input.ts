@@ -10,11 +10,9 @@ export class UpdateTaskInput extends PartialType(CreateTaskInput) {
   @Field(() => ID)
   id: string;
 
-  @IsArray()
   @Field(() => [String], { nullable: true })
   persons?: string[];
 
-  @IsBoolean()
   @Field({ nullable: true })
   completed?: boolean;
 }

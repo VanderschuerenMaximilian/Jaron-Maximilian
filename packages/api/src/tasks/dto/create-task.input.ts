@@ -1,5 +1,5 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { IsArray, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsDate, IsEmpty, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @InputType()
 class StockItemInput {
@@ -16,7 +16,6 @@ class StockItemInput {
 
 @InputType()
 export class CreateTaskInput {
-  @IsString()
   @Field({ nullable: true })
   workblockId: string;
 
@@ -30,7 +29,6 @@ export class CreateTaskInput {
   @Field()
   description: string;
 
-  @IsArray()
   @Field(() => [String], { nullable: true })
   persons: string[];
 
@@ -39,11 +37,9 @@ export class CreateTaskInput {
   @Field({ defaultValue: new Date() })
   createdAt: Date;
 
-  @IsString()
   @Field({ nullable: true })
   shopName: string;
 
-  @IsArray()
   @Field(() => [StockItemInput], { nullable: true })
   stockItems: StockItemInput[];
 }

@@ -157,14 +157,14 @@
       }
       
       const completeTask = (itemId: any) => {
+        if (!removedTasks.value.includes(itemId as never)) {
+          removedTasks.value.push(itemId as never);
+        }
         setTimeout(() => {
-          updateTaskInput({updateTaskInput: {
-            id: itemId,
+        updateTaskInput({updateTaskInput: {
+          id: itemId,
             completed: true
           }})
-          if (!removedTasks.value.includes(itemId as never)) {
-            removedTasks.value.push(itemId as never);
-          }
           const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
           if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
             task.completed = true;
