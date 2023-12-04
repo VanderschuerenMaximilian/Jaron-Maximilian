@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb';
 import * as qrcode from 'qrcode';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserRecord } from 'firebase-admin/auth';
+import { TicketState } from 'src/interfaces/ITicketState';
 
 @Injectable()
 export class TicketsService {
@@ -21,7 +22,7 @@ export class TicketsService {
   async createTickets(@Body() createTicketsInput: CreateTicketInput[], currentUser: UserRecord): Promise<Ticket[]> {
     try {
         const today = new Date()
-        console.log('createTicketsInput: ',createTicketsInput)
+
         const tickets = await Promise.all(createTicketsInput.map(async t => {
           const ticket = new Ticket()
           const usableDate = new Date(t.usableOn)
@@ -32,7 +33,7 @@ export class TicketsService {
           ticket.price = t.price
           ticket.name = t.name
           ticket.personId = t.personId
-          ticket.isActive = false
+          ticket.isActive = TicketState.INACTIVE
           ticket.validationId = validationId.toString()
           ticket.confimationEmail = t.confimationEmail
           ticket.qrCode = qrCode
@@ -59,7 +60,7 @@ export class TicketsService {
   async findAllByPersonId(personId: string, orderBy: string): Promise<Ticket[]> {
     if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
 
-    const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: false } })
+    const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: TicketState.INACTIVE } })
     if (orderBy === 'usableOn_ASC') {
       return tickets.sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
     } else if (orderBy === 'usableOn_DESC') {
@@ -101,7 +102,10 @@ export class TicketsService {
     usableDate.setHours(0,0,0,0)
     if (usableDate.getTime() !== today.getTime()) throw new Error('Ticket is not usable today')
 
-    ticket.isActive = true
+    if (ticket.isActive === TicketState.INACTIVE) ticket.isActive = TicketState.ACTIVE
+    else if (ticket.isActive === TicketState.ACTIVE) ticket.isActive = TicketState.USED
+    else if (ticket.isActive === TicketState.USED) throw new Error('Ticket already used')
+
     ticket.updatedAt = new Date()
 
     return this.ticketRepository.save(ticket)

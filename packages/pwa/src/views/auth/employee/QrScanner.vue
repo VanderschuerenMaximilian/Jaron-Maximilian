@@ -2,14 +2,14 @@
     <main class="pt-[70px] min-h-screen flex flex-col items-center md:justify-center justify-between gap-6">
       <div class="w-full flex md:justify-center items-center h-2/3 md:pt-0 pt-12">
         <qrcode-stream class="max-w-2xl" :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
-            <div v-if="validationSuccess" 
+            <div v-if="isValid" 
             class="absolute w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center gap-6">
                     <div class="p-16 bg-secondary-green rounded-full w-fit animate-icon">
                         <Check class="text-slate-100 scale-[400%] rounded-full translate-y-1"/>
                     </div>
             </div>
 
-            <div v-if="validationFailure" 
+            <div v-if="!isValid && error" 
             class="absolute w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center gap-6">
                 <div class="p-16 bg-red-500 rounded-full w-fit animate-icon">
                     <X class="text-slate-100 scale-[400%]"/>
@@ -17,7 +17,7 @@
                 <p class="font-bold text-center text-red-500 text-xl">{{ error }}</p>
             </div>
 
-            <div v-if="validationPending" 
+            <div v-if="isValid === undefined && paused" 
             class="absolute w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center gap-6">
                 <div class="animate-spin">
                     <Loader2 class="text-primary-green scale-[400%]"/>
@@ -39,7 +39,7 @@
             </div>
         </qrcode-stream>
       </div>
-      <button v-if="goNext || error" @click="toggleNext" class="sm:w-[498px] rounded-md px-5 py-3 bg-secondary-green text-slate-100 hover:bg-primary-green transition-colors md:mb-0 mb-12">Go to scan</button>
+      <button v-if="goNext || error" @click="resetValidationState" class="sm:w-[498px] rounded-md px-5 py-3 bg-secondary-green text-slate-100 hover:bg-primary-green transition-colors md:mb-0 mb-12">Go to scan</button>
     </main>
 </template>
 <style scoped>
@@ -61,6 +61,7 @@
 }
 </style>
 <script lang="ts">
+import { ref } from 'vue';
 import { QrcodeStream } from 'vue-qrcode-reader';
 import { UPDATE_TICKET } from '@/graphql/ticket.mutation';
 import { GET_TICKET_BY_VALIDATION_ID } from '@/graphql/ticket.query';
@@ -68,6 +69,7 @@ import { useMutation } from '@vue/apollo-composable';
 import { useQuery } from '@vue/apollo-composable';
 import type { ITicket } from '@/interfaces/ITicket';
 import { X, Check, Loader2 } from 'lucide-vue-next';
+import { TicketState as ITicketState } from '@/interfaces/ITicketState';
 
 export default {
     components: { 
@@ -76,41 +78,30 @@ export default {
         Check,
         Loader2,
     },
+    setup() {
+        const isValid = ref<boolean | undefined>(undefined);
+        const paused = ref<boolean>(false);
+        const goNext = ref<boolean>(false);
+        const result = ref<string>('');
+        const toValidateId = ref<string>('');
+        const ticket = ref<ITicket>();
+        const error = ref<string | null>(null);
+        const info = ref<string | null>('');
 
-    data() {
-        return {
-            isValid: undefined as boolean | undefined,
-            paused: false as boolean,
-            goNext: false as boolean,
-            result: '' as string,
-            toValidateId: '' as string,
-            ticket: {} as ITicket,
-            error: null as string | null,
+        const onError = () => console.error;
+
+        const resetValidationState = () => {
+            goNext.value = false
+            paused.value = false
+            isValid.value = undefined
+            toValidateId.value = ''
+            result.value = ''
+            ticket.value = undefined
+            error.value = null
+            info.value = null
         }
-    },
 
-    computed: {
-        validationPending() {
-            return this.isValid === undefined && this.paused
-        },
-
-        validationSuccess() {
-            return this.isValid === true
-        },
-
-        validationFailure() {
-            return this.isValid === false && this.error
-        }
-    },
-
-    methods: {
-        onError: console.error,
-
-        resetValidationState() {
-            this.isValid = undefined
-        },
-
-        handleExpireDate(inputDateString: string) {
+        const handleExpireDate = (inputDateString: string) => {
             const inputDate = new Date(inputDateString);
 
             // Date options (English month)
@@ -122,57 +113,60 @@ export default {
             const timeString = inputDate.toLocaleTimeString('en-US', timeOptions as Intl.DateTimeFormatOptions);
 
             return dateString;
-        },
+        }
 
-        async onDetect([firstDetectedCode]: any) {
+        const onDetect = async ([firstDetectedCode]: any) => {
+            result.value = firstDetectedCode.rawValue;
+            paused.value = true;
 
-                this.result = firstDetectedCode.rawValue;
-                this.paused = true;
+            const url = new URL(result.value);
+            const ticketId = url.searchParams.get('ticketId');
+            toValidateId.value = ticketId as string;
 
-                const url = new URL(this.result);
-                const ticketId = url.searchParams.get('ticketId');
-                this.toValidateId = ticketId as string;
-
-                if (this.toValidateId !== '') {
-                    await this.fetchDetectedTicket(this.toValidateId);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    if (this.ticket.validationId && this.toValidateId) {
-                        if (!this.ticket.isActive) {
-                            if(today.getTime() == new Date(this.ticket.usableOn).getTime()) {
-                                await this.updateDetectedTicket(this.ticket.id, this.toValidateId);
-                            } else {
-                                this.isValid = false;
-                                this.error = `Ticket is not usable today but on ${this.handleExpireDate(this.ticket.usableOn.toString())}`;
-                            }
+            if (toValidateId.value !== '') {
+                await fetchDetectedTicket(toValidateId.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                if (ticket.value && ticket.value.validationId && toValidateId.value) {
+                    if (ticket.value.isActive === ITicketState.INACTIVE) {
+                        if(today.getTime() == new Date(ticket.value.usableOn).getTime()) {
+                            await updateDetectedTicket(ticket.value.id, toValidateId.value);
                         } else {
-                            this.isValid = false;
-                            this.error = 'Ticket is already used';
+                            isValid.value = false;
+                            error.value = `Ticket is not usable today but on ${handleExpireDate(ticket.value.usableOn.toString())}`;
                         }
-                    } else {
-                        this.isValid = false;
-                        this.error = 'This is not a valid ticket';
+                    } 
+                    else if (ticket.value.isActive === ITicketState.ACTIVE) {
+                        await updateDetectedTicket(ticket.value.id, toValidateId.value);
+                    }
+                    else if (ticket.value.isActive === ITicketState.USED) {
+                        isValid.value = false;
+                        error.value = 'Ticket is already used';
                     }
                 } else {
-                    this.isValid = false;
-                    this.error = 'Somthing went wrong with the QR code';
+                    isValid.value = false;
+                    error.value = 'This is not a valid ticket';
                 }
-        },
+            } else {
+                isValid.value = false;
+                error.value = 'Somthing went wrong with the QR code';
+            }
+        }
 
-        async fetchDetectedTicket(validationId: string): Promise<void> {
+        const fetchDetectedTicket = async (validationId: string): Promise<void> => {
             return new Promise<void>(resolve => {
                 const { onResult } = useQuery(GET_TICKET_BY_VALIDATION_ID,{ validationId });
                 
                 onResult((result) => {
                     if (result.data) {
-                        this.ticket = result.data.ticketByValidationId;
+                        ticket.value = result.data.ticketByValidationId;
                         resolve();
                     }
                 });
             })
-        },
+        }
 
-        async updateDetectedTicket(ticketId: string, validationId: string): Promise<void> {
+        const updateDetectedTicket = async (ticketId: string, validationId: string): Promise<void> => {
             return new Promise<void>(resolve => {
                 const { mutate: updateTicket, onDone } = useMutation(UPDATE_TICKET);
                 updateTicket({
@@ -182,16 +176,29 @@ export default {
                     }
                 });
                 onDone((result) => {
-                    this.isValid = true;
-                    this.goNext = true;
+                    isValid.value = true;
+                    goNext.value = true;
                     resolve();
                 });
             })
-        },
+        }
 
-        toggleNext() {
-            this.goNext = false
-            this.paused = false
+        return {
+            error,
+            goNext,
+            info,
+            isValid,
+            paused,
+            result,
+            ticket,
+            toValidateId,
+
+            fetchDetectedTicket,
+            handleExpireDate,
+            onDetect,
+            onError,
+            resetValidationState,
+            updateDetectedTicket,
         }
     }
 }

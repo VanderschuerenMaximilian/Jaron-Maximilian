@@ -1,15 +1,24 @@
 <template v-if="customPerson">
     <main class="pt-[70px] min-h-screen flex sm:pl-8 px-4">
         <h2 class="h2 absolute top-24">{{ customPerson?.fullName }}</h2>
-        <section v-if="loading">
-            <div v-for="ticket in loadingTickets" class="w-[600px] h-[160px] rounded-md bg-gray-200 animate-pulse">
-            </div>
-        </section>
-        <section v-else class="flex flex-col items-center justify-center w-full gap-3">
+        <section v-if="loading" class="flex flex-col items-center justify-center w-full gap-3">
             <div class="space-y-4 sm:h-[450px] h-[500px] overflow-y-scroll px-1">
-                <OwnedTicket :ticket="ticket" v-for="ticket in myTickets" />
+                <div v-for="ticket in loadingTickets" class="w-[600px] h-[160px] rounded-md bg-gray-200 animate-pulse">
+                </div>
             </div>
         </section>
+        <template v-else>
+            <section class="flex flex-col items-center justify-center w-full gap-3">
+                <template v-if="myTickets > 0">
+                    <div class="space-y-4 sm:h-[450px] h-[500px] overflow-y-scroll px-1">
+                        <OwnedTicket :ticket="ticket" v-for="ticket in myTickets" />
+                    </div>
+                </template>
+                <template v-else>
+                    <h5 class="h5">You have no tickets.</h5>
+                </template>
+            </section>
+        </template>
     </main>
 </template>
 

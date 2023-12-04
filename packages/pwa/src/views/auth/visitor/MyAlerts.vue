@@ -1,8 +1,8 @@
 <template v-if="customPerson">
         <main class="py-[70px] min-h-screen sm:px-8 px-4 space-y-8">
             <h2 class="h2 absolute top-24">Your Alerts</h2>
-            <section v-if="loadAlerts">
-                <div v-for="alert in loadingAlerts" class="w-[600px] h-[160px] rounded-md bg-gray-200 animate-pulse">
+            <section v-if="loadAlerts" class="flex gap-3 pt-12 flex-wrap">
+                <div v-for="alert in loadingAlerts" class="w-[350px] h-[160px] rounded-md bg-gray-200 animate-pulse">
                 </div>
             </section>
             <section v-else class="flex flex-wrap items-center gap-3 pt-12">
