@@ -51,6 +51,11 @@ export class AlertsResolver {
     return this.alertsService.findNonAssignedAlerts();
   }
 
+  @Query(() => [Alert], { name: 'nonResolvedAlertsByCreatedBy' })
+  findNonResolvedAlertsByCreatedBy(@Args('createdBy', { type: () => String }) createdBy: string) {
+    return this.alertsService.findNonResolvedAlertsByCreatedBy(createdBy);
+  }
+
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)

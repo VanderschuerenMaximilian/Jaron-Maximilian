@@ -12,7 +12,7 @@ import { useQuery } from '@vue/apollo-composable';
 import { GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE } from '@/graphql/alert.query';
 import type { Alert as IAlert } from '@/interfaces/IAlert';
 import { PersonType as IPersonType } from '@/interfaces/IPersonType';
-import AlertPopUp from '@/components/dashboard/AlertPopUp.vue';
+import AlertPopUp from '@/components/profile/Alert.vue';
 
 export default {
     components: {

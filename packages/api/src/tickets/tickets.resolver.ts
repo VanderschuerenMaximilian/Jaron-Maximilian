@@ -10,6 +10,7 @@ import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { PubSub } from 'graphql-subscriptions';
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
+import { RolesGuard } from 'src/persons/guards/personType.guard';
 
 const pubSub = new PubSub()
 
@@ -19,8 +20,6 @@ export class TicketsResolver {
     private readonly ticketsService: TicketsService,
     ) {}
 
-  // TODO: how can I secure this endpoint?
-  @UseGuards(FirebaseGuard)
   @Mutation(() => [Ticket])
   createTickets(
     @Args('createTicketsInput', { type: () => [CreateTicketInput] }) createTicketsInput: CreateTicketInput[],
@@ -31,39 +30,44 @@ export class TicketsResolver {
     return tickets
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Ticket], { name: 'tickets' })
   findAll() {
     return this.ticketsService.findAll();
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => [Ticket], { name: 'ticketsByPersonId' })
   findAllByPersonId(@Args('personId', { type: () => String }) personId: string,
   @Args('orderBy', { type: () => String, nullable: true }) orderBy: string) {
     return this.ticketsService.findAllByPersonId(personId, orderBy);
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Ticket, { name: 'ticketByValidationId' })
   findOneByValidationId(@Args('validationId', { type: () => String }) validationId: string) {
     return this.ticketsService.findOneByValidationId(validationId);
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Query(() => Ticket, { name: 'ticket' })
   findOne(@Args('ticketId', { type: () => String }) id: string) {
     return this.ticketsService.findOne(id);
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Ticket)
   updateTicket(@Args('updateTicketInput') updateAlertInput: UpdateTicketInput) {
     return this.ticketsService.update(updateAlertInput);
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  // @UseGuards(FirebaseGuard, RolesGuard)
   @Mutation(() => Ticket)
   removeTicket(@Args('id', { type: () => String }) id: string) {
     return this.ticketsService.remove(id);

@@ -63,7 +63,16 @@ const router = createRouter({
       children: [
         {
           path: 'visitor/:id',
-          component: () => import('../views/auth/visitor/Profile.vue')
+          children: [
+            {
+              path: 'mytickets',
+              component: () => import('../views/auth/visitor/MyTickets.vue'),
+            },
+            {
+              path: 'myalerts',
+              component: () => import('../views/auth/visitor/MyAlerts.vue'),
+            }
+          ],
         },
         {
           path: 'employee/:id',

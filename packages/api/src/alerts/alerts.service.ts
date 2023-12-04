@@ -120,6 +120,21 @@ export class AlertsService {
     return this.alertRepository.find({ assignedPersonId: null, state: AlertState.OPEN })
   }
 
+  @Get()
+  async findNonResolvedAlertsByCreatedBy(@Param('createdBy') createdBy: string): Promise<Alert[]> {
+    const openAlerts = await this.alertRepository.find({ createdBy: createdBy, state: AlertState.OPEN })
+    const acknowlegdeAlerts = await this.alertRepository.find({ createdBy: createdBy, state: AlertState.ACKNOWLEDGED })
+    let alerts = []
+    for (const alert of openAlerts) {
+      alerts.push(alert)
+    }
+    for (const alert of acknowlegdeAlerts) {
+      alerts.push(alert)
+    }
+
+    return alerts
+  }
+
   @Delete(':id')
   async remove(id: string) {
     try {

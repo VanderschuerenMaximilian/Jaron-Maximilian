@@ -1,12 +1,6 @@
 <template>
     <main class="w-full min-h-screen flex pt-[70px]">
         <h2 class="h2 z-50 absolute lg:left-1/6 left-1/2 -translate-x-1/2 top-24">Tickets</h2>
-        <div v-if="!customPerson" class="absolute z-50 left-5/12 transform -translate-x-1/2 top-24">
-            <div class="border-2 border-red-600 bg-red-500 bg-opacity-25 py-3 px-6 rounded-md max-w-lg flex flex-col gap-2">
-                <p class="text-red-600 font-semibold">You are not logged in! To be able to buy tickets please <RouterLink to="/login" class="underline cursor-pointer hover:font-extrabold">log in</RouterLink>.</p>
-                <RouterLink to="register" class="text-red-600 text-sm hover:underline cursor-pointer w-fit">Don't have an account?</RouterLink>
-            </div>
-        </div>
         <section v-if="!chooseDate" class="w-full flex lg:flex-row flex-col lg:items-stretch items-center lg:gap-0 gap-4">
             <section class="sm:w-3/4 w-full h-full sm:pl-8 sm:px-8 px-4 space-y-8 mt-36">
                 <div class="flex flex-col gap-4">
@@ -154,33 +148,33 @@ export default {
         }
 
         const handleCheckOut = async () => {
-            if (customPerson.value) {
-                const tickets = ref<any>([]);
-                soldTickets.value.map((ticket: any) => {
-                    for (let i = 0; i < ticket.amount; i++) {
-                        tickets.value.push({
-                            name: ticket.name,
-                            price: ticket.price,
-                            personId: customPerson.value?.id,
-                            usableOn: newTicketData.value.usableOn, 
-                        });
-                    }
-                })
+            const tickets = ref<any>([]);
+            soldTickets.value.map((ticket: any) => {
+                for (let i = 0; i < ticket.amount; i++) {
+                    tickets.value.push({
+                        name: ticket.name,
+                        price: ticket.price,
+                        personId: customPerson.value?.id,
+                        confimationEmail: newTicketData.value.email,
+                        usableOn: newTicketData.value.usableOn, 
+                    });
+                }
+            })
             
-                mutate({
-                    ticketsInput: tickets.value,
-                })
+            mutate({
+                ticketsInput: tickets.value,
+            })
                 
-                soldTickets.value.map((ticket: any) => {
-                    ticket.amount = 0;
-                });
-            }
+            soldTickets.value.map((ticket: any) => {
+                ticket.amount = 0;
+            });
         };
 
         onDone(() => {
             setTimeout(() => {
-                router.replace(`/auth/visitor/${customPerson.value?.id}`);
-            }, 500);
+                if (customPerson.value) router.replace(`/auth/visitor/${customPerson.value?.id}/mytickets`);
+                else router.replace('/')
+            }, 1000);
         });
 
         return {

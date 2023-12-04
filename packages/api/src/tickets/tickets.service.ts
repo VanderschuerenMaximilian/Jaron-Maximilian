@@ -6,7 +6,7 @@ import { Ticket } from './entities/ticket.entity';
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import * as qrcode from 'qrcode';
-// import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 import { UserRecord } from 'firebase-admin/auth';
 
 @Injectable()
@@ -14,14 +14,14 @@ export class TicketsService {
   constructor(
     @InjectRepository(Ticket)
     private readonly ticketRepository: MongoRepository<Ticket>,
-    // private readonly mailerService: MailerService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @Post()
   async createTickets(@Body() createTicketsInput: CreateTicketInput[], currentUser: UserRecord): Promise<Ticket[]> {
     try {
         const today = new Date()
-
+        console.log('createTicketsInput: ',createTicketsInput)
         const tickets = await Promise.all(createTicketsInput.map(async t => {
           const ticket = new Ticket()
           const usableDate = new Date(t.usableOn)
@@ -34,6 +34,7 @@ export class TicketsService {
           ticket.personId = t.personId
           ticket.isActive = false
           ticket.validationId = validationId.toString()
+          ticket.confimationEmail = t.confimationEmail
           ticket.qrCode = qrCode
           ticket.usableOn = usableDate
           ticket.createdAt = new Date(today)
@@ -41,7 +42,7 @@ export class TicketsService {
           return ticket
         }))
         // this.sendTicketVerificationMail(currentUser.email)
-        // this.sendTicketVerificationMail('bearbanner00@gmail.com')
+        // this.sendTicketVerificationMail('bearbanner00@mail.com')
         return this.ticketRepository.save(tickets)
     }
     catch (error) {
@@ -128,13 +129,19 @@ export class TicketsService {
     }
   }
 
-  // sendTicketVerificationMail(receivingMail: string): void {
-  //   this.mailerService.sendMail({
-  //     to: receivingMail,
-  //     from: 'bellewaerde@hulp.be',
-  //     subject: 'Ticket verification',
-  //     text: 'You succesfully bought tickets!',
-  //     html: '<b>You succesfully bought tickets!</b>',
-  //   })
-  // }
+  sendTicketVerificationMail(receivingMail: string): void {
+    try {
+      this.mailerService.sendMail({
+        to: receivingMail,
+        from: 'bearbanner00@mail.com',
+        subject: 'Ticket verification',
+        text: 'You succesfully bought tickets!',
+        html: '<b>You succesfully bought tickets!</b>',
+      })
+      console.log('mail sent')
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
 }
