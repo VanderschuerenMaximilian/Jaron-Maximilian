@@ -1,15 +1,15 @@
 <template>
-    <main v-if="firebaseUser" class="flex flex-col pl-20 pr-4 pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto">
-        <div v-if="isOrderChanged" class="absolute z-50 left-1/2 transform -translate-x-30 top-20">
-            <div class="border-2 border-primary-green bg-primary-green bg-opacity-25 py-3 px-6 rounded-md max-w-lg flex flex-col gap-2">
-                <X @click="isOrderChanged = false" class="absolute right-4 h-6 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
+  <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
+        <!-- <div v-if="isOrderChanged" class="absolute z-50 sm:left-1/2 transform sm:-translate-x-30 top-20">
+            <div class="text-3 max-w-80 sm:text-5 border-2 border-primary-green bg-primary-green bg-opacity-25 py-3 px-6 rounded-md sm:max-w-lg flex flex-col gap-2">
+                <X @click="isOrderChanged = false" class="absolute right-4 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
                 <p class="text-primary-green font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="storeManagement" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
             </div>
-        </div>
+        </div> -->
         <!-- Alert message -->
         <div class="hidden">
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div class="w-96 bg-white p-8 rounded-md shadow-lg ml-100">
+                <div class="w-fit text-2 sm:text-4 sm:w-96 bg-white p-8 rounded-md shadow-lg">
                     <div class="flex items-center mb-4">
                         <AlertTriangle class="w-10 h-10 text-red-500 mr-2" />
                         <p class="text-lg font-semibold">Warning</p>
@@ -25,7 +25,7 @@
         <!-- End alert message -->
         
         <DashboardTitle currentRoute="Stocks" />
-        <section class="flex justify-between mb-5 w-19/20">
+        <section class="flex justify-between mb-5 w-19/20 text-[11px] sm:text-4">
             <select v-model="selectedFacility" v-for="facility in facilityNames" @change="handleFacilityChange(selectedFacility)" class="px-2 mt-2 border-3 border-primary-green bg-slate-100 text-primary-green font-medium hover:border-green-900 rounded-md cursor-pointer h-10">
                 <option v-for="item in facility" :key="item" :value="item">
                     {{ item }}
@@ -33,7 +33,7 @@
             </select>
             <button @click="refilEverything(stocks.stocksByFacilityName, mainStocks.stocksByFacilityName)" class="px-2 mt-2 border-3 border-primary-green text-primary-green font-medium hover:primary-green rounded-md cursor-pointer h-10 hover:bg-primary-green hover-text-white">Refill everything</button>
         </section>
-        <section v-for="stock in stocks" class=" w-19/20">
+        <section v-for="stock in stocks" class="lg:w-full overflow-x-auto mb-20">
             <table class="min-w-full text-center mb-10">
                 <thead>
                     <tr>
@@ -97,7 +97,7 @@
                 </tbody>
             </table>
         </section>
-        <button @click="handleSaveStock(stocks.stocksByFacilityName)" class="absolute right-10 bottom-10 py-4 px-8 bg-primary-green text-white font-bold rounded-lg text-5 drop-shadow-lg hover:bg-secondary-green">Save Stock</button>
+        <button @click="handleSaveStock(stocks.stocksByFacilityName)" class="absolute right-10 bottom-10 px-4 py-2 sm:py-4 sm:px-8 text-4 sm:text-5 bg-primary-green text-white font-bold rounded-lg drop-shadow-lg hover:bg-secondary-green">Save Stock</button>
     </main>
 </template>
 <style>

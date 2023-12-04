@@ -22,10 +22,8 @@ export class Task {
   @Field(() => ID)
   id: string;
 
-  @IsArray()
-  @Column()
   @Field(() => [String], { nullable: true })
-  persons: string[];
+  persons?: string[];
 
   @IsString()
   @Column()

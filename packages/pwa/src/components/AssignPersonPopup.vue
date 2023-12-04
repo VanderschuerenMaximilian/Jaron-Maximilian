@@ -1,6 +1,6 @@
 <template>
-    <div class="absolute bg-black opacity-40 w-screen h-screen left-0 top-0"></div>
-    <section v-if="isShowPassport" class="absolute w-230 min-h-3/4 bg-white p-10 z-2 left-1/2 -translate-x-65 top-1/2 -translate-y-1/2 border-0 border-t-20 border-primary-green rounded-lg">
+    <div class="absolute bg-black opacity-40 w-100% h-screen left-0 top-0"></div>
+        <section v-if="isShowPassport" class="absolute w-full h-full min-h-3/4 bg-white p-10 z-2 left-0 top-0 max-w-180 rounded-lg max-h-100 overflow-hidden">
             <ArrowLeft class="absolute left-4 top-4 cursor-pointer" @click="isShowPassport = false"/>
             <X class="absolute right-4 top-4 cursor-pointer" @click="$emit('close')"/>
             <div class="flex flex-col mt-4">
@@ -35,9 +35,9 @@
             </div>
         </section>
         
-        <section v-else class="absolute w-180 min-h-3/4 bg-white p-10 z-2 left-1/2 -translate-x-40 top-1/2 -translate-y-1/2 border-0 border-t-20 border-primary-green rounded-lg">
+        <section v-else class="absolute w-full left-0 h-full min-h-3/4 bg-white p-10 z-2 top-0 max-w-180 rounded-lg max-h-100 overflow-hidden">
             <X class="absolute right-4 top-4 cursor-pointer" @click="$emit('close')"/>
-            <div class="flex gap-4">
+            <div class="flex gap-4" >
                 <input type="text" class=" pl-1 mb-4 w-111 px-4 py-2 bg-slate-100" placeholder="Search employee" v-model="search">
                 <select v-model="selectedJobType" class="flex justify-center items-center h-fit w-40 rounded-md bg-slate-100 px-4 py-2">
                     <option v-for="job of jobEnumArray" :value="job">{{ job }}</option>

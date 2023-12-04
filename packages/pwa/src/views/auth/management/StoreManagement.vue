@@ -2,24 +2,25 @@
     <main v-if="firebaseUser" class="flex flex-col pl-20 pr-4 pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto">
       <DashboardTitle currentRoute="Store Management" />
       <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
-      <div class="flex-col mb-10">
+      <div class="flex-col mb-10 ">
         <button @click="toggleTasks" class="text-primary-green cursor-pointer">
           <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
           {{ showTasks ? 'Hide Tasks' : 'Show Tasks' }} 
         </button>
         <div v-show="showTasks">
           <p v-if="filteredTasks.length === 0">No tasks available.</p>
-          <div v-for="item of socketTasks" class="mt-5 w-8/10">
-              <div v-if="shouldShowTask(item)" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white flex p-6 justify-between rounded-lg">
+          <div v-for="item of socketTasks" class="overflow-auto min-w-130">
+              <div v-if="shouldShowTask(item)" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white mt-5 flex p-6 justify-between rounded-lg">
                 <div class="flex flex-col">
-                  <p class="text-5">{{ item.shopName }}</p>
-                  <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
+                  <p class="lg:text-5 text-4">{{ item.shopName }}</p>
+                  <p class="text-3 opacity-50 text-2">{{ formatDateTime(item.createdAt) }}</p>
                 </div>
+
                 <div class="flex gap-5">
-                  <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-95 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
-                  <div v-else class="flex gap-5">
-                    <button @click="printPDF(item)" class="p-4 w-50 bg-primary-green color-white font-medium rounded-lg">Print stock overview</button>
-                    <button @click="completeTask(item.id)" class="p-4 w-40 bg-primary-green color-white font-medium rounded-lg">Done</button>
+                  <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
+                  <div v-else class="flex gap-2">
+                    <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Print overview</button>
+                    <button @click="completeTask(item.id)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green color-white font-medium rounded-lg">Done</button>
                   </div>
                   <div class="relative w-12 h-12 mt-1">
                     <UserCircle2 class="absolute w-full h-full"/>
@@ -38,16 +39,16 @@
         <ChevronDown class="inline-block" :class="showCompletedTasks? 'rotate-180' : 'rotate-0'"/>
         {{ showCompletedTasks ? 'Hide completed tasks' : 'Show completed tasks' }}
       </button>
-      <div v-show="showCompletedTasks">
+      <div v-show="showCompletedTasks" class="">
         <p v-if="filteredCompletedTasks.length === 0">No tasks available.</p>
-        <div v-for="item of reversedCompletedTasks" class="mt-5 w-8/10 mb-10">
-          <div v-if="item.completed == true" class=" flex p-6 justify-between rounded-lg bg-slate-200">
+        <div v-for="item of reversedCompletedTasks" class="mt-5 min-w-130 max-h-60">
+          <div v-if="item.completed == true" class="bg-slate-200 flex p-6 justify-between rounded-lg">
             <div class="flex flex-col">
-              <p class="text-5">{{ item.shopName }}</p>
-              <p class="text-3 opacity-50">{{ formatDateTime(item.createdAt) }}</p>
+              <p class="lg:text-5 text-4">{{ item.shopName }}</p>
+              <p class="text-3 opacity-50 text-2">{{ formatDateTime(item.createdAt) }}</p>
             </div>
             <div class="flex gap-5">
-              <button @click="undoTask(item?.id)" class="py-4 w-40 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
+              <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
               <div class="relative w-12 h-12 mt-1">
                 <UserCircle2 class="absolute w-full h-full"/>
                 <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
@@ -130,7 +131,7 @@
 
       watchEffect(() => {
         if (!isSocketTasksMade.value) {
-          if (tasksResult.value) {
+          if (tasksResult.value && tasksResult.value.tasks.length > 0) {
             for (const task of tasksResult.value.tasks) {
               const taskExists = socketTasks.value.some((existingTask: { id: any; }) => existingTask.id === task.id);
               if (!taskExists) {
