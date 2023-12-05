@@ -20,7 +20,7 @@
                 </div>
             </section>
             <aside class="h-full lg:bg-slate-200 bg-slate-100 flex flex-col py-1 lg:w-fit w-full">
-                <h3 class="h3 text-center mt-8 lg:block hidden">Your Tickets</h3>
+                <h3 class="h3 text-center mt-8 lg:block hidden">{{ $t('profile.yourtickets') }}</h3>
                 <div v-if="toPay > 0" class="lg:flex hidden flex-col items-center scroll max-h-60vh overflow-auto px-2 gap-4 mt-8 w-full" ref="scrollContainer">
                     <SoldTicket v-for="soldTicket of soldTickets" :soldTicket="soldTicket"/>
                 </div>

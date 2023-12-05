@@ -1,7 +1,7 @@
 <template v-if="customPerson">
     <!-- TODO: add the alert(s) the person has made -->
     <main class="pt-[70px] sm:pl-8 px-4 space-y-8">
-        <h2 class="h2 mt-8">Your Tickets</h2>
+        <h2 class="h2 mt-8">{{ $t('profile.yourtickets') }}</h2>
         <div v-if="loading">
             <div v-for="ticket in loadingTickets" class="w-[600px] h-[160px] rounded-md bg-gray-200 animate-pulse">
             </div>
