@@ -1,28 +1,28 @@
 <template>
     <div class="absolute bg-black opacity-40 w-100% h-screen left-0 top-0"></div>
-        <section v-if="isShowPassport" class="absolute w-full h-full min-h-3/4 bg-white p-10 z-2 left-0 top-0 max-w-180 rounded-lg max-h-100 overflow-hidden">
+        <section v-if="isShowPassport" class="absolute left-0 top-20 md:top-30 md:left-1/2 md:top-1/2 md:-translate-x-[360px] md:-translate-y-[40px] w-full h-full min-h-3/4 bg-white p-10 z-2 md:max-w-180 rounded-lg max-h-100 overflow-hidden">
             <ArrowLeft class="absolute left-4 top-4 cursor-pointer" @click="isShowPassport = false"/>
             <X class="absolute right-4 top-4 cursor-pointer" @click="$emit('close')"/>
-            <div class="flex flex-col mt-4">
-                <div class="flex gap-5">
-                    <img :src=passportData.profilePicture :alt=passportData.name class="w-50 h-50 rounded-lg">
+            <div class="flex flex-col mt-4 overflow-y-auto overflow-x-hidden max-h-100">
+                <div class="flex md:flex-row flex-col gap-5">
+                    <img :src=passportData.profilePicture :alt=passportData.name class="w-20 h-20 md:w-40 md:h-40 rounded-lg">
                     <div class="flex flex-col">
-                    <p class="text-8 font-bold overflow-hidden w-100 truncate">{{ passportData.fullName }}</p>
-                    <div class="flex">
-                        <p class="text-5 font-bold w-50">Function:</p>
-                        <p class="text-5 font-normal">{{ passportData.personType.charAt(0).toUpperCase() + passportData.personType.slice(1).toLowerCase() }}</p>
+                    <p class="text-6 md:text-8 font-bold overflow-hidden w-100 truncate">{{ passportData.fullName }}</p>
+                    <div class="flex md:flex-row flex-col mb-4">
+                        <p class="text-4 font-bold w-50">Function:</p>
+                        <p class="text-4 font-normal">{{ passportData.personType.charAt(0).toUpperCase() + passportData.personType.slice(1).toLowerCase() }}</p>
                     </div>
-                    <div class="flex">
-                        <p class="text-5 font-bold w-50">Phone number:</p>
-                        <p class="text-5 font-normal">{{ passportData.phone }}</p>
+                    <div class="flex md:flex-row flex-col mb-4">
+                        <p class="text-4 font-bold w-50">Phone number:</p>
+                        <p class="text-4 font-normal">{{ passportData.phone }}</p>
                     </div>
-                    <div class="flex">
-                        <p class="text-5 font-bold w-50">Work email:</p>
-                        <p class="text-5 font-normal">{{ passportData.workEmail }}</p>
+                    <div class="flex md:flex-row flex-col mb-4">
+                        <p class="text-4 font-bold w-50">Work email:</p>
+                        <p class="text-4 font-normal break-all w-full md:w-50">{{ passportData.workEmail }}</p>
                     </div>
-                    <div class="flex">
-                        <p class="text-5 font-bold w-50">Personal email:</p>
-                        <p class="text-5 font-normal">{{ passportData.personalEmail }}</p>
+                    <div class="flex md:flex-row flex-col mb-4">
+                        <p class="text-4 font-bold w-50">Personal email:</p>
+                        <p class="text-4 font-normal break-all w-full md:w-50">{{ passportData.personalEmail }}</p>
                     </div>
                 </div>
                 </div>
@@ -35,11 +35,11 @@
             </div>
         </section>
         
-        <section v-else class="absolute w-full left-0 h-full min-h-3/4 bg-white p-10 z-2 top-0 max-w-180 rounded-lg max-h-100 overflow-hidden">
+        <section v-else class="absolute left-0 top-20 md:top-30 md:left-1/2 md:top-1/2 md:-translate-x-[360px] md:-translate-y-[40px] w-full h-full min-h-3/4 bg-white p-10 z-2 md:max-w-180 rounded-lg max-h-100 overflow-hidden">
             <X class="absolute right-4 top-4 cursor-pointer" @click="$emit('close')"/>
             <div class="flex gap-4" >
-                <input type="text" class=" pl-1 mb-4 w-111 px-4 py-2 bg-slate-100" placeholder="Search employee" v-model="search">
-                <select v-model="selectedJobType" class="flex justify-center items-center h-fit w-40 rounded-md bg-slate-100 px-4 py-2">
+                <input type="text" class=" pl-1 mb-4 w-200 md:w-111 px-4 py-2 bg-slate-100" placeholder="Search employee" v-model="search">
+                <select v-model="selectedJobType" class="flex justify-center items-center h-fit w-20 md:w-40 rounded-md bg-slate-100 px-4 py-2 mr-5">
                     <option v-for="job of jobEnumArray" :value="job">{{ job }}</option>
                 </select>
             </div>
@@ -56,7 +56,7 @@
             </section>
             <section v-else>
                 <template v-if="search.length > 0 && selectedJobType !== 'ALL'">
-                    <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
+                    <section class="flex flex-wrap gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
                         v-if="searchEmployees && searchEmployees.personsBySearchString.length > 0 && selectedJobType">
                         <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees" v-for="employee in searchEmployees.personsBySearchString" @show-passport="handleShowPassport" @choose-employee="handleChooseEmployee" :key="employee.id"/>
                     </section>
@@ -65,7 +65,7 @@
                     </div>
                 </template>
                 <template v-else-if="search.length > 0 && selectedJobType === 'ALL'">
-                    <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
+                    <section class="flex flex-wrap gap-2 h-[500px] pr-4 overflow-y-scroll c-employees"
                         v-if="searchEmployees && searchEmployees.personsBySearchString.length > 0 && selectedJobType">
                         
                         <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees" v-for="employee in searchEmployees.personsBySearchString" @show-passport="handleShowPassport" @choose-employee="handleChooseEmployee" :key="employee.id"/>
@@ -76,7 +76,7 @@
                     </div>
                 </template>
                 <template v-else>
-                    <section class="flex flex-col gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
+                    <section class="flex flex-wrap gap-2 h-[500px] pr-4 overflow-y-scroll c-employees">
                         <Employee :employee="employee" :selectedJobType="selectedJobType" v-if="employees" v-for="employee in employees.personsByPersonType" @show-passport="handleShowPassport" @choose-employee="handleChooseEmployee" :key="employee.id"/>
                     </section>
                 </template>
