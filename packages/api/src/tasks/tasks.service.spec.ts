@@ -31,12 +31,19 @@ describe('TasksService', () => {
 
   describe('findAll', () => {
     it('should return an array of tasks', async () => {
-      const tasks: Task[] = []; // Create some tasks for testing
+      const tasks: Task[] = [];
       jest.spyOn(taskRepository, 'find').mockResolvedValueOnce(tasks);
 
       const result = await tasksService.findAll();
 
       expect(result).toEqual(tasks);
+    });
+
+    it('should throw an error on failure', async () => {
+      const errorMock = new Error('Find failed');
+      jest.spyOn(taskRepository, 'find').mockRejectedValueOnce(errorMock);
+
+      await expect(tasksService.findAll()).rejects.toThrowError('Find failed');
     });
   });
 
@@ -86,11 +93,11 @@ describe('TasksService', () => {
 
   describe('update', () => {
     it('should update a task and return the updated task', async () => {
-      // Mocking data
       const taskId = '1';
       const updateTaskInput: UpdateTaskInput = {
         id: taskId,
         persons: ['John Doe', 'Jane Doe'],
+        completed: true,
       };
   
       const existingTask: Task = new Task();
@@ -102,18 +109,15 @@ describe('TasksService', () => {
   
       const result = await tasksService.update(updateTaskInput);
   
-      // Assertions
       expect(result).toBeInstanceOf(Task);
-      expect(result.id).toBe(taskId); // Ensure the ID is correct
-      expect(result.persons).toEqual(updateTaskInput.persons); // Ensure persons are updated
+      expect(result.id).toBe(taskId);
+      expect(result.persons).toEqual(updateTaskInput.persons);
   
-      // Verify that findOneById and save were called with the correct parameters
       expect(tasksService.findOneById).toHaveBeenCalledWith(updateTaskInput.id);
       expect(saveSpy).toHaveBeenCalledWith(existingTask);
     });
   
     it('should throw an error if no update parameters are provided', async () => {
-      // Mocking data
       const taskId = '1';
       const updateTaskInput: UpdateTaskInput = {
         id: taskId,
