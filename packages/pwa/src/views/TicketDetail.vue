@@ -6,16 +6,12 @@
 
 <script lang="ts">
 export default {
-    data() {
-        return {
-            currentUrl: '',
-        }
-    },
-    mounted() {
-        this.currentUrl = window.location.href;
-    },
     setup() {
-        return {}
+        const currentUrl = window.location.href;
+
+        return {
+            currentUrl,
+        }
     }
 }
 </script>

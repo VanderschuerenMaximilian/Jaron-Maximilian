@@ -67,7 +67,7 @@ import { UPDATE_TICKET } from '@/graphql/ticket.mutation';
 import { GET_TICKET_BY_VALIDATION_ID } from '@/graphql/ticket.query';
 import { useMutation } from '@vue/apollo-composable';
 import { useQuery } from '@vue/apollo-composable';
-import type { ITicket } from '@/interfaces/ITicket';
+import type { Ticket as ITicket } from '@/interfaces/ITicket';
 import { X, Check, Loader2 } from 'lucide-vue-next';
 import { TicketState as ITicketState } from '@/interfaces/ITicketState';
 

@@ -9,7 +9,7 @@
         </section>
         <template v-else>
             <section class="flex flex-col items-center justify-center w-full gap-3">
-                <template v-if="myTickets > 0">
+                <template v-if="myTickets && myTickets.length > 0">
                     <div class="space-y-4 sm:h-[450px] h-[500px] overflow-y-scroll px-1">
                         <OwnedTicket :ticket="ticket" v-for="ticket in myTickets" />
                     </div>
@@ -29,7 +29,7 @@ import { ADDED_TICKETS } from '@/graphql/ticket.subscription';
 import { useQuery, useSubscription } from '@vue/apollo-composable';
 import useCustomPerson from '@/composables/useCustomPerson';
 import OwnedTicket from '@/components/OwnedTicket.vue';
-import type { ITicket } from '@/interfaces/ITicket';
+import type { Ticket as ITicket } from '@/interfaces/ITicket';
 
 export default {
     components: {
@@ -46,15 +46,20 @@ export default {
             personId: customPerson.value?.id,
         }));
         const myTickets = computed(() => {
-            return result.value?.ticketsByPersonId;
+            if (result.value?.ticketsByPersonId) {
+                return result.value.ticketsByPersonId;
+            }
         });
 
         watch(addedTickets, (data) => {
-            const tickets = data.ticketsAdded;
-            tickets.map((ticket: ITicket) => {
-                myTickets.value.push(ticket);
-            });
-            console.log(myTickets.value)
+            if (data) {
+                const tickets = data.ticketsAdded;
+                tickets.map((ticket: ITicket) => {
+                    if (myTickets.value) {
+                        myTickets.value.push(ticket);
+                    }
+                });
+            }
         })
 
         return {

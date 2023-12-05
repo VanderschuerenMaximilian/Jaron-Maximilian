@@ -1,6 +1,6 @@
 import type { TicketState as ITicketState } from "./ITicketState"
 
-export interface ITicket {
+export interface Ticket {
     id: string
     name: string
     price: number

@@ -11,6 +11,11 @@
 
 <script lang="ts">
 export default {
-    props: ['currentRoute']
+    props: {
+        currentRoute: {
+            type: String,
+            required: true,
+        },
+    }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <section v-if="isVisible && currentAlert.state !== IAlertState.RESOLVED" class="relative flex flex-col items-center gap-4 shadow-xl rounded-md py-4 px-6 w-[350px] min-h-[150px] bg-[#D9D9D9] border-l-6 border-l-red-500"
+    <section v-if="isVisible && currentAlert.state !== IAlertState.RESOLVED" class="relative flex flex-col items-center gap-4 shadow-xl rounded-md py-4 px-6 w-[350px] min-h-[175px] bg-[#D9D9D9] border-l-6 border-l-red-500"
     :class="currentAlert.state !== IAlertState.RESOLVED? 'hover:shadow-2xl transform transition-shadow':''">
         <button v-if="customPerson && customPerson.personType === IPersonType.EMPLOYEE" @click="closePopUp" class="absolute right-3 hover:bg-black hover:bg-opacity-10 transition-opacity rounded-full p-1">
             <X/>

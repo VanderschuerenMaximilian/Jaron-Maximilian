@@ -8,7 +8,7 @@
                         <div v-for="ticket in loadingTickets" class="w-[600px] h-[160px] rounded-md bg-gray-200 animate-pulse">
                         </div>
                     </div>
-                    <div class="flex justify-center" v-else v-for="ticket in result.ticketPrices">
+                    <div class="flex justify-center" v-else v-for="ticket in result?.ticketPrices">
                         <Ticket :ticketPrice="ticket"/>
                     </div>
                 </div>
