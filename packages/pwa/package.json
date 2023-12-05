@@ -21,6 +21,7 @@
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.14.2",
+    "logrocket": "^7.0.0",
     "lucide-vue-next": "^0.279.0",
     "qrcode": "^1.5.3",
     "vue": "^3.3.4",

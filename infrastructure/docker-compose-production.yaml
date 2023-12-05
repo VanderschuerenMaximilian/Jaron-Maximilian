@@ -16,12 +16,12 @@ services:
     build:
       context: ../.
       dockerfile: packages/api/Dockerfile
+    depends_on:
+      - mongodb
     env_file:
-      - ./../packages/api/.env
+      - ./../packages/api/.env.production
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/my-google-secret
-      # TODO: Does this have to be a secret?
-      - CLI_PATH=/run/secrets/command-line-interface
     ports:
       - 3000:3000
     secrets:
@@ -40,5 +40,3 @@ volumes:
 secrets:
   my-google-secret:
     file: ./../packages/api/credentials.json
-  command-line-interface:
-    file: ./../packages/api/dist/cli.js

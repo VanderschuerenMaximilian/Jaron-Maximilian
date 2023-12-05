@@ -36,14 +36,25 @@ import { CommandModule } from 'nestjs-command';
       }
     }),
 
+    // TypeOrmModule.forRoot({
+    //     type: 'mongodb',
+    //     //TODO: 2 env files
+    //     url: 'mongodb://mongodb:27017/api',
+    //     entities: [__dirname + '/**/*.entity.{js,ts}'],
+    //     synchronize: true, // Careful with this in production
+    //     useNewUrlParser: true,
+    //     useUnifiedTopology: true, // Disable deprecated warnings
+    // }),
+
     TypeOrmModule.forRoot({
-        type: 'mongodb',
-        url: 'mongodb://localhost:27027/api',
-        entities: [__dirname + '/**/*.entity.{js,ts}'],
-        synchronize: true, // Careful with this in production
-        useNewUrlParser: true,
-        useUnifiedTopology: true, // Disable deprecated warnings
+      type: 'mongodb',
+      url: `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
+      synchronize: process.env.NODE_ENV !== 'production',
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     }),
+
 
     // MailerModule.forRoot({
     //   transport: {

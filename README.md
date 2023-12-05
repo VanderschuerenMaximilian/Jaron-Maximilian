@@ -1,12 +1,46 @@
 # Jaron-Maximilian
 Project Advanced Full Stack Developement.
 
+## Enviroments
+### Pwa
+- VITE_apiKey
+- VITE_authDomain
+- VITE_projectId
+- VITE_storageBucket
+- VITE_messagingSenderId
+- VITE_appId
+
+These enviroments are from your firebase app.
+
+### API
+#### .env
+- GOOGLE_APPLICATION_CREDENTIALS (path to the credentials.json file)
+- DB_HOST
+- DB_PORT (external port)
+- DB_NAME
+- NODE_ENV
+- FRONTEND_URL
+
+#### .env.production
+- GOOGLE_APPLICATION_CREDENTIALS (path to the credentials.json file)
+- CLI_PATH
+- DB_HOST
+- DB_PORT   (internal port)
+- DB_NAME
+- NODE_ENV
+- FRONTEND_URL
+
+#### credentials.json
+
+This file is made in the process of getting the locales and translations.
+
 ## Startup Command
 ### Pwa
-npm run run:pwa
+npm run dev:pwa
+
 
 ### Api
-npm run run:api
+npm run dev:api
 
 ### i18n-export
 npm run export:translations
