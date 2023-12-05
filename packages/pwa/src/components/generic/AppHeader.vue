@@ -77,7 +77,7 @@
             <button class="h-full flex items-center justify-center" @click="clickProfile">
                 <Menu class="w-8 h-8 text-primary-green" />
             </button>
-            <div :class="{'absolute top-0 right-0 z-50 h-4/5 w-1/2 bg-primary-green translate-x-[100%] transition-transform hidden': !clickedProfile,
+            <div :class="{'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[100%] transition-transform hidden': !clickedProfile,
             'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[0%] transition-transform drop-shadow-2xl rounded-bl-xl': clickedProfile}">
                 <div class="w-full flex justify-between items-center pr-8 pl-5 h-20">
                     <select class="bg-primary-green text-slate-100 border-2 border-slate-100 rounded-md" name="language" id="language"
@@ -96,7 +96,7 @@
                         <div class="flex gap-4 items-center">
                             <div class="text-slate-100">
                                 <h3 class="font-bold m-0 text-start">{{ firebaseUser?.displayName }}</h3>
-                                <p class="text-sm text-start">{{ firebaseUser?.email }}</p>
+                                <p class="text-sm text-start break-all">{{ firebaseUser?.email }}</p>
                             </div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                             <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/myalerts'" class="menu-link" @click="clickProfile">My Alerts</RouterLink>
                         </div>
                     </section>
-                    <ul class="flex flex-col gap-4 h-full border-b-2 pb-4">
+                    <ul class="flex flex-col gap-4 border-b-2 pb-4">
                         <li><RouterLink to="/" class="menu-link" @click="clickProfile">{{ $t('navigation.home') }}</RouterLink></li>
                         <li><RouterLink to="/map" class="menu-link" @click="clickProfile">{{ $t('navigation.map') }}</RouterLink></li>
                         <li><RouterLink to="/events" class="menu-link" @click="clickProfile">{{ $t('navigation.events') }}</RouterLink></li>
