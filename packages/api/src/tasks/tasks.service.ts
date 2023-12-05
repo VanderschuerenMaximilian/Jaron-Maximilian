@@ -24,7 +24,6 @@ export class TasksService {
       t.title = createTaskInput.title
       t.description = createTaskInput.description
       const currentDate = new Date();
-      console.log(currentDate)
       currentDate.setHours(currentDate.getHours() + 1);
       t.createdAt = currentDate;
       t.shopName = createTaskInput.shopName
