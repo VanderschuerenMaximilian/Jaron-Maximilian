@@ -1,30 +1,30 @@
 <template>
     <p>{{ error }}</p>
     <div class="flex justify-center items-center min-h-screen drop-shadow-lg">
-        <div class="bg-white border-t-12 border-[#047143] mt-20      rounded-md">
-            <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Sign up</h1>
+        <div class="bg-white border-t-12 border-[#047143] rounded-md min-w-screen sm:min-w-140 mt-20">
+            <h1 class="text-[30px] font-bold mt-[34px] flex justify-center">Sign up</h1>
             <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
                     <p class="text-center font-medium text-red-600">This account already exists.</p>
                 </div>
             <form @submit.prevent="handleRegister" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]" novalidate>
-                <div class="flex justify-between">
+                <div class="flex sm:flex-row flex-col justify-between">
                     <div class="flex flex-col gap-1">
                         <label for="First name">First name</label>
-                        <input type="text" name="FirstName" id="FirstName" class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
+                        <input type="text" name="FirstName" id="FirstName" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md"
                         v-model="newUser.FirstName" placeholder="First name">
                         <p v-show="dirties.FirstName" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid first name</p>
                     </div>
                     <div class="flex flex-col gap-1">
                         <label for="LastName">Last name</label>
                         <input type="text" name="LastName" id="LastName"
-                        class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md" v-model="newUser.LastName"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md" v-model="newUser.LastName"
                         placeholder="Last name">
                         <p v-show="dirties.LastName" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid last name</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
+                    <input type="email" name="email" id="email" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md"
                     v-model="newUser.email" placeholder="Email" />
                     <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid email</p>
                 </div>
@@ -32,7 +32,7 @@
                     <label for="password">Password</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
-                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.password"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.password"
                         placeholder="Password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="togglePasswordVisibility()">
@@ -46,7 +46,7 @@
                     <label for="Confirmpassword">Confirm password</label>
                     <div class="relative">
                         <input type="password" name="Confirmpassword" id="Confirmpassword"
-                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.Confirmpassword"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.Confirmpassword"
                         placeholder="Confirm password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="toggleConfirmPasswordVisibility()">
@@ -57,7 +57,7 @@
                 <p v-show="dirties.Confirmpassword" class="text-red-500 text-3 flex justify-end">Not equal to password</p>
                 </div>
 
-                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
+                <button type="submit" class="bg-[#047143] text-white w-100% h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
                 :disabled="addUserLoading">
                     <template v-if="!addUserLoading">Register</template>
                     <Loader2 v-else class="animate-spin"/>

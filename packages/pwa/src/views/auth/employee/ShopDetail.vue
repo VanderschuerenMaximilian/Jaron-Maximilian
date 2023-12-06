@@ -1,8 +1,8 @@
 <template>
     <div v-if="!loading">
         <div v-if="!orderCompleted">
+            <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60 left-0 top-0"></div>
             <ProductPopup :selected-product="SelectedProduct" :is-open="popupIsOpen" :listExtras="listExtras" :listSauces="listSauces"  @close="closePopup()" @product-submitted="handleProductSubmitted"></ProductPopup>
-            <div v-if="popupIsOpen" class="absolute w-screen h-screen bg-black z-2 bg-opacity-60"></div>
             <section  v-if="firebaseUser" v-for="shop of result" class="flex justify-between">
 
                 <aside class="lg:hidden duration-200 drop-shadow-lg z-10" :class="isCategoryOpen?'-translate-x-15':'-translate-x-100'">

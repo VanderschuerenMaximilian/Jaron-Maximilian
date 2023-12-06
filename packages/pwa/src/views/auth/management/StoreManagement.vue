@@ -1,5 +1,5 @@
 <template>
-    <main v-if="firebaseUser" class="flex flex-col pl-20 pr-4 pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto">
+  <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
       <DashboardTitle currentRoute="Store Management" />
       <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
         <div class="flex-col mb-10 ">
@@ -51,6 +51,7 @@
                 <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
                 <div class="relative w-12 h-12 mt-1">
                   <UserCircle2 class="absolute w-full h-full"/>
+                  <div>{{ item }}</div>
                   <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
                   <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
                 </div>
@@ -122,6 +123,7 @@
       const isSocketTasksMade = ref(false)  
 
       const reversedCompletedTasks = computed(() => {
+        console.log([...socketTasks.value].reverse())
         return [...socketTasks.value].reverse();
       });
 
