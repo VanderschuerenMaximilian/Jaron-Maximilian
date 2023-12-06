@@ -51,7 +51,6 @@
                 <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
                 <div class="relative w-12 h-12 mt-1">
                   <UserCircle2 class="absolute w-full h-full"/>
-                  <div>{{ item }}</div>
                   <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
                   <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
                 </div>
