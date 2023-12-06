@@ -34,6 +34,7 @@
                   </div>
               </div>
           </div>
+          <div v-if="!taskLoading"></div>
           <div v-else>
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
@@ -63,6 +64,7 @@
             </div>
           </div>
         </div>
+        <div v-if="!taskLoading"></div>
         <div v-else>
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
