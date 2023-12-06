@@ -17,21 +17,26 @@ export class ProductsService {
   }
 
   create(createProductInput: CreateProductInput): Promise<Product> {
-    const p = new Product()
-    p.name = createProductInput.name
-    p.description = createProductInput.description
-    p.image = createProductInput.image
-    p.price = createProductInput.price
-    p.sizeModifier = createProductInput.sizeModifier
-    p.category = createProductInput.category
-    p.size = createProductInput.size
-    p.sauce = createProductInput.sauce
-    p.extra = createProductInput.extra
-    p.removable = createProductInput.removable
-    p.ingredients = createProductInput.ingredients
-    p.shopType = createProductInput.shopType
+    try {
+      const p = new Product()
+      p.name = createProductInput.name
+      p.description = createProductInput.description
+      p.image = createProductInput.image
+      p.price = createProductInput.price
+      p.sizeModifier = createProductInput.sizeModifier
+      p.category = createProductInput.category
+      p.size = createProductInput.size
+      p.sauce = createProductInput.sauce
+      p.extra = createProductInput.extra
+      p.removable = createProductInput.removable
+      p.ingredients = createProductInput.ingredients
+      p.shopType = createProductInput.shopType
 
-    return this.productRepository.save(p)
+      return this.productRepository.save(p)
+    }
+    catch (e) {
+      throw new Error(e)
+    }
   }
 
   findOne(id: number) {

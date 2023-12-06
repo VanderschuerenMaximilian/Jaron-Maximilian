@@ -17,16 +17,20 @@ export class SoldProductsService {
   }
 
   create(createSoldProductInput: CreateSoldProductInput):Promise<SoldProduct> {
-    const s = new SoldProduct()
-    s.productId = createSoldProductInput.productId
-    s.amount = createSoldProductInput.amount
-    s.size = createSoldProductInput.size
-    s.sauce = createSoldProductInput.sauce
-    s.removeables = createSoldProductInput.removeables
-    s.extras = createSoldProductInput.extras
-    return this.soldProductRepository.save(s)
-
+    try {
+      const s = new SoldProduct()
+      s.productId = createSoldProductInput.productId
+      s.amount = createSoldProductInput.amount
+      s.size = createSoldProductInput.size
+      s.sauce = createSoldProductInput.sauce
+      s.removeables = createSoldProductInput.removeables
+      s.extras = createSoldProductInput.extras
+      return this.soldProductRepository.save(s)
     }
+    catch (e) {
+      throw new Error(e)
+    }
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} soldProduct`;

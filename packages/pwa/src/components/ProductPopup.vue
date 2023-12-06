@@ -3,15 +3,15 @@
         <div class="modal-content">
             <div class="flex flex-col">
                 <div class="flex absolute h-screen w-screen justify-center">
-                    <div class="relative z-10 flex w-35vw h-70vh mt-45 bg-slate-100 border-t-14 border-primary-green rounded-lg">
+                    <div class="relative z-10 min-w-screen sm:min-w-120 flex w-35vw h-70vh mt-30 bg-slate-100 border-t-14 border-primary-green rounded-lg">
                         <button @click="closePopup" class="absolute right-4 top-4">
                             <X class="w-6 h-6 text-primary-green hover:text-green-900" />
                         </button>
-                        <div class="flex flex-col mx-auto w-27vw">
+                        <div class="flex flex-col mx-auto w-80%">
                             <div class="flex mt-7 gap-10 justify-center">
                                 <div class="flex flex-col gap-2">
                                     <h3 class="h3">{{ selectedProduct.name }}</h3>
-                                    <p class="text-slate-500">{{ selectedProduct.description }}</p>
+                                    <p class="text-slate-500 h-12 overflow-hidden line-clamp-2">{{ selectedProduct.description }}</p>
                                     <p class="font-bold text-primary-green">{{ '€ ' + selectedProduct.price }}</p>
                                 </div>
                                 <img :src="selectedProduct.image" alt="Burger image" class="w-30 h-30">

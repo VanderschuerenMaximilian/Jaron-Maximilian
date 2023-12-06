@@ -1,6 +1,6 @@
 <template>
     <section class="relative w-full flex bg-primary-green min-h-screen overflow-x-hidden">
-        <aside class="flex flex-col items-center ease-in-out"
+        <aside class="flex-col items-center ease-in-out hidden lg:flex"
         :class="navContainerState? 'w-[400px] transform transition-all duration-300':'w-[50px] transform transition-all duration-300'">
             <div class="h-[100px] w-full flex justify-between items-center"
             :class="navContainerState? 'px-8':'px-2 translate-x-1'">
@@ -69,6 +69,66 @@
                 </button>
             </ul>
         </aside>
+        <aside class="relative lg:hidden bg-slate-100">
+            <Menu class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-200" :class="{'opacity-0 ease-in-out duration-200':isMenuOpen}"/>
+            <X  @click="HandleMenu()" class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-75 color-slate-200" :class="{'opacity-0 ease-in-out duration-75':!isMenuOpen}"/>
+            <div class="absolute w-100 h-screen bg-primary-green z-4 translate-x-[-100%] ease-in-out duration-75" :class="{'translate-x-[0%] ease-in-out duration-75':isMenuOpen }">
+                <ul class="c-dash-nav absolute top-20 flex flex-col w-full gap-6 overflow-y-scroll h-[calc(100vh-100px)]">
+                    <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Overview</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Finances</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Employees</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Visitors</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Attrations</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Store Management</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Stock</span>
+                        </li>
+                    </RouterLink>
+                    <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Alerts</span>
+                        </li>
+                    </RouterLink>
+                    <button @click="handleSignOut" class="flex dashboard-link w-full gap-4">
+                        <Box class="w-6 h-6 ml-[-55%]"/>
+                        <span>Log Out</span>
+                    </button>
+                </ul>
+            </div>
+        </aside>
         <RouterView />
         <section v-if="successfullAssignedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
             <AlertAssignment v-for="alert in successfullAssignedEmployees" :alert="alert" :key="alert.id" />
@@ -89,7 +149,7 @@
 
 <script lang="ts">
 import { RouterLink } from 'vue-router'
-import { Box, ChevronLeft } from 'lucide-vue-next'
+import { Box, ChevronLeft, Menu, X  } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import useFirebase from '@/composables/useFirebase';
 import { onMounted, ref, watch } from 'vue';
@@ -105,7 +165,9 @@ export default {
     RouterLink,
     Box,
     ChevronLeft,
-    AlertAssignment
+    AlertAssignment,
+    Menu,
+    X,
 },
     setup() {
         const { signOutUser } = useFirebase()
@@ -115,8 +177,15 @@ export default {
         const navContainerState = ref<boolean>(true)
         const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
         const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
+        const isMenuOpen = ref<boolean>(false)
+
+        const HandleMenu = () => {
+            isMenuOpen.value = !isMenuOpen.value
+        }
+
         const checkPath = (route: string) => {
             path.value = route    
+            isMenuOpen.value = false
         }
         const successfullAssignedEmployees = ref<IAlert[]>([])
 
@@ -158,10 +227,13 @@ export default {
             navContainerState,
             path,
             successfullAssignedEmployees,
+            isMenuOpen,
 
             checkPath,
             handleNavContainer,
             handleSignOut,
+            HandleMenu,
+
         }
     }
 }

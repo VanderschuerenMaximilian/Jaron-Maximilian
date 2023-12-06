@@ -18,18 +18,22 @@ export class TasksService {
   }
   
   async create(createTaskInput: CreateTaskInput): Promise<Task> {
-    const t = new Task()
-    t.workblockId = createTaskInput.workblockId
-    t.title = createTaskInput.title
-    t.description = createTaskInput.description
-    const currentDate = new Date();
-    console.log(currentDate)
-    currentDate.setHours(currentDate.getHours() + 1);
-    t.createdAt = currentDate;
-    t.shopName = createTaskInput.shopName
-    t.stockItems = createTaskInput.stockItems
-    await this.taskRepository.save(t)
-    return t
+    try {
+      const t = new Task()
+      t.workblockId = createTaskInput.workblockId
+      t.title = createTaskInput.title
+      t.description = createTaskInput.description
+      const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() + 1);
+      t.createdAt = currentDate;
+      t.shopName = createTaskInput.shopName
+      t.stockItems = createTaskInput.stockItems
+      await this.taskRepository.save(t)
+      return t
+    }
+    catch (e) {
+      throw new Error(e)
+    }
   }
 
   findOne(id: number) {
@@ -47,6 +51,9 @@ export class TasksService {
 
   async update(updateTaskInput: UpdateTaskInput) {
     const task = await this.findOneById(updateTaskInput.id)
+    if (task === undefined) {
+      throw new Error('Task not found')
+    }
     if (updateTaskInput.persons !== undefined) {
       task.persons = updateTaskInput.persons
     }

@@ -7,7 +7,7 @@
                     <p class="text-center font-medium text-red-600">{{ $t('signup.popUp.error') }}</p>
                 </div>
             <form @submit.prevent="handleRegister" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]" novalidate>
-                <div class="flex justify-between">
+                <div class="flex sm:flex-row flex-col justify-between">
                     <div class="flex flex-col gap-1">
                         <label for="First name">{{ $t('signup.firstName.label') }}</label>
                         <input type="text" name="FirstName" id="FirstName" class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
@@ -57,7 +57,7 @@
                 <p v-show="dirties.Confirmpassword" class="text-red-500 text-3 flex justify-end">{{ $t('signup.confirmPassword.error') }}</p>
                 </div>
 
-                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
+                <button type="submit" class="bg-[#047143] text-white w-100% h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
                 :disabled="addUserLoading">
                     <template v-if="!addUserLoading">{{ $t('signup.register') }}</template>
                     <Loader2 v-else class="animate-spin"/>
