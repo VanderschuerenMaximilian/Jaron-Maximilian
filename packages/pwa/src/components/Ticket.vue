@@ -24,7 +24,7 @@
 <script lang="ts">
 import { computed } from 'vue';
 import useTicketPurchase from '@/composables/useTicketPurchase';
-import type { ITicketPurchase } from '@/interfaces/ITicketPurchase';
+import type { TicketPurchase as ITicketPurchase } from '@/interfaces/ITicketPurchase';
 
 export default {
     props: ['ticketPrice'],

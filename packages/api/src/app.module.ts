@@ -20,7 +20,8 @@ import { TasksModule } from './tasks/tasks.module';
 import { ZonesModule } from './zones/zones.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
-// import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PersonsService } from './persons/persons.service';
 
 @Module({
   imports: [
@@ -44,15 +45,17 @@ import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
         useUnifiedTopology: true, // Disable deprecated warnings
     }),
 
-    // MailerModule.forRoot({
-    //   transport: {
-    //     host: 'smtp.gmail.com',
-    //     auth: {
-    //       user: 'bearbanner00@gmail.com',
-    //       pass: 'Bannerbear00',
-    //     },
-    //   }
-    // }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.mail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'bearbanner00@mail.com',
+          pass: 'bannerbear00',
+        },
+      }
+    }),
     
     AlertsModule,
     AuthenticationModule,

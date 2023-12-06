@@ -105,7 +105,7 @@ import { RouterLink } from 'vue-router'
 import { ChevronDown } from 'lucide-vue-next'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
 import EmployeeDraggable from '@/components/dashboard/EmployeeDraggable.vue';
-import Alert from '@/components/dashboard/Alert.vue';
+import Alert from '@/components/dashboard/DashboardAlert.vue';
 import type { Persons as IPersons } from '@/interfaces/IPersons'
 import type { Alert as IAlert, Alerts as IAlerts } from '@/interfaces/IAlert'
 import useCustomPerson from '@/composables/useCustomPerson'

@@ -10,7 +10,7 @@ import { UserRecord } from 'firebase-admin/auth';
 import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { PubSub } from 'graphql-subscriptions';
-import { RolesGuard } from 'src/persons/guards/personType.guard';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 const pubSub = new PubSub()
 
@@ -51,6 +51,11 @@ export class AlertsResolver {
     return this.alertsService.findNonAssignedAlerts();
   }
 
+  @Query(() => [Alert], { name: 'nonResolvedAlertsByCreatedBy' })
+  findNonResolvedAlertsByCreatedBy(@Args('createdBy', { type: () => String }) createdBy: string) {
+    return this.alertsService.findNonResolvedAlertsByCreatedBy(createdBy);
+  }
+
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @UseGuards(FirebaseGuard)
   @Mutation(() => Alert)
@@ -67,7 +72,7 @@ export class AlertsResolver {
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard, RolesGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
   addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
     @Args('personId', { type: () => String }) personId: string, 

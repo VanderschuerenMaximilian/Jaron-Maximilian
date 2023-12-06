@@ -53,7 +53,7 @@ const login = async (email: string, password: string, router: Router): Promise<U
                 } else if (splitEmail?.[1].includes("management.bellewaerde.be")) {
                     router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
                 } else {
-                    router.push("/auth/visitor/" + firebaseUser.value?.uid)
+                    router.push("/auth/visitor/" + firebaseUser.value?.uid + "/mytickets")
                 }
                 resolve(userCredential.user)
             })

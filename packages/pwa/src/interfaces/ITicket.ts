@@ -1,9 +1,11 @@
-export interface ITicket {
+import type { TicketState as ITicketState } from "./ITicketState"
+
+export interface Ticket {
     id: string
     name: string
     price: number
     peronId: string
-    isActive: boolean
+    isActive: ITicketState
     validationId: string
     qrCode: string
     usableOn: Date

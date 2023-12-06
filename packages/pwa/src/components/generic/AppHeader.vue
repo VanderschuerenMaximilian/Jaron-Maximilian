@@ -20,12 +20,16 @@
             </ul>
             <div class="flex items-center">
                 <RouterLink to="/login" class="bg-primary-green hover:bg-secondary-green px-4 py-2 text-slate-100 rounded" v-if="!firebaseUser">{{ $t('navigation.login') }}</RouterLink>
-                <button class="w-8 h-8 rounded-full bg-primary-green text-slate-100 items-center text-5" @click="clickProfile" v-else>{{ profileLetter }}</button>
+                <button class="w-8 h-8 rounded-full overflow-hidden bg-primary-green text-slate-100 items-center text-5" @click="clickProfile" v-else>
+                    <img :src="profileLetter" :alt="customPerson?.fullName">
+                </button>
                 <section v-if="clickedProfile" class="transition-opacity rounded fixed top-12 right-18 w-72 bg-secondary-green text-slate-100 px-4 pt-4 space-y-2">
                     <div class="border-b-2 pb-2">
                         <h4 class="h5 mb-2">{{ $t('navigation.title') }}</h4>
                         <div class="flex items-center w-full gap-4">
-                            <div class="w-8 h-8 rounded-full bg-slate-100"></div>
+                            <div class="w-8 h-8 rounded-full bg-slate-100 overflow-hidden">
+                                <img :src="profileLetter" :alt="customPerson?.fullName">
+                            </div>
                             <div class="text-slate-100">
                                 <h3 class="font-bold m-0 text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.displayName }}</h3>
                                 <p class="text-sm text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.email }}</p>
@@ -46,7 +50,8 @@
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
-                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/mytickets'" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/myalerts'" class="menu-link" @click="clickProfile">My Alerts</RouterLink>
                         </div>
                     </section>
                     <section class="text-start">
@@ -64,7 +69,7 @@
                 </section>
             </div>
             <select class="h-6 bg-slate-100 cursor-pointer" name="language" id="language"
-            @change="setLanguage" :value="locale">
+            @change="setLanguage" :value="currentLocale">
                 <option v-for="(value, key) in SUPPORTED_LOCALES" :value="key">
                     {{ key }}
                 </option>
@@ -76,11 +81,11 @@
             <button class="h-full flex items-center justify-center" @click="clickProfile">
                 <Menu class="w-8 h-8 text-primary-green" />
             </button>
-            <div :class="{'absolute top-0 right-0 z-50 h-4/5 w-1/2 bg-primary-green translate-x-[100%] transition-transform hidden': !clickedProfile,
+            <div :class="{'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[100%] transition-transform hidden': !clickedProfile,
             'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[0%] transition-transform drop-shadow-2xl rounded-bl-xl': clickedProfile}">
                 <div class="w-full flex justify-between items-center pr-8 pl-5 h-20">
                     <select class="bg-primary-green text-slate-100 border-2 border-slate-100 rounded-md" name="language" id="language"
-                    @change="setLanguage" :value="locale">
+                    @change="setLanguage" :value="currentLocale">
                         <option v-for="(value, key) in SUPPORTED_LOCALES" :value="key">
                             {{ key }}
                         </option>
@@ -95,7 +100,7 @@
                         <div class="flex gap-4 items-center">
                             <div class="text-slate-100">
                                 <h3 class="font-bold m-0 text-start">{{ firebaseUser?.displayName }}</h3>
-                                <p class="text-sm text-start">{{ firebaseUser?.email }}</p>
+                                <p class="text-sm text-start break-all">{{ firebaseUser?.email }}</p>
                             </div>
                         </div>
                     </div>
@@ -113,10 +118,11 @@
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.VISITOR" class="flex flex-col gap-2">
-                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/mytickets'" class="menu-link" @click="clickProfile">{{ $t('navigation.myTickets') }}</RouterLink>
+                            <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/myalerts'" class="menu-link" @click="clickProfile">My Alerts</RouterLink>
                         </div>
                     </section>
-                    <ul class="flex flex-col gap-4 h-full border-b-2 pb-4">
+                    <ul class="flex flex-col gap-4 border-b-2 pb-4">
                         <li><RouterLink to="/" class="menu-link" @click="clickProfile">{{ $t('navigation.home') }}</RouterLink></li>
                         <li><RouterLink to="/map" class="menu-link" @click="clickProfile">{{ $t('navigation.map') }}</RouterLink></li>
                         <li><RouterLink to="/events" class="menu-link" @click="clickProfile">{{ $t('navigation.events') }}</RouterLink></li>
@@ -148,6 +154,8 @@ import { PersonType } from '@/interfaces/IPersonType'
 import { useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
 import { X, Menu } from 'lucide-vue-next';
+import { UPDATE_LOCALE } from '@/graphql/person.mutation'
+import { useMutation } from '@vue/apollo-composable'
 
 export default {
     components: {
@@ -160,15 +168,15 @@ export default {
         const { customPerson } = useCustomPerson()
         const { setLocale } = useLanguage()
         const { locale } = useI18n()
-        const profileLetter = ref(firebaseUser.value?.displayName?.charAt(0).toUpperCase())
+        const currentLocale = ref<string>(customPerson.value?.locale || locale.value)
+        const profileLetter = ref<string>(customPerson.value?.profilePicture || 'A')
         const router = useRouter()
         const clickedProfile = ref(false)
+        const { mutate: updateLocale } = useMutation(UPDATE_LOCALE)
 
-        watch(firebaseUser, (newUser) => {
-            if (newUser) {
-                profileLetter.value = newUser.displayName?.charAt(0).toUpperCase()
-            }
-        })
+        watch(customPerson, ()=> {
+            setLocale(customPerson.value?.locale || locale.value)
+        }, { immediate: true })
 
         const clickProfile = () => {
             clickedProfile.value = !clickedProfile.value
@@ -182,12 +190,18 @@ export default {
         const setLanguage = (event: Event) => {
             const target = event.target as HTMLSelectElement
             setLocale(target.value)
+            currentLocale.value = target.value
+            updateLocale({
+                personId: customPerson.value?.id,
+                locale: target.value,
+            })
         }
 
         return {
             firebaseUser,
             clickedProfile,
             customPerson,
+            currentLocale,
             locale,
             PersonType,
             SUPPORTED_LOCALES,

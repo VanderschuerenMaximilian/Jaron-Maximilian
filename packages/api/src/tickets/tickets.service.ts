@@ -6,8 +6,9 @@ import { Ticket } from './entities/ticket.entity';
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import * as qrcode from 'qrcode';
-// import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService } from '@nestjs-modules/mailer';
 import { UserRecord } from 'firebase-admin/auth';
+import { TicketState } from 'src/interfaces/ITicketState';
 
 @Injectable()
 export class TicketsService {
@@ -32,8 +33,9 @@ export class TicketsService {
           ticket.price = t.price
           ticket.name = t.name
           ticket.personId = t.personId
-          ticket.isActive = false
+          ticket.isActive = TicketState.INACTIVE
           ticket.validationId = validationId.toString()
+          ticket.confimationEmail = t.confimationEmail
           ticket.qrCode = qrCode
           ticket.usableOn = usableDate
           ticket.createdAt = new Date(today)
@@ -41,7 +43,7 @@ export class TicketsService {
           return ticket
         }))
         // this.sendTicketVerificationMail(currentUser.email)
-        // this.sendTicketVerificationMail('bearbanner00@gmail.com')
+        // this.sendTicketVerificationMail('bearbanner00@mail.com')
         return this.ticketRepository.save(tickets)
     }
     catch (error) {
@@ -57,14 +59,21 @@ export class TicketsService {
   @Get(':personId')
   async findAllByPersonId(personId: string, orderBy: string): Promise<Ticket[]> {
     if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: false } })
+    const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: TicketState.INACTIVE } })
     if (orderBy === 'usableOn_ASC') {
-      return tickets.sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
-    } else if (orderBy === 'usableOn_DESC') {
-      return tickets.sort((a, b) => b.usableOn.getTime() - a.usableOn.getTime())
-    } else {
       return tickets
+        .sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
+        .filter((ticket) => ticket.usableOn >= today);
+    } else if (orderBy === 'usableOn_DESC') {
+      return tickets
+        .sort((a, b) => b.usableOn.getTime() - a.usableOn.getTime())
+        .filter((ticket) => ticket.usableOn >= today);
+    } else {
+      return tickets.filter((ticket) => ticket.usableOn >= today);
     }
   }
 
@@ -100,7 +109,10 @@ export class TicketsService {
     usableDate.setHours(0,0,0,0)
     if (usableDate.getTime() !== today.getTime()) throw new Error('Ticket is not usable today')
 
-    ticket.isActive = true
+    if (ticket.isActive === TicketState.INACTIVE) ticket.isActive = TicketState.ACTIVE
+    else if (ticket.isActive === TicketState.ACTIVE) ticket.isActive = TicketState.USED
+    else if (ticket.isActive === TicketState.USED) throw new Error('Ticket already used')
+
     ticket.updatedAt = new Date()
 
     return this.ticketRepository.save(ticket)
@@ -129,12 +141,18 @@ export class TicketsService {
   }
 
   // sendTicketVerificationMail(receivingMail: string): void {
-  //   this.mailerService.sendMail({
-  //     to: receivingMail,
-  //     from: 'bellewaerde@hulp.be',
-  //     subject: 'Ticket verification',
-  //     text: 'You succesfully bought tickets!',
-  //     html: '<b>You succesfully bought tickets!</b>',
-  //   })
+  //   try {
+  //     this.mailerService.sendMail({
+  //       to: receivingMail,
+  //       from: 'bearbanner00@mail.com',
+  //       subject: 'Ticket verification',
+  //       text: 'You succesfully bought tickets!',
+  //       html: '<b>You succesfully bought tickets!</b>',
+  //     })
+  //     console.log('mail sent')
+  //   } catch (error) {
+  //     console.log(error)
+  //     throw new Error(error)
+  //   }
   // }
 }

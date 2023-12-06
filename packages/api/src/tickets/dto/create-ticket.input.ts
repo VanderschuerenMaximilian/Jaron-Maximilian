@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsDate, IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsMongoId, IsNumber, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTicketInput {
@@ -13,8 +13,12 @@ export class CreateTicketInput {
   name: string;
 
   @IsMongoId()
-  @Field()
+  @Field({ nullable: true })
   personId: string;
+
+  @IsEmail()
+  @Field({ nullable: true })
+  confimationEmail: string;
 
   @IsDate()
   @Field()

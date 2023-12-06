@@ -1,4 +1,4 @@
-export interface ITicketPrices {
+export interface TicketPrices {
     id: string
     name: string
     price: number
