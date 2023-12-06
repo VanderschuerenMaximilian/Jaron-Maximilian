@@ -1,7 +1,7 @@
 <template>
     <div class="flex justify-center items-center min-h-screen drop-shadow-lg">
-        <div class="bg-white border-t-12 border-[#047143] rounded-md">
-            <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">Login</h1>
+        <div class="bg-white border-t-12 border-[#047143] rounded-md min-w-screen sm:min-w-140 mt-10">
+            <h1 class="text-[30px] font-bold mt-[24px] flex justify-center">Login</h1>
             <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
                 <p class="text-center font-medium text-red-600">Je email of password is niet correct</p>
             </div>
@@ -9,14 +9,14 @@
                 
                 <div class="flex flex-col gap-1">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" v-model="loginCredentials.email" placeholder="Email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md">
+                    <input type="email" name="email" id="email" v-model="loginCredentials.email" placeholder="Email" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md">
                     <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">Invalid email</p>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label for="password">Password</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
-                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="loginCredentials.password"
                         placeholder="password" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="togglePasswordVisibility()">
@@ -26,8 +26,8 @@
                 </div>
                 <p v-show="dirties.password" class="text-red-500 text-3 flex justify-end">Invalid password</p>
                 </div>
-                <RouterLink to="/reset" class="mt-[-10px] flex justify-end color-[#047143] underline">Forgot your password?</RouterLink>
-                <button type="submit" class="bg-[#047143] text-white w-[498px] h-[51px] rounded-md">Login</button>
+                <RouterLink to="/reset" class="mt-[-10px] flex sm:justify-end color-[#047143] underline justify-center">Forgot your password?</RouterLink>
+                <button type="submit" class="bg-[#047143] text-white w-100% h-[51px] rounded-md">Login</button>
                 <div class="mt-[-10px] flex justify-center gap-1 mb-[40px]">
                     <p>Don't have an account?</p>
                     <RouterLink to="/register" class=" color-[#047143] underline font-bold">Sign up</RouterLink>
