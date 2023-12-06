@@ -1,5 +1,5 @@
 <template>
-    <header v-if="$route.meta.showHeader && customPerson" class="flex absolute items-center justify-between w-full bg-slate-100 shadow-lg pr-4 z-99">
+    <header v-if="$route.meta.showHeader" class="flex absolute items-center justify-between w-full bg-slate-100 shadow-lg pr-4 z-99">
         <div>
             <RouterLink to="/" class="overflow-hidden">
                 <picture>
@@ -21,14 +21,14 @@
             <div class="flex items-center">
                 <RouterLink to="/login" class="bg-primary-green hover:bg-secondary-green px-4 py-2 text-slate-100 rounded" v-if="!firebaseUser">{{ $t('navigation.login') }}</RouterLink>
                 <button class="w-8 h-8 rounded-full overflow-hidden bg-primary-green text-slate-100 items-center text-5" @click="clickProfile" v-else>
-                    <img :src="profileLetter" :alt="customPerson.fullName">
+                    <img :src="profileLetter" :alt="customPerson?.fullName">
                 </button>
                 <section v-if="clickedProfile" class="transition-opacity rounded fixed top-12 right-18 w-72 bg-secondary-green text-slate-100 px-4 pt-4 space-y-2">
                     <div class="border-b-2 pb-2">
                         <h4 class="h5 mb-2">{{ $t('navigation.title') }}</h4>
                         <div class="flex items-center w-full gap-4">
                             <div class="w-8 h-8 rounded-full bg-slate-100 overflow-hidden">
-                                <img :src="profileLetter" :alt="customPerson.fullName">
+                                <img :src="profileLetter" :alt="customPerson?.fullName">
                             </div>
                             <div class="text-slate-100">
                                 <h3 class="font-bold m-0 text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.displayName }}</h3>
