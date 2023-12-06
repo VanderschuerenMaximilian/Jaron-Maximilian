@@ -169,8 +169,8 @@ export default {
 
         onDone(() => {
             setTimeout(() => {
-                if (customPerson.value) router.replace(`/auth/visitor/${customPerson.value?.id}/mytickets`);
-                else router.replace('/')
+                if (customPerson.value) router.push(`/auth/visitor/${customPerson.value?.id}/mytickets`);
+                else router.push('/')
             }, 1000);
         });
 

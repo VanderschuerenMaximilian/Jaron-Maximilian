@@ -15,7 +15,7 @@
                     </div>
                 </template>
                 <template v-else>
-                    <h5 class="h5">You have no tickets.</h5>
+                    <h5 class="h5">{{ $t('tickets.notickets') }}</h5>
                 </template>
             </section>
         </template>

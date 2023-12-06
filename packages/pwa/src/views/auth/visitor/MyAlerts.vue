@@ -1,13 +1,20 @@
 <template v-if="customPerson">
         <main class="py-[70px] min-h-screen sm:px-8 px-4 space-y-8">
-            <h2 class="h2 absolute top-24">Your Alerts</h2>
+            <h2 class="h2 absolute top-24">{{ customPerson?.fullName }}</h2>
             <section v-if="loadAlerts" class="flex gap-3 pt-12 flex-wrap">
                 <div v-for="alert in loadingAlerts" class="w-[350px] h-[160px] rounded-md bg-gray-200 animate-pulse">
                 </div>
             </section>
-            <section v-else class="flex flex-wrap items-center gap-3 pt-12">
-                <Alert v-for="alert in myAlerts" :alert="alert" :key="alert.id"/>
-            </section>
+            <template v-else>
+                <section class="flex flex-wrap items-center gap-3 pt-12">
+                    <template v-if="myAlerts && myAlerts.length > 0">
+                        <Alert v-for="alert in myAlerts" :alert="alert" :key="alert.id"/>
+                    </template>
+                    <template v-else>
+                        <h5 class="h5">{{ $t('alerts.noalerts') }}</h5>
+                    </template>
+                </section>
+            </template>
         </main>
 </template>
 <script lang="ts">

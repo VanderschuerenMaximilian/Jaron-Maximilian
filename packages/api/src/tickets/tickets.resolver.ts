@@ -10,7 +10,7 @@ import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 import { PubSub } from 'graphql-subscriptions';
 import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
-import { RolesGuard } from 'src/persons/guards/personType.guard';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 const pubSub = new PubSub()
 
@@ -30,49 +30,50 @@ export class TicketsResolver {
     return tickets
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Ticket], { name: 'tickets' })
   findAll() {
     return this.ticketsService.findAll();
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @UseGuards(FirebaseGuard)
   @Query(() => [Ticket], { name: 'ticketsByPersonId' })
   findAllByPersonId(@Args('personId', { type: () => String }) personId: string,
   @Args('orderBy', { type: () => String, nullable: true }) orderBy: string) {
     return this.ticketsService.findAllByPersonId(personId, orderBy);
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => Ticket, { name: 'ticketByValidationId' })
   findOneByValidationId(@Args('validationId', { type: () => String }) validationId: string) {
     return this.ticketsService.findOneByValidationId(validationId);
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => Ticket, { name: 'ticket' })
   findOne(@Args('ticketId', { type: () => String }) id: string) {
     return this.ticketsService.findOne(id);
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Ticket)
   updateTicket(@Args('updateTicketInput') updateAlertInput: UpdateTicketInput) {
     return this.ticketsService.update(updateAlertInput);
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  // @UseGuards(FirebaseGuard, RolesGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Ticket)
   removeTicket(@Args('id', { type: () => String }) id: string) {
     return this.ticketsService.remove(id);
   }
-
+  
+  @AllowedPersonTypes(IPersonType.VISITOR)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Subscription(() => [Ticket])
   ticketsAdded() {
     return pubSub.asyncIterator('ticketsAdded')

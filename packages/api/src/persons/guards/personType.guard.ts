@@ -6,7 +6,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { PERSONTYPES_KEY } from '../decorators/personType.decorator';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PersonTypeGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
         private readonly personsService: PersonsService,

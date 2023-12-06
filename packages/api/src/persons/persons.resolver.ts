@@ -9,7 +9,7 @@ import { FirebaseUser } from 'src/authentication/decorators/user.decorator';
 import { UserRecord } from 'firebase-admin/auth';
 import { PersonType } from 'src/interfaces/IPersonType';
 import { JobType } from 'src/interfaces/IJobType';
-import { RolesGuard } from './guards/personType.guard';
+import { PersonTypeGuard } from './guards/personType.guard';
 import { AllowedPersonTypes } from './decorators/personType.decorator';
 
 @Resolver(() => Person)
@@ -25,7 +25,7 @@ export class PersonsResolver {
   }
 
   @AllowedPersonTypes(PersonType.ADMIN)
-  @UseGuards(FirebaseGuard, RolesGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Person], { name: 'persons' })
   getPersons() {
     return this.personsService.findAll();
@@ -43,31 +43,35 @@ export class PersonsResolver {
     return this.personsService.findOneByUid(uid);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.MANAGER, PersonType.ADMIN)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Person], { name: 'personsByPersonType', nullable: true })
   findByPersonType(@Args('personType', { type: () => String }) personType: PersonType) {
     return this.personsService.findByPersonType(personType);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.ADMIN, PersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Person], { name: 'personsByJobType', nullable: true })
   findByJobType(@Args('jobType', { type: () => String }) jobType: JobType) {
     return this.personsService.findByJobType(jobType);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.ADMIN, PersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Person], { name: 'personsBySearchString', nullable: true })
   findBySearchString(@Args('searchString', { type: () => String }) searchString: string) {
     return this.personsService.findBySearchString(searchString);
   }
 
+  @UseGuards(FirebaseGuard)
   @Mutation(() => Person)
   updatePerson(@Args('updatePersonInput') updatePersonInput: UpdatePersonInput) {
     return this.personsService.update(updatePersonInput.id, updatePersonInput);
   }
 
   @AllowedPersonTypes(PersonType.ADMIN, PersonType.MANAGER)
-  @UseGuards(FirebaseGuard, RolesGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Person)
   updateNavContainerState(@Args('updateNavContainerStateInput') updateNavContainerStateInput: UpdateNavContainerStateInput) {
     return this.personsService.updateNavContainerState(updateNavContainerStateInput.id, updateNavContainerStateInput);
@@ -79,6 +83,7 @@ export class PersonsResolver {
     return this.personsService.updateLocale(id, locale);
   }
 
+  @UseGuards(FirebaseGuard)
   @Mutation(() => Person)
   removePerson(@Args('id', { type: () => String }) id: string) {
     return this.personsService.remove(id);

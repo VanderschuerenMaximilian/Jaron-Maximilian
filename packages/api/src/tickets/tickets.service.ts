@@ -15,7 +15,7 @@ export class TicketsService {
   constructor(
     @InjectRepository(Ticket)
     private readonly ticketRepository: MongoRepository<Ticket>,
-    private readonly mailerService: MailerService,
+    // private readonly mailerService: MailerService,
   ) {}
 
   @Post()
@@ -59,14 +59,21 @@ export class TicketsService {
   @Get(':personId')
   async findAllByPersonId(personId: string, orderBy: string): Promise<Ticket[]> {
     if (!ObjectId.isValid(personId)) throw new Error('Invalid ObjectId')
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     const tickets = await this.ticketRepository.find({ where: { personId: personId, isActive: TicketState.INACTIVE } })
     if (orderBy === 'usableOn_ASC') {
-      return tickets.sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
-    } else if (orderBy === 'usableOn_DESC') {
-      return tickets.sort((a, b) => b.usableOn.getTime() - a.usableOn.getTime())
-    } else {
       return tickets
+        .sort((a, b) => a.usableOn.getTime() - b.usableOn.getTime())
+        .filter((ticket) => ticket.usableOn >= today);
+    } else if (orderBy === 'usableOn_DESC') {
+      return tickets
+        .sort((a, b) => b.usableOn.getTime() - a.usableOn.getTime())
+        .filter((ticket) => ticket.usableOn >= today);
+    } else {
+      return tickets.filter((ticket) => ticket.usableOn >= today);
     }
   }
 
@@ -133,19 +140,19 @@ export class TicketsService {
     }
   }
 
-  sendTicketVerificationMail(receivingMail: string): void {
-    try {
-      this.mailerService.sendMail({
-        to: receivingMail,
-        from: 'bearbanner00@mail.com',
-        subject: 'Ticket verification',
-        text: 'You succesfully bought tickets!',
-        html: '<b>You succesfully bought tickets!</b>',
-      })
-      console.log('mail sent')
-    } catch (error) {
-      console.log(error)
-      throw new Error(error)
-    }
-  }
+  // sendTicketVerificationMail(receivingMail: string): void {
+  //   try {
+  //     this.mailerService.sendMail({
+  //       to: receivingMail,
+  //       from: 'bearbanner00@mail.com',
+  //       subject: 'Ticket verification',
+  //       text: 'You succesfully bought tickets!',
+  //       html: '<b>You succesfully bought tickets!</b>',
+  //     })
+  //     console.log('mail sent')
+  //   } catch (error) {
+  //     console.log(error)
+  //     throw new Error(error)
+  //   }
+  // }
 }

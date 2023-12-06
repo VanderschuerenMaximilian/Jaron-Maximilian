@@ -21,6 +21,7 @@ import { ZonesModule } from './zones/zones.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { TicketPricesModule } from './ticket-prices/ticket-prices.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { PersonsService } from './persons/persons.service';
 
 @Module({
   imports: [
