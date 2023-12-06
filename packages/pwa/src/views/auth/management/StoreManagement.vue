@@ -7,7 +7,7 @@
             <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
             {{ showTasks ? 'Hide Tasks' : 'Show Tasks' }} 
           </button>
-          <div v-if="showTasks">
+          <div v-if="showTasks && !taskLoading">
               <p v-if="filteredTasks.length === 0">No tasks available.</p>
               <div v-for="item of socketTasks" class="overflow-auto min-w-130">
                   <div v-if="shouldShowTask(item)" :style="{ opacity: removedTasks.find((element) => element === item.id) ? 0 : 1, transition: 'opacity 0.5s ease-in-out' }" class="bg-white mt-5 flex p-6 justify-between rounded-lg">
@@ -34,12 +34,17 @@
                   </div>
               </div>
           </div>
+          <div v-else>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+          </div>
         </div>
         <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left">
           <ChevronDown class="inline-block" :class="showCompletedTasks? 'rotate-180' : 'rotate-0'"/>
           {{ showCompletedTasks ? 'Hide completed tasks' : 'Show completed tasks' }}
         </button>
-        <div v-show="showCompletedTasks" class="">
+        <div v-if="showCompletedTasks && !taskLoading" class="">
           <p v-if="filteredCompletedTasks.length === 0">No tasks available.</p>
           <div v-for="item of reversedCompletedTasks" class="mt-5 min-w-130 max-h-60">
             <div v-if="item.completed == true" class="bg-slate-200 flex p-6 justify-between rounded-lg">
@@ -58,6 +63,11 @@
             </div>
           </div>
         </div>
+        <div v-else>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+            <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
+          </div>
     </main>
   </template>
   

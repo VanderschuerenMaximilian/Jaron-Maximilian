@@ -25,7 +25,7 @@
         <!-- End alert message -->
         
         <DashboardTitle currentRoute="Stocks" />
-        <section class="flex justify-between mb-5 w-19/20 text-[11px] sm:text-4">
+        <section v-if="!stocksLoading" class="flex justify-between mb-5 w-19/20 text-[11px] sm:text-4">
             <select v-model="selectedFacility" v-for="facility in facilityNames" @change="handleFacilityChange(selectedFacility)" class="px-2 mt-2 border-3 border-primary-green bg-slate-100 text-primary-green font-medium hover:border-green-900 rounded-md cursor-pointer h-10">
                 <option v-for="item in facility" :key="item" :value="item">
                     {{ item }}
@@ -33,7 +33,10 @@
             </select>
             <button @click="refilEverything(stocks.stocksByFacilityName, mainStocks.stocksByFacilityName)" class="px-2 mt-2 border-3 border-primary-green text-primary-green font-medium hover:primary-green rounded-md cursor-pointer h-10 hover:bg-primary-green hover-text-white">Refill everything</button>
         </section>
-        <section v-for="stock in stocks" class="lg:w-full overflow-x-auto mb-20">
+        <section v-else>
+            <div class="max-w-50 h-13 bg-slate-200 animate-pulse rounded-lg mb-10"></div>
+        </section>
+        <section v-if="!stocksLoading" v-for="stock in stocks" class="lg:w-full overflow-x-auto mb-20">
             <table class="min-w-full text-center mb-10">
                 <thead>
                     <tr>
@@ -96,6 +99,25 @@
                     </tr>
                 </tbody>
             </table>
+        </section>
+        <section v-else>
+            <div class="flex w-full justify-between mb-3">
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+                <div class="h-5 w-30 bg-slate-300 animate-pulse"></div>
+            </div>
+            <div class="w-full h-15 bg-slate-200 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-300 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-200 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-300 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-200 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-300 animate-pulse"></div>
+            <div class="w-full h-15 bg-slate-200 animate-pulse"></div>
+
+            
         </section>
         <button @click="handleSaveStock(stocks.stocksByFacilityName)" class="absolute right-10 bottom-10 px-4 py-2 sm:py-4 sm:px-8 text-4 sm:text-5 bg-primary-green text-white font-bold rounded-lg drop-shadow-lg hover:bg-secondary-green">Save Stock</button>
     </main>

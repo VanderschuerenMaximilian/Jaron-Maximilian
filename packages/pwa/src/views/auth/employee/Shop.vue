@@ -4,7 +4,7 @@
       <div v-if="error"> Error</div>
       <div v-if="loading"> Loading...</div>
       <h2 class="h2-green pt-25 text-center">Restaurants</h2>
-      <div v-if="result" class="flex flex-wrap gap-8 mt-8 justify-center mx-auto max-w-400 ">
+      <div v-if="result && !loading" class="flex flex-wrap gap-8 mt-8 justify-center mx-auto max-w-400 ">
         <router-link v-for="shop in result.shops" :key="shop.id" :to="'shop/' + shop.name">
           <div class="w-[350px] md:w-[418px] h-[236px] rounded-3xl border-primary-green border-6 relative overflow-hidden">
             <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: 'url(' + shop.image + ')' }"></div>
@@ -15,6 +15,12 @@
             </div>
           </div>
         </router-link>
+      </div>
+      <div v-else class="flex flex-wrap gap-8 mt-8 justify-center mx-auto max-w-400">
+        <div class="w-[350px] md:w-[418px] h-[236px] bg-slate-200 animate-pulse rounded-lg"></div>
+        <div class="w-[350px] md:w-[418px] h-[236px] bg-slate-200 animate-pulse rounded-lg"></div>
+        <div class="w-[350px] md:w-[418px] h-[236px] bg-slate-200 animate-pulse rounded-lg"></div>
+        <div class="w-[350px] md:w-[418px] h-[236px] bg-slate-200 animate-pulse rounded-lg"></div>
       </div>
     </div>
   </section>

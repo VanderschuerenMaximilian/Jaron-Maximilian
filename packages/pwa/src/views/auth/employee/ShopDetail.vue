@@ -223,7 +223,7 @@
     <div v-else>
         <section class="flex justify-between animate-pulse">
             <aside>
-                <div class="ml-4 mt-25">
+                <div class="ml-4 mt-25 hidden lg:flex">
                     <div  class="flex flex-col gap-4">
                         <div class="flex relative bg-gray-200 rounded-lg p-2 w-70 justify-center h-10"></div>  
                         <div class="flex flex-col gap-4">
@@ -247,7 +247,7 @@
                 </div>
             </main>
             <aside>
-                <div class=" w-100 h-screen bg-gray-200 flex flex-col"></div>
+                <div class="w-100 h-screen bg-gray-200 flex-col hidden lg:flex"></div>
             </aside>
         </section>
     </div>
