@@ -3,7 +3,7 @@
         <div>
             <p class="text-4 font-bold max-w-55 whitespace-nowrap text-ellipsis overflow-hidden ...">Ticket</p>
             <p class="text-3">{{ soldTicket.name }}</p>
-            <p class="text-3">amount: {{ soldTicket.amount }}</p>
+            <p class="text-3">{{ $t('tickets.amount') }}: {{ soldTicket.amount }}</p>
             <p class="text-3 text-primary-green font-bold mt-2">{{ "€ " + soldTicket.price }}</p>
         </div>
         <button @click="handleDeleteTicketAmount" class="p-1 rounded-full hover:bg-gray-100 absolute right-4 top-4 cursor-pointer">
