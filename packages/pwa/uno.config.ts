@@ -24,6 +24,8 @@ export default defineConfig({
     h6: 'font-bold',
     'h6-green': 'font-bold text-primary-green',
     'h6-white': 'text-h6 font-bold text-slate-100',
+    'link-focus' : 'focus:outline-none focus:ring-primary-green focus:ring-3 focus:shadow-xl',
+    'button-focus' : 'focus:outline-none focus:ring-offset-2 focus:ring-primary-green focus:ring-3 focus:shadow-xl',
   },
   presets: [
     presetUno(),

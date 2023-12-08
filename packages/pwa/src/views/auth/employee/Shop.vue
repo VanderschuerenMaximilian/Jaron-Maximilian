@@ -5,7 +5,7 @@
       <div v-if="loading"> Loading...</div>
       <h2 class="h2-green pt-25 text-center">Restaurants</h2>
       <div v-if="result && !loading" class="flex flex-wrap gap-8 mt-8 justify-center mx-auto max-w-400 ">
-        <router-link v-for="shop in result.shops" :key="shop.id" :to="'shop/' + shop.name">
+        <router-link v-for="shop in result.shops" :key="shop.id" :to="'shop/' + shop.name" class="hover:opacity-80 button-focus rounded-3xl">
           <div class="w-[350px] md:w-[418px] h-[236px] rounded-3xl border-primary-green border-6 relative overflow-hidden">
             <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: 'url(' + shop.image + ')' }"></div>
             <div class="absolute flex bottom-6 w-full p-4 justify-center bg-primary-green opacity-90">
