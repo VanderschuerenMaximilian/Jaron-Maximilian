@@ -1,9 +1,9 @@
 <template>
   <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
         <!-- <div v-if="isOrderChanged" class="absolute z-50 sm:left-1/2 transform sm:-translate-x-30 top-20">
-            <div class="text-3 max-w-80 sm:text-5 border-2 border-primary-green bg-primary-green bg-opacity-25 py-3 px-6 rounded-md sm:max-w-lg flex flex-col gap-2">
+            <div class="text-3 max-w-80 sm:text-5 border-2 border-primary-green bg-primary-green  hover:opacity-80 bg-opacity-25 py-3 px-6 rounded-md sm:max-w-lg flex flex-col gap-2">
                 <X @click="isOrderChanged = false" class="absolute right-4 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
-                <p class="text-primary-green font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="storeManagement" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
+                <p class="text-primary-green hover:opacity-80 font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="storeManagement" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
             </div>
         </div> -->
         <!-- Alert message -->
@@ -16,8 +16,8 @@
                     </div>
                     <p class="mb-4">Proceeding will result in the loss of unsaved stocks. Are you sure you want to continue?</p>
                     <div class="flex justify-between">
-                        <button class="px-10 py-2 mr-2 text-white bg-green-500 rounded-md hover:bg-green-600">ACCEPT</button>
-                        <button class="px-10 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">CANCEL</button>
+                        <button class="px-10 py-2 mr-2 text-white bg-green-500 rounded-md hover:bg-green-600  hover:opacity-80">ACCEPT</button>
+                        <button class="px-10 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 hover:opacity-80">CANCEL</button>
                     </div>
                 </div>
             </div>
@@ -26,12 +26,12 @@
         
         <DashboardTitle currentRoute="Stocks" />
         <section v-if="!stocksLoading" class="flex justify-between mb-5 w-19/20 text-[11px] sm:text-4">
-            <select v-model="selectedFacility" v-for="facility in facilityNames" @change="handleFacilityChange(selectedFacility)" class="px-2 mt-2 border-3 border-primary-green bg-slate-100 text-primary-green font-medium hover:border-green-900 rounded-md cursor-pointer h-10">
+            <select v-model="selectedFacility" v-for="facility in facilityNames" @change="handleFacilityChange(selectedFacility)" class="px-2 mt-2 border-3 border-primary-green hover:opacity-80 bg-slate-100 text-primary-green font-medium hover:border-green-900 rounded-md cursor-pointer h-10 button-focus">
                 <option v-for="item in facility" :key="item" :value="item">
                     {{ item }}
                 </option>
             </select>
-            <button @click="refilEverything(stocks.stocksByFacilityName, mainStocks.stocksByFacilityName)" class="px-2 mt-2 border-3 border-primary-green text-primary-green font-medium hover:primary-green rounded-md cursor-pointer h-10 hover:bg-primary-green hover-text-white">Refill everything</button>
+            <button @click="refilEverything(stocks.stocksByFacilityName, mainStocks.stocksByFacilityName)" class="px-2 mt-2 border-3 border-primary-green text-primary-green font-medium hover:primary-green rounded-md cursor-pointer h-10 hover:bg-primary-green hover-text-white button-focus">Refill everything</button>
         </section>
         <section v-else>
             <div class="max-w-50 h-13 bg-slate-200 animate-pulse rounded-lg mb-10"></div>
@@ -86,15 +86,15 @@
                         <td class="py-4 px-4 flex justify-center">
                             <div class="flex items-center">
                                 <div v-if="selectedFacility !== 'Main Stock'">
-                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
-                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500'">
+                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
+                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500'">
                                 </div>
-                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500'">
-                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover-bg-secondary-green">Change</button>
+                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500'">
+                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover:opacity-80 button-focus">Change</button>
                             </div>
                         </td>
                         <td class="px-4">
-                            <button @click="refillStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="bg-primary-green p-2 rounded-lg font-medium text-white hover:bg-secondary-green">Refill Stock</button>
+                            <button @click="refillStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="bg-primary-green p-2 rounded-lg font-medium text-white hover:opacity-80 button-focus">Refill Stock</button>
                         </td>
                     </tr>
                 </tbody>
@@ -119,7 +119,7 @@
 
             
         </section>
-        <button @click="handleSaveStock(stocks.stocksByFacilityName)" class="absolute right-10 bottom-10 px-4 py-2 sm:py-4 sm:px-8 text-4 sm:text-5 bg-primary-green text-white font-bold rounded-lg drop-shadow-lg hover:bg-secondary-green">Save Stock</button>
+        <button @click="handleSaveStock(stocks.stocksByFacilityName)" class="absolute right-10 bottom-10 px-4 py-2 sm:py-4 sm:px-8 text-4 sm:text-5 bg-primary-green text-white font-bold rounded-lg drop-shadow-lg hover:bg-secondary-green button-focus">Save Stock</button>
     </main>
 </template>
 <style>

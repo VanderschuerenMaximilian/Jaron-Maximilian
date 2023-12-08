@@ -3,7 +3,7 @@
       <DashboardTitle currentRoute="Store Management" />
       <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
         <div class="flex-col mb-10 ">
-          <button @click="toggleTasks" class="text-primary-green cursor-pointer">
+          <button @click="toggleTasks" class="text-primary-green cursor-pointer hover:opacity-80 button-focus">
             <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
             {{ showTasks ? 'Hide Tasks' : 'Show Tasks' }} 
           </button>
@@ -17,18 +17,18 @@
                     </div>
 
                     <div class="flex gap-5">
-                      <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
+                      <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Assign an employee</button>
                       <div v-else class="flex gap-2">
-                        <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Print overview</button>
-                        <button @click="completeTask(item.id)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green color-white font-medium rounded-lg">Done</button>
+                        <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Print overview</button>
+                        <button @click="completeTask(item.id)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Done</button>
                       </div>
                       <div class="relative w-12 h-12 mt-1">
                         <UserCircle2 class="absolute w-full h-full"/>
                         <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
-                        <div>
-                          <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
-                          <XCircle v-if="item.persons[0]?.profilePicture" @click="removeAssignPerson(item)" class="absolute w-full h-full opacity-0 hover:opacity-100 bg-white bg-opacity-20 rounded-full"/>
-                        </div>
+                        <button v-if="item.persons[0]?.profilePicture" @click="removeAssignPerson(item)" class="group w-full h-full rounded-full focus:outline-none">
+                          <img  :src=item.persons[0]?.profilePicture class="absolute w-full h-full left-0 top-0 rounded-full focus object-cover" />
+                          <XCircle class="absolute w-full h-full left-0 top-0 opacity-0 group-focus:opacity-100 hover:opacity-100 bg-white bg-opacity-20 rounded-full"/>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -41,7 +41,7 @@
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
           </div>
         </div>
-        <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left">
+        <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left hover:opacity-80 w-fit p-1 button-focus">
           <ChevronDown class="inline-block" :class="showCompletedTasks? 'rotate-180' : 'rotate-0'"/>
           {{ showCompletedTasks ? 'Hide completed tasks' : 'Show completed tasks' }}
         </button>
@@ -54,7 +54,7 @@
                 <p class="text-3 opacity-50 text-2">{{ formatDateTime(item.createdAt) }}</p>
               </div>
               <div class="flex gap-5">
-                <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
+                <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Undo Task</button>
                 <div class="relative w-12 h-12 mt-1">
                   <UserCircle2 class="absolute w-full h-full"/>
                   <div class="hidden absolute w-full h-full bg-black rounded-full"></div>

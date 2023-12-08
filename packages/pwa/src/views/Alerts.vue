@@ -1,7 +1,7 @@
 <template>
         <main class="pt-[70px] min-h-[85vh] flex gap-4 justify-center">
             <template v-if="firebaseUser">
-                <section class="bg-white border-t-12 border-[#047143] my-20 mx-auto rounded-md px-8 pt-8">
+                <section class="bg-white border-t-12 border-primary-green my-20 mx-auto rounded-md px-8 pt-8">
                         <h2 class="h2-green text-center">{{ $t('alerts.title') }}</h2>
                         <form @submit.prevent="handleSubmitAlert" class="flex flex-col justify-center gap-8 py-8"> 
                             <div v-if="isCreated" class="relative h-fit border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
