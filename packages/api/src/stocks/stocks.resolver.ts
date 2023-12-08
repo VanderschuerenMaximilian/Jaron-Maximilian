@@ -168,94 +168,83 @@ export class StocksResolver {
   }
 
   @Mutation(() => [Stock])
-    async removePending(
-      @Args('facilityName') facilityName: string,
-      @Args('isUndone') isUndone: boolean,
-      @Args('stockItems', { type: () => [StockInput] }) stockItems: StockInput[],
+  async removePending(
+    @Args('facilityName') facilityName: string,
+    @Args('isUndone') isUndone: boolean,
+    @Args('stockItems', { type: () => [StockInput] }) stockItems: StockInput[],
     ): Promise<Stock[]> {
       const stocks = await this.stocksService.findAll();
-        const uniqueFacilityNames = Array.from(new Set(stocks.map(stock => stock.facilityName)));
+      const uniqueFacilityNames = Array.from(new Set(stocks.map(stock => stock.facilityName)));
 
-        if (!uniqueFacilityNames.includes(facilityName)) {
-          throw new Error(`Facility with name ${facilityName} not found`);
-        }
-        else {
-        if (facilityName === "Main Stock") {
-          return this.findAll();
-        } 
-        else {
-          const correctStockItems: Record<string, number> = {};
-          const correctStockItems2: Record<string, number> = {};
-          let allStockItemsValid = true;
-          for (const stockItem of stockItems) {
-            const stock = await this.stocksService.findByNameAndFacility(stockItem.name, facilityName);
-            if (!stock) {
-              allStockItemsValid = false;
-              throw new Error(`${stock.name} not found`);
-            }
-            if (!isUndone) {
-              if (stock.pending - stockItem.difference < 0) {
-                allStockItemsValid = false;
-                throw new Error(`The quantity of the stock you're attempting to remove exceeds the pending amount for ${stock.name} stock.`);
-              }
-              if (stock.stock + stockItem.difference > stock.maxStock) {
-                allStockItemsValid = false;
-                throw new Error(`The quantity of the stock you're attempting to remove exceeds the maximum allowable amount for ${stock.name} stock.`);
-              }
-            }
-            else {
-              if (stock.stock - stockItem.difference < 0) {
-                allStockItemsValid = false;
-                throw new Error(`The quantity of the stock you're attempting to remove exceeds the minimum allowable amount for ${stock.name} stock.`);
-              }
-            }
+      if (!uniqueFacilityNames.includes(facilityName)) {
+        throw new Error(`Facility with name ${facilityName} not found`);
+      }
 
-            if (!stock.name) {
-              allStockItemsValid = false;
-              throw new Error(`Name is null or undefined for stock with ID ${stock.id}`);
-            }
-            correctStockItems[stockItem.name] = stockItem.difference;
-          for (const stockItem of stockItems) {
-            const stock = await this.stocksService.findByNameAndFacility(stockItem.name, "Main Stock");
-            if (!stock) {
-              allStockItemsValid = false;
-              throw new Error(`${stock.name} not found`);
-            }
-            if (stock.stock - stockItem.difference < 0) {
-              allStockItemsValid = false;
-              throw new Error(`The quantity of the stock you're attempting to remove exceeds the minimum allowable amount for ${stock.name} stock.`);
-            }
-            if (!stock.name) {
-              allStockItemsValid = false;
-              throw new Error(`Name is null or undefined for stock with ID ${stock.id}`);
-            }
-            correctStockItems2[stockItem.name] = stockItem.difference;
-          }
-          if (allStockItemsValid) {
-            for (const stockItem in correctStockItems) {
-              if (!isUndone) {
-                console.log("not undone");
-                await this.stocksService.changePending(stockItem, facilityName, -correctStockItems[stockItem]);
-                await this.stocksService.changeStock(stockItem, facilityName, correctStockItems[stockItem]);
-                await this.stocksService.changePending(stockItem, "Main Stock", -correctStockItems2[stockItem]);
-                await this.stocksService.changeStock(stockItem, "Main Stock", -correctStockItems2[stockItem]);
-              }
-              else {
-                console.log("undone");
-                await this.stocksService.changePending(stockItem, facilityName, correctStockItems[stockItem]);
-                await this.stocksService.changeStock(stockItem, facilityName, -correctStockItems[stockItem]);
-                await this.stocksService.changePending(stockItem, "Main Stock", correctStockItems2[stockItem]);
-                await this.stocksService.changeStock(stockItem, "Main Stock", correctStockItems2[stockItem]);
-              }
-            }
-            const updatedStocks = await this.getStocksByFacilityName(facilityName);
-            return updatedStocks;
-          }
-          else {
-            throw new Error(`Stocks not updated`);	
+      if (facilityName === "Main Stock") {
+        return this.findAll();
+      }
+
+      const correctStockItems: Record<string, number> = {};
+      const correctStockItems2: Record<string, number> = {};
+      let allStockItemsValid = true;
+
+      for (const stockItem of stockItems) {
+        const stock = await this.stocksService.findByNameAndFacility(stockItem.name, facilityName);
+
+        if (!stock) {
+          allStockItemsValid = false;
+          throw new Error(`${stockItem.name} not found`);
         }
+
+        if (!isUndone) {
+          if (stock.pending - stockItem.difference < 0 || stock.stock + stockItem.difference > stock.maxStock) {
+            allStockItemsValid = false;
+            throw new Error(`Invalid quantity for ${stock.name} stock.`);
+          }
+        } else {
+          if (stock.stock - stockItem.difference < 0) {
+            allStockItemsValid = false;
+            throw new Error(`Invalid quantity for ${stock.name} stock.`);
+          }
+        }
+
+        if (!stock.name) {
+          allStockItemsValid = false;
+          throw new Error(`Name is null or undefined for stock with ID ${stock.id}`);
+        }
+
+        correctStockItems[stockItem.name] = stockItem.difference;
+      }
+
+      if (allStockItemsValid) {
+        for (const stockItem in correctStockItems) {
+          if (!isUndone) {
+            await this.stocksService.changePending(stockItem, facilityName, -correctStockItems[stockItem]);
+            await this.stocksService.changeStock(stockItem, facilityName, correctStockItems[stockItem]);
+          } else {
+            await this.stocksService.changePending(stockItem, facilityName, correctStockItems[stockItem]);
+            await this.stocksService.changeStock(stockItem, facilityName, -correctStockItems[stockItem]);
+          }
+
+          const mainStock = await this.stocksService.findByNameAndFacility(stockItem, "Main Stock");
+
+          if (!mainStock) {
+            throw new Error(`${stockItem} not found in Main Stock`);
+          }
+
+          if (!isUndone) {
+            await this.stocksService.changePending(stockItem, "Main Stock", -correctStockItems[stockItem]);
+            await this.stocksService.changeStock(stockItem, "Main Stock", -correctStockItems[stockItem]);
+          } else {
+            await this.stocksService.changePending(stockItem, "Main Stock", correctStockItems[stockItem]);
+            await this.stocksService.changeStock(stockItem, "Main Stock", correctStockItems[stockItem]);
+          }
+        }
+
+        const updatedStocks = await this.getStocksByFacilityName(facilityName);
+        return updatedStocks;
+      } else {
+        throw new Error(`Stocks not updated`);
       }
     }
-  }
-}
 }

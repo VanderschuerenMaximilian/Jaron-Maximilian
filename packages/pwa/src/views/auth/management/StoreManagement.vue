@@ -170,69 +170,6 @@
           persons: null
         }})
       }
-      
-      const completeTask = (item: any) => {
-        const stockItems = item.stockItems.map((stockItem: any) => {
-          return {
-            name: stockItem.name,
-            difference: stockItem.difference
-          }
-        })
-        const removePendingResult = removePending({facilityName: item.shopName, isUndone: false, stockItems: stockItems})
-        const itemId = item.id;
-        removePendingResult
-          .then((result: any) => {
-            if (!removedTasks.value.includes(itemId as never)) {
-            removedTasks.value.push(itemId as never);
-          }
-          setTimeout(() => {
-          updateTaskInput({updateTaskInput: {
-            id: itemId,
-              completed: true
-            }})
-            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-              task.completed = true;
-            }
-          }, 500);  
-          })
-          .catch((error: { message: any; }) => {
-            alert(error.message);
-          }); 
-      };
-
-      const undoTask = (item: any) => {
-        const stockItems = item.stockItems.map((stockItem: any) => {
-          return {
-            name: stockItem.name,
-            difference: stockItem.difference
-          }
-        })
-        const removePendingResult = removePending({facilityName: item.shopName, isUndone: true, stockItems: stockItems})
-        const itemId = item.id;
-        removePendingResult
-          .then((result: any) => {
-            const itemId = item.id;
-            updateTaskInput({updateTaskInput: {
-              id: itemId,
-              completed: false
-            }})
-            const items = item.stockItems.map((stockItem: any) => {
-              return {
-                name: stockItem.name,
-                difference: stockItem.difference
-              }
-            })
-            removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
-            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-              task.completed = false;
-            }
-          })
-          .catch((error: { message: any; }) => {
-            alert(error.message);
-          }); 
-      };
 
       watch(updatedTasks, (data: any) => {
           const updatedTask = data.tasksUpdated as any;
@@ -346,6 +283,70 @@
         currentTaskId.value = id;
         showPopup.value = true;
       }
+     
+      const completeTask = (item: any) => {
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
+          }
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: false, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            console.log(result)
+            if (!removedTasks.value.includes(itemId as never)) {
+            removedTasks.value.push(itemId as never);
+          }
+          setTimeout(() => {
+          updateTaskInput({updateTaskInput: {
+            id: itemId,
+              completed: true
+            }})
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = true;
+            }
+          }, 500);  
+          })
+          .catch((error: { message: any; }) => {
+            alert(error.message);
+          }); 
+      };
+
+      const undoTask = (item: any) => {
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
+          }
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: true, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            const itemId = item.id;
+            updateTaskInput({updateTaskInput: {
+              id: itemId,
+              completed: false
+            }})
+            const items = item.stockItems.map((stockItem: any) => {
+              return {
+                name: stockItem.name,
+                difference: stockItem.difference
+              }
+            })
+            removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = false;
+            }
+          })
+          .catch((error: { message: any; }) => {
+            alert(error.message);
+          }); 
+      };
 
 
   
