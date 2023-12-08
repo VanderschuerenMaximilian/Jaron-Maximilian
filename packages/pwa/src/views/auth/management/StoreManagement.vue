@@ -20,7 +20,7 @@
                       <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Assign an employee</button>
                       <div v-else class="flex gap-2">
                         <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Print overview</button>
-                        <button @click="completeTask(item.id)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Done</button>
+                        <button @click="completeTask(item)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Done</button>
                       </div>
                       <div class="relative w-12 h-12 mt-1">
                         <UserCircle2 class="absolute w-full h-full"/>
@@ -54,7 +54,7 @@
                 <p class="text-3 opacity-50 text-2">{{ formatDateTime(item.createdAt) }}</p>
               </div>
               <div class="flex gap-5">
-                <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Undo Task</button>
+                <button @click="undoTask(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Undo Task</button>
                 <div class="relative w-12 h-12 mt-1">
                   <UserCircle2 class="absolute w-full h-full"/>
                   <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
@@ -82,6 +82,7 @@
   import { UPDATED_TASKS, ADDED_TASKS } from '@/graphql/task.subscription'
   import { GET_TASKS } from '@/graphql/task.query' 
   import { UPDATE_TASK } from '@/graphql/task.mutation'
+  import { REMOVE_PENDING } from '@/graphql/stock.query'
   import { useMutation } from '@vue/apollo-composable'
   import { UserCircle2, ChevronDown, XCircle } from 'lucide-vue-next'
   import { computed, ref, watch, watchEffect } from 'vue';
@@ -125,6 +126,7 @@
       const { mutate: updateTaskInput } = useMutation(UPDATE_TASK)
       const { result: updatedTasks } = useSubscription(UPDATED_TASKS)
       const { result: addedTasks } = useSubscription(ADDED_TASKS)
+      const { mutate: removePending } = useMutation(REMOVE_PENDING) as any;
       const removedTasks = ref([])
       const showPopup = ref(false);
       const currentTaskId = ref('');
@@ -134,7 +136,6 @@
       const isSocketTasksMade = ref(false)  
 
       const reversedCompletedTasks = computed(() => {
-        console.log([...socketTasks.value].reverse())
         return [...socketTasks.value].reverse();
       });
 
@@ -170,32 +171,67 @@
         }})
       }
       
-      const completeTask = (itemId: any) => {
-        if (!removedTasks.value.includes(itemId as never)) {
-          removedTasks.value.push(itemId as never);
-        }
-        setTimeout(() => {
-        updateTaskInput({updateTaskInput: {
-          id: itemId,
-            completed: true
-          }})
-          const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-          if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-            task.completed = true;
+      const completeTask = (item: any) => {
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
           }
-        }, 500);
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: false, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            if (!removedTasks.value.includes(itemId as never)) {
+            removedTasks.value.push(itemId as never);
+          }
+          setTimeout(() => {
+          updateTaskInput({updateTaskInput: {
+            id: itemId,
+              completed: true
+            }})
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = true;
+            }
+          }, 500);  
+          })
+          .catch((error: { message: any; }) => {
+            alert(error.message);
+          }); 
       };
 
-      const undoTask = (itemId: any) => {
-        updateTaskInput({updateTaskInput: {
-          id: itemId,
-          completed: false
-        }})
-        removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
-        const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-        if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-          task.completed = false;
-        }
+      const undoTask = (item: any) => {
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
+          }
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: true, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            const itemId = item.id;
+            updateTaskInput({updateTaskInput: {
+              id: itemId,
+              completed: false
+            }})
+            const items = item.stockItems.map((stockItem: any) => {
+              return {
+                name: stockItem.name,
+                difference: stockItem.difference
+              }
+            })
+            removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = false;
+            }
+          })
+          .catch((error: { message: any; }) => {
+            alert(error.message);
+          }); 
       };
 
       watch(updatedTasks, (data: any) => {
