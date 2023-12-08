@@ -318,7 +318,6 @@ export default {
                 console.error(error);
             }
 
-            // ❗❗❗ ERROR eruit halen als je de mutation wilt testen ❗❗❗
             await updateStockWithPendingMutation({
                 facilityName: selectedFacility.value,
                 ingredients: stockDifference,

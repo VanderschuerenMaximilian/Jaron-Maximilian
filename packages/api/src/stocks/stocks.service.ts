@@ -75,6 +75,32 @@ export class StocksService {
     return await this.stockRepository.save(stock);
   }
 
+  async changeStock(name: string, facilityName: string, newStock: number): Promise<Stock> {
+      const stock = await this.stockRepository.findOne({ where: { name, facilityName } });
+    
+      if (!stock) {
+        throw new NotFoundException(`Stock with name ${name} and facilityName ${facilityName} not found`);
+      }
+        stock.stock = stock.stock + newStock;
+    
+      return await this.stockRepository.save(stock);
+  }
+
+  async changePending(name: string, facilityName: string, newStock: number): Promise<Stock> {
+    const stock = await this.stockRepository.findOne({ where: { name, facilityName } });
+  
+    if (!stock) {
+      throw new NotFoundException(`Stock with name ${name} and facilityName ${facilityName} not found`);
+    }
+    stock.pending = stock.pending + newStock;
+
+    if (stock.pending < 0) {
+      throw new Error(`Stock with name ${name} and facilityName ${facilityName} has less pending stock than requested`);
+    }
+  
+    return await this.stockRepository.save(stock);
+  }
+
   async updatePending(name: string, facilityName: string, newStock: number): Promise<Stock> {
 
     const stock = await this.stockRepository.findOne({ where: { name, facilityName } });
@@ -87,12 +113,14 @@ export class StocksService {
   
     return await this.stockRepository.save(stock);
   }
-  
-  
 
+  async removePending(facilityName: string, stockItems: {name: string, quantity: number}[]): Promise<Stock[]> {
+      
+      const stocks = await this.findByFacilityName(facilityName);
+      return await this.stockRepository.save(stocks);
+    }
   
-
-  async findByName(name: string): Promise<Stock | null> {
+    async findByName(name: string): Promise<Stock | null> {
     const shop = await this.stockRepository.findOne({ where: { name } })
 
     if (!shop) {

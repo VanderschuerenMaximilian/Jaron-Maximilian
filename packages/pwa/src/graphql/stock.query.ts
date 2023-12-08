@@ -57,3 +57,13 @@ mutation UpdateStockWithPending($facilityName: String!, $ingredients: [StockInpu
 }
 `;
 
+export const REMOVE_PENDING = gql`
+mutation removePending($facilityName: String!,$isUndone: Boolean!, $stockItems: [StockInput!]!) {
+  removePending(facilityName: $facilityName,isUndone: $isUndone, stockItems: $stockItems) {
+    name
+    stock
+    pending
+  }
+}
+`;
+
