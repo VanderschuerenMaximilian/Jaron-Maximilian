@@ -67,34 +67,34 @@
                         <td v-if="selectedFacility === 'Main Stock'" class="py-1 px-4 w-45">
                             <div class="flex-col mt-2">
                                 <div class="relative h-6 mx-auto rounded-full overflow-hidden flex items-center bg-white">
-                                    <div class="absolute h-full opacity-30" :style="{ width: (checkedStocks[item.name] / mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor(checkedStocks[item.name], mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) }"></div>
-                                    <div class="absolute h-full" :style="{ width: (mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock / mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor(mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) }"></div>
-                                    <p class="absolute w-full text-center font-medium">{{checkedStocks[item.name] + ' ' + mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].unit }}</p>
+                                    <div class="absolute h-full opacity-30" :style="{ width: (checkedStocks[item.name] / mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor(checkedStocks[item.name], mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) }"></div>
+                                    <div class="absolute h-full" :style="{ width: (mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock / mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor(mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock, mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) }"></div>
+                                    <p class="absolute w-full text-center font-medium">{{checkedStocks[item.name] + ' ' + mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].unit }}</p>
                                 </div>
-                                <p class="text-3">Maximum stock: <span class="font-medium">{{ mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock }}</span></p>
+                                <p class="text-3">Maximum stock: <span class="font-medium">{{ mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock }}</span></p>
                             </div>                            
                         </td>
                         <td v-else class="py-1 px-4 w-45">
                             <div class="flex-col mt-2">
                                 <div class="relative h-6 mx-auto rounded-full overflow-hidden flex items-center bg-white">
-                                    <div class="absolute h-full" :style="{ width: ((mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock - checkedStocks[item.name] + item.stock) / mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor((mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock) - checkedStocks[item.name], mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock) }"></div>
-                                    <p class="absolute w-full text-center font-medium">{{(mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock - checkedStocks[item.name] + item.stock) + ' ' + mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].unit }}</p>
+                                    <div class="absolute h-full" :style="{ width: ((mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock - checkedStocks[item.name] + item.stock) / mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) * 100 + '%', background: calculateColor((mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock) - checkedStocks[item.name], mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock) }"></div>
+                                    <p class="absolute w-full text-center font-medium">{{(mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock - checkedStocks[item.name] + item.stock) + ' ' + mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].unit }}</p>
                                 </div>
-                                <p class="text-3">Maximum stock: <span class="font-medium">{{ mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].maxStock }}</span></p>
+                                <p class="text-3">Maximum stock: <span class="font-medium">{{ mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].maxStock }}</span></p>
                             </div>  
                         </td>
                         <td class="py-4 px-4 flex justify-center">
                             <div class="flex items-center">
                                 <div v-if="selectedFacility !== 'Main Stock'">
-                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
+                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
                                     <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500'">
                                 </div>
                                 <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500'">
-                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover:opacity-80 button-focus">Change</button>
+                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover:opacity-80 button-focus">Change</button>
                             </div>
                         </td>
                         <td class="px-4">
-                            <button @click="refillStock(item, mainStocks.stocksByFacilityName.filter(ingredient => ingredient.name === item.name)[0].stock)" class="bg-primary-green p-2 rounded-lg font-medium text-white hover:opacity-80 button-focus">Refill Stock</button>
+                            <button @click="refillStock(item, mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock)" class="bg-primary-green p-2 rounded-lg font-medium text-white hover:opacity-80 button-focus">Refill Stock</button>
                         </td>
                     </tr>
                 </tbody>
@@ -146,6 +146,9 @@ import useFirebase from '@/composables/useFirebase'
 import { ref, watchEffect, type Ref, watch } from 'vue'
 import { isTypeSystemDefinitionNode } from 'graphql';
 import useCustomPerson from '@/composables/useCustomPerson';
+// @ts-ignore
+import { StockItem } from '@/interfaces/ISoldItem';
+
 
 const { firebaseUser } = useFirebase()
 const { customPerson } = useCustomPerson()
