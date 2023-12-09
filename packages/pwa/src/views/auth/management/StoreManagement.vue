@@ -243,10 +243,10 @@
                 </head>
                 <body>
                     <h1>Stock Overview - ${item.shopName}</h1>
-                    <p>Name: ${customPerson.value?.fullName}</p>
+                    <p>Created By: ${customPerson.value?.fullName}</p>
                     <p>Created At: ${formatDateTime(item.createdAt)}</p>
-                    <p>Execution At: ${new Date().toLocaleString()}</p>
                     <p>Executed by: ${item.persons[0]?.fullName}</p>
+                    <p>Execution At: ${new Date().toLocaleString()}</p>
                     <table>
                         <thead>
                             <tr>

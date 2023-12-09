@@ -324,16 +324,19 @@ export default {
                     isFacilityChanged.value = true;
                     completedChanges.value = [];
                     isRefillEverything.value = false;
-
                 } else {
                     selectedFacility.value = originalFacilityName;
                     isFacilityChanged.value = false;
+
                 }
             } else {
                 refetchStocks({ facilityName: newFacilityName });
                 selectedStocks.value = {};
                 originalFacilityName = newFacilityName;
                 isFacilityChanged.value = true;
+                completedChanges.value = [];
+                isRefillEverything.value = false;
+
 
             }
         };
