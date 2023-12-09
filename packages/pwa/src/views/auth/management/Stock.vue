@@ -1,12 +1,5 @@
 <template>
   <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
-        <!-- <div v-if="isOrderChanged" class="absolute z-50 sm:left-1/2 transform sm:-translate-x-30 top-20">
-            <div class="text-3 max-w-80 sm:text-5 border-2 border-primary-green bg-primary-green  hover:opacity-80 bg-opacity-25 py-3 px-6 rounded-md sm:max-w-lg flex flex-col gap-2">
-                <X @click="isOrderChanged = false" class="absolute right-4 top-1/2 -translate-y-3 text-primary-green cursor-pointer" />
-                <p class="text-primary-green hover:opacity-80 font-semibold pr-6">Stock has been successfully updated. You can view the modified products in the <RouterLink to="storeManagement" class="cursor-pointer underline">'Stock Adjustments'</RouterLink> section.</p>
-            </div>
-        </div> -->
-        <!-- Alert message -->
         <div class="hidden">
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div class="w-fit text-2 sm:text-4 sm:w-96 bg-white p-8 rounded-md shadow-lg">
@@ -21,9 +14,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- End alert message -->
-        
+        </div>        
         <DashboardTitle currentRoute="Stocks" />
         <section v-if="!stocksLoading" class="flex justify-between mb-5 w-19/20 text-[11px] sm:text-4">
             <select v-model="selectedFacility" v-for="facility in facilityNames" @change="handleFacilityChange(selectedFacility)" class="px-2 mt-2 border-3 border-primary-green hover:opacity-80 bg-slate-100 text-primary-green font-medium hover:border-green-900 rounded-md cursor-pointer h-10 button-focus">
@@ -206,8 +197,6 @@ export default {
         };
 
         const handleSaveStock = async (stocks: any) => {
-            //Alles met de main stock en de pending validation werkt normaal gezien
-            //TODO: Fix dat als je in de Boomerang Snack zit dat je controle doet met de pending inbegrepen
             const stockDifference = [];
             if (selectedFacility.value === 'Main Stock') {
                 for (const item of stocks) {
@@ -253,14 +242,12 @@ export default {
 
         watchEffect(() => {
             if (!isFacilityChanged.value) {
-
                 for (let itemName in checkedStocks.value) {
                     if (perviousStocks.value[itemName] !== undefined) {
                         checkedStocks.value[itemName] = perviousStocks.value[itemName];
                         selectedStocks.value[itemName] = perviousStocks.value[itemName];
                     }
                 }
-
             }
             else {
                 if (selectedFacility.value === 'Main Stock') { 

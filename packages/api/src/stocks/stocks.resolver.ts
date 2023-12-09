@@ -122,7 +122,6 @@ export class StocksResolver {
               }    
               const updatedStocks = await this.getStocksByFacilityName(facilityName);
               return updatedStocks;
-              // const updatedStocks = await this.getStocksByFacilityName(facilityName);
             }
             else {
               throw new Error(`Stocks not updated`);
@@ -169,7 +168,6 @@ export class StocksResolver {
                 await this.stocksService.updatePending(ingredient, facilityName, correctIngredients[ingredient]);
                 await this.stocksService.updatePending(ingredient, "Main Stock", correctIngredients2[ingredient]);
               }     
-              // const updatedStocks = await this.getStocksByFacilityName(facilityName);
               const updatedStocks = await this.getStocksByFacilityName(facilityName);
               return updatedStocks;
               

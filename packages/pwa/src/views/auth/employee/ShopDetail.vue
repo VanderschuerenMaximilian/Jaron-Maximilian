@@ -454,7 +454,6 @@ export default {
         const updateSoldProducts = (newSoldProduct: any, state: boolean) => {
             for (let i = 0; i < soldProducts.value.length; i++) {
                 const soldProduct = soldProducts.value[i]; 
-                console.log(soldProduct.name)
                 if (
                     soldProduct.name === newSoldProduct.name &&
                     soldProduct.productName === newSoldProduct.productName &&
@@ -546,7 +545,7 @@ export default {
                     })),
                 };
                 await mutate({ orderInput: order }).catch((error) => {
-                    console.log(error);
+                    console.error(error);
                 });
                 await setTimeout(() => {
                     location.reload();

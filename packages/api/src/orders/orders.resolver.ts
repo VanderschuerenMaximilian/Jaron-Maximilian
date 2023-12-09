@@ -27,7 +27,6 @@ export class OrdersResolver {
       try {
         const totalIngredients: Record<string, number> = {};
 
-        // Add all ingredients, extras, removeables and sauces to the totalIngredients list
         for (const product of createOrderInput.soldProducts) {
           const p = await this.productsService.findByName(product.productName);
           if (p.category !== "Drinks") {
@@ -87,7 +86,6 @@ export class OrdersResolver {
           }
         }
 
-        // Check if there is enough stock for all products in the order
         for (const ingredient of Object.keys(totalIngredients)) {
           const stockItem = await this.stocksService.findByName(ingredient);
           if (stockItem.stock < totalIngredients[ingredient]) {
@@ -95,14 +93,12 @@ export class OrdersResolver {
           }
         }
 
-        // Update the stock of all ingredients, extras, removeables and sauces of all products in the order
         for (const ingredient of Object.keys(totalIngredients)) {
           const stockItem = await this.stocksService.findByName(ingredient);
           stockItem.stock = stockItem.stock - totalIngredients[ingredient];
           await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
         }
 
-        // Create the order
         const order = await this.ordersService.create(createOrderInput);
         return order;
 
