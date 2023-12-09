@@ -86,7 +86,6 @@ export default {
         }
 
         const handleLogin = () => {
-            // Controleer of de ingevoerde e-mail een geldig formaat heeft
             const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
             if (!loginCredentials.value.email || !emailPattern.test(loginCredentials.value.email)) {
                 if (!loginCredentials.value.email) {

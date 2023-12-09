@@ -32,15 +32,26 @@
 </template>
 
 <script lang="ts">
+import { ref } from 'vue';
+
 export default {
     props: ['employee', 'selectedJobType'], 
-    methods: {
-        showPassport() {
-            this.$emit('show-passport', this.employee);
-        },
-        chooseEmployee() {
-            this.$emit('choose-employee', this.employee);
+    setup(props, { emit }) {
+        const employee = ref(props.employee);
+        const selectedJobType = ref(props.selectedJobType);
+        const showPassport = () => {
+            emit('show-passport', employee.value);
         }
-    }
+        const chooseEmployee = () => {
+            emit('choose-employee', employee.value);
+        }
+        return {
+            employee,
+            selectedJobType,
+            showPassport,
+            chooseEmployee
+        }
+        
+    },
 }
 </script>

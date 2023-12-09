@@ -18,7 +18,6 @@ describe('TasksResolver', () => {
         {
           provide: TasksService,
           useValue: {
-            // Mock de benodigde methods van TasksService
             create: jest.fn(),
             findAll: jest.fn(),
             findOne: jest.fn(),

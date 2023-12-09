@@ -25,7 +25,6 @@ export class ShopsResolver {
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Shop)
   createShop(@Args('createShopInput') createShopInput: CreateShopInput) {
-    console.log(createShopInput)
     return this.shopsService.create(createShopInput)
   }
 

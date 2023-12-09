@@ -22,7 +22,7 @@ export class TasksResolver {
   ) {}
 
   @UseGuards(FirebaseGuard)
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   async createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput) {
     const task = await this.tasksService.create(createTaskInput);
@@ -31,21 +31,21 @@ export class TasksResolver {
   }
 
   @UseGuards(FirebaseGuard)
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Query(() => [Task], { name: 'tasks' })
   findAll() {
     return this.tasksService.findAll();
   }
 
   @UseGuards(FirebaseGuard)
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Query(() => Task, { name: 'task' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.tasksService.findOne(id);
   }
 
   @UseGuards(FirebaseGuard)
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   updateTask(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
     const task = this.tasksService.update(updateTaskInput);
@@ -54,7 +54,7 @@ export class TasksResolver {
   }
 
   @UseGuards(FirebaseGuard)
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   removeTask(@Args('id', { type: () => Int }) id: number) {
     return this.tasksService.remove(id);
