@@ -5,6 +5,10 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { Stock } from 'src/stocks/entities/stock.entity';
 import { StocksService } from 'src/stocks/stocks.service';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 
 @Resolver(() => Product)
 export class ProductsResolver {
@@ -13,22 +17,29 @@ export class ProductsResolver {
     private readonly StocksService: StocksService,
     ) {}
 
-
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Product)
   createProduct(@Args('createProductInput') createProductInput: CreateProductInput) {
     return this.productsService.create(createProductInput);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Product], { name: 'products' })
   findAll() {
     return this.productsService.findAll();
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Product, { name: 'product' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.productsService.findOne(id);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Product, { name: 'productByName' })
   async getProductByName(
     @Args('name') name: string,
@@ -36,16 +47,22 @@ export class ProductsResolver {
     return this.productsService.findByName(name)
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Product)
   updateProduct(@Args('updateProductInput') updateProductInput: UpdateProductInput) {
     return this.productsService.update(updateProductInput.id, updateProductInput);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Product)
   removeProduct(@Args('id', { type: () => Int }) id: number) {
     return this.productsService.remove(id);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @ResolveField(() => [Stock], { name: 'ingredients' })
   async getStockForProduct(@Parent() product: Product): Promise<Stock[]> {
     const ingredientName = product.ingredients;

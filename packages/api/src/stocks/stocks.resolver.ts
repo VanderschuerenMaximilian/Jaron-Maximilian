@@ -4,6 +4,10 @@ import { Stock } from './entities/stock.entity';
 import { CreateStockInput } from './dto/create-stock.input';
 import { UpdateStockInput } from './dto/update-stock.input';
 import { Logger } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 
 @InputType()
 class StockInput {
@@ -18,16 +22,22 @@ class StockInput {
 export class StocksResolver {
   constructor(private readonly stocksService: StocksService) {}
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Stock)
   createStock(@Args('createStockInput') createStockInput: CreateStockInput) {
     return this.stocksService.create(createStockInput);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Stock], { name: 'stocks' })
   findAll() {
     return this.stocksService.findAll();
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Stock, { name: 'stockByName' })
   async getStockByName(
     @Args('name') name: string,
@@ -36,7 +46,8 @@ export class StocksResolver {
     return this.stocksService.findByNameAndFacility(name, facilityName);
   }
 
-
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [String], { name: 'uniqueFacilityNames' })
   async getUniqueFacilityNames(): Promise<string[]> {
     const stocks = await this.stocksService.findAll();
@@ -44,6 +55,8 @@ export class StocksResolver {
     return uniqueFacilityNames;
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Stock], { name: 'stocksByFacilityName' })
   async getStocksByFacilityName(
     @Args('facilityName') facilityName: string,
@@ -51,11 +64,15 @@ export class StocksResolver {
     return this.stocksService.findByFacilityName(facilityName);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Stock, { name: 'stock' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.stocksService.findOne(id);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Stock)
     updateStock(
       @Args('name') name: string,
@@ -65,6 +82,8 @@ export class StocksResolver {
       return this.stocksService.updateStock(name, facilityName, newStock);
     }
 
+    @UseGuards(FirebaseGuard)
+    @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
     @Mutation(() => [Stock])
       async updateStockWithPending(
         @Args('facilityName') facilityName: string,
@@ -162,11 +181,15 @@ export class StocksResolver {
         }
     }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Stock)
   removeStock(@Args('id', { type: () => Int }) id: number) {
     return this.stocksService.remove(id);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => [Stock])
   async removePending(
     @Args('facilityName') facilityName: string,

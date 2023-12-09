@@ -6,6 +6,11 @@ import { UpdateOrderInput } from './dto/update-order.input';
 import { ProductsService } from 'src/products/products.service';
 import { StocksService } from 'src/stocks/stocks.service';
 import { SoldProduct } from 'src/sold-products/entities/sold-product.entity';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+
 
 @Resolver(() => Order)
 export class OrdersResolver {
@@ -15,6 +20,8 @@ export class OrdersResolver {
     private readonly stocksService: StocksService,
   ) {}
 
+    @UseGuards(FirebaseGuard)
+    @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
     @Mutation(() => Order)
     async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {      
       try {
@@ -106,23 +113,29 @@ export class OrdersResolver {
       }
   }
     
-
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Order], { name: 'orders' })
   findAll() {
     return this.ordersService.findAll();
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Order, { name: 'order' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.ordersService.findOne(id);
   }
 
-
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   updateOrder(@Args('updateOrderInput') updateOrderInput: UpdateOrderInput) {
     return this.ordersService.update(updateOrderInput.id, updateOrderInput);
   }
 
+  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   removeOrder(@Args('id', { type: () => Int }) id: number) {
     return this.ordersService.remove(id);
