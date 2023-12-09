@@ -86,11 +86,11 @@
                         <td class="py-4 px-4 flex justify-center">
                             <div class="flex items-center">
                                 <div v-if="selectedFacility !== 'Main Stock'">
-                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500'">
-                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500'">
+                                    <input v-if="item.maxStock > mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock" type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock" step="9" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock + item.stock - selectedStocks[item.name]  >= 0 && item.stock + item.pending <= selectedStocks[item.name]?'':'text-red-500' || getButtonClass(item.name, stock)">
+                                    <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock + item.pending" :max="item.maxStock" step="10" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock + item.pending?'':'text-red-500' || getButtonClass(item.name, stock)">
                                 </div>
-                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500'">
-                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover:opacity-80 button-focus">Change</button>
+                                <input v-else type="number" v-model="selectedStocks[item.name]" :min="item.stock - item.pending" :max="item.maxStock" step="100" class="w-20 bg-white pl-3 py-1 rounded-l-lg button-focus" :class="selectedStocks[item.name] <= item.maxStock && selectedStocks[item.name] >= item.stock - item.pending?'':'text-red-500' || getButtonClass(item.name, stock)">
+                                <button @click="changeStock(item, mainStocks.stocksByFacilityName.filter((ingredient: StockItem) => ingredient.name === item.name)[0].stock)" class="w-22 py-1 bg-primary-green text-center rounded-r-lg font-medium text-white hover:opacity-80 button-focus" :class="getButtonClass(item.name, stock)">Change</button>
                             </div>
                         </td>
                         <td class="px-4">
@@ -173,13 +173,42 @@ export default {
                 }
             }            
         },
+        getButtonClass(itemName: string, stocks: any) {
+            const stock = stocks.find((stockItem: StockItem) => stockItem.name === itemName) as StockItem;
+            const item = this.completedChanges.find((item: any) => item.name === itemName);
+            if (this.isRefillEverything) {
+                return 'bg-opacity-30';
+            }
+            else {
+                if (item) {
+                    if (item.stock === this.selectedStocks[itemName]) {
+                        return 'bg-opacity-30';
+                    }
+                    else {
+                        return 'bg-opacity-100';
+                    }
+                }
+                return this.selectedStocks[itemName] === stock.stock ? 'bg-opacity-30' : 'bg-opacity-100';
+            }
+        },
         changeStock(item: any, mainStock: number) {
             if (this.selectedFacility !== 'Main Stock') {
                 if (mainStock + item.stock - this.selectedStocks[item.name] >= 0) {
                     if (!isNaN(this.selectedStocks[item.name]) && this.selectedStocks[item.name] >= item.stock && this.selectedStocks[item.name] <= item.maxStock) {
                         this.checkedStocks[item.name] = this.selectedStocks[item.name];
-                        this.perviousStocks[item.name] = this.selectedStocks[item.name];
                         this.isStockChanged = true;
+                        this.perviousStocks[item.name] = this.selectedStocks[item.name];
+                        if (this.completedChanges.length === 0) {
+                        this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+                        }
+                        for (let i = 0; i < this.completedChanges.length; i++) {
+                            if (this.completedChanges[i].name === item.name) {
+                                this.completedChanges[i].stock = this.selectedStocks[item.name];
+                            }
+                            else {
+                                this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+                            }
+                        }
                     } else {
                         console.error(`Invalid stock value for ${item.name}`);
                     }
@@ -193,6 +222,17 @@ export default {
                     this.checkedStocks[item.name] = this.selectedStocks[item.name];
                     this.isStockChanged = true;
                     this.perviousStocks[item.name] = this.selectedStocks[item.name];
+                    if (this.completedChanges.length === 0) {
+                        this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+                    }
+                    for (let i = 0; i < this.completedChanges.length; i++) {
+                        if (this.completedChanges[i].name === item.name) {
+                            this.completedChanges[i].stock = this.selectedStocks[item.name];
+                        }
+                        else {
+                            this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+                        }
+                    }
 
                 } else {
                     console.error(`Invalid stock value for ${item.name}`);
@@ -218,6 +258,17 @@ export default {
                 this.perviousStocks[item.name] = item.maxStock;
                 this.isStockChanged = true;
             }
+            if (this.completedChanges.length === 0) {
+                this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+            }
+            for (let i = 0; i < this.completedChanges.length; i++) {
+                if (this.completedChanges[i].name === item.name) {
+                    this.completedChanges[i].stock = this.selectedStocks[item.name];
+                }
+                else {
+                    this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
+                }
+            }
         },
         refilEverything(stocks: any, mainStocks: any) {
             for (const bellewaerdeItem of mainStocks) {
@@ -241,6 +292,7 @@ export default {
                 }
             }
             this.isStockChanged = true;
+            this.isRefillEverything = true;
         }
     },
     setup() {
@@ -254,6 +306,9 @@ export default {
         const checkedStocks = ref<any>({});
         const isStockChanged = ref(false);
         const isOrderChanged = ref(false);
+        const completedChanges = ref<any>([]);
+        const isRefillEverything = ref(false);
+
         let originalFacilityName = 'Main Stock';
         let perviousStocks = ref<any>({});
         let isFacilityChanged = ref(true);
@@ -267,6 +322,8 @@ export default {
                     selectedStocks.value = {};
                     isStockChanged.value = false;
                     isFacilityChanged.value = true;
+                    completedChanges.value = [];
+                    isRefillEverything.value = false;
 
                 } else {
                     selectedFacility.value = originalFacilityName;
@@ -379,6 +436,8 @@ export default {
             isStockChanged,
             selectedFacility,
             isOrderChanged,
+            completedChanges,
+            isRefillEverything
         }
     }   
 }
