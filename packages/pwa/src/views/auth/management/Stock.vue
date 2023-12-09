@@ -159,142 +159,6 @@ export default {
         AlertTriangle,
         X,
     },
-    methods: {
-        calculateColor(stock: number, maxStock: number) {
-            if (stock >= 0) {
-                const sectionSize = maxStock / 3;
-                const section = Math.floor(stock / sectionSize);
-                if (section === 0) {
-                    return '#FF000080';
-                } else if (section === 1) {
-                    return '#FFA50080';
-                } else {
-                    return '#00800080';
-                }
-            }            
-        },
-        getButtonClass(itemName: string, stocks: any) {
-            const stock = stocks.find((stockItem: StockItem) => stockItem.name === itemName) as StockItem;
-            const item = this.completedChanges.find((item: any) => item.name === itemName);
-            if (this.isRefillEverything) {
-                return 'bg-opacity-30';
-            }
-            else {
-                if (item) {
-                    if (item.stock === this.selectedStocks[itemName]) {
-                        return 'bg-opacity-30';
-                    }
-                    else {
-                        return 'bg-opacity-100';
-                    }
-                }
-                return this.selectedStocks[itemName] === stock.stock ? 'bg-opacity-30' : 'bg-opacity-100';
-            }
-        },
-        changeStock(item: any, mainStock: number) {
-            if (this.selectedFacility !== 'Main Stock') {
-                if (mainStock + item.stock - this.selectedStocks[item.name] >= 0) {
-                    if (!isNaN(this.selectedStocks[item.name]) && this.selectedStocks[item.name] >= item.stock && this.selectedStocks[item.name] <= item.maxStock) {
-                        this.checkedStocks[item.name] = this.selectedStocks[item.name];
-                        this.isStockChanged = true;
-                        this.perviousStocks[item.name] = this.selectedStocks[item.name];
-                        if (this.completedChanges.length === 0) {
-                        this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-                        }
-                        for (let i = 0; i < this.completedChanges.length; i++) {
-                            if (this.completedChanges[i].name === item.name) {
-                                this.completedChanges[i].stock = this.selectedStocks[item.name];
-                            }
-                            else {
-                                this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-                            }
-                        }
-                    } else {
-                        console.error(`Invalid stock value for ${item.name}`);
-                    }
-                }
-                else {
-                    console.error(`Invalid stock value for ${item.name} in de main stock`);
-                }
-            } 
-            else {
-                if (!isNaN(this.selectedStocks[item.name]) && this.selectedStocks[item.name] >= item.stock && this.selectedStocks[item.name] <= item.maxStock) {
-                    this.checkedStocks[item.name] = this.selectedStocks[item.name];
-                    this.isStockChanged = true;
-                    this.perviousStocks[item.name] = this.selectedStocks[item.name];
-                    if (this.completedChanges.length === 0) {
-                        this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-                    }
-                    for (let i = 0; i < this.completedChanges.length; i++) {
-                        if (this.completedChanges[i].name === item.name) {
-                            this.completedChanges[i].stock = this.selectedStocks[item.name];
-                        }
-                        else {
-                            this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-                        }
-                    }
-
-                } else {
-                    console.error(`Invalid stock value for ${item.name}`);
-                }
-            }
-        },
-        refillStock(item:any, bellewaerdeStock: number) {
-            if (this.selectedFacility !== 'Main Stock') {
-                if (bellewaerdeStock + item.stock < item.maxStock) {
-                    this.selectedStocks[item.name] = item.stock + bellewaerdeStock;
-                    this.checkedStocks[item.name] = item.stock + bellewaerdeStock;
-                    this.perviousStocks[item.name] = item.stock + bellewaerdeStock;
-                    this.isStockChanged = true;
-                } else {
-                    this.selectedStocks[item.name] = item.maxStock;
-                    this.checkedStocks[item.name] = item.maxStock;
-                    this.perviousStocks[item.name] = item.maxStock;
-                    this.isStockChanged = true;
-                }
-            } else {
-                this.selectedStocks[item.name] = item.maxStock;
-                this.checkedStocks[item.name] = item.maxStock;
-                this.perviousStocks[item.name] = item.maxStock;
-                this.isStockChanged = true;
-            }
-            if (this.completedChanges.length === 0) {
-                this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-            }
-            for (let i = 0; i < this.completedChanges.length; i++) {
-                if (this.completedChanges[i].name === item.name) {
-                    this.completedChanges[i].stock = this.selectedStocks[item.name];
-                }
-                else {
-                    this.completedChanges.push({"name": item.name, "stock": this.selectedStocks[item.name]});
-                }
-            }
-        },
-        refilEverything(stocks: any, mainStocks: any) {
-            for (const bellewaerdeItem of mainStocks) {
-                if (this.selectedFacility === 'Main Stock') {
-                    this.selectedStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
-                    this.checkedStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
-                    this.perviousStocks[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
-                }
-                else {
-                    const correspondingStock = stocks.find((stockItem: any) => stockItem.name === bellewaerdeItem.name);
-
-                    if (correspondingStock.maxStock > bellewaerdeItem.stock + correspondingStock.stock) {
-                        this.selectedStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
-                        this.checkedStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
-                        this.perviousStocks[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
-                    } else {
-                        this.selectedStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
-                        this.checkedStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
-                        this.perviousStocks[bellewaerdeItem.name] = correspondingStock.maxStock;
-                    }
-                }
-            }
-            this.isStockChanged = true;
-            this.isRefillEverything = true;
-        }
-    },
     setup() {
         const selectedFacility = ref('Main Stock');
         const { loading: stocksLoading, result: stocks, error: stocksError, refetch: refetchStocks } = useQuery(GET_STOCKS_BY_FACILITYNAME, { facilityName: selectedFacility.value });
@@ -306,7 +170,7 @@ export default {
         const checkedStocks = ref<any>({});
         const isStockChanged = ref(false);
         const isOrderChanged = ref(false);
-        const completedChanges = ref<any>([]);
+        const completedChanges = ref<any>([]) as Ref<any>;
         const isRefillEverything = ref(false);
 
         let originalFacilityName = 'Main Stock';
@@ -417,6 +281,147 @@ export default {
                 }
             }
         });
+        const calculateColor = (stock: number, maxStock: number) => {
+            if (stock >= 0) {
+                const sectionSize = maxStock / 3;
+                const section = Math.floor(stock / sectionSize);
+                if (section === 0) {
+                    return '#FF000080';
+                } else if (section === 1) {
+                    return '#FFA50080';
+                } else {
+                    return '#00800080';
+                }
+            }            
+        }
+
+        const getButtonClass = (itemName: string, stocks: any) => {
+            const stock = stocks.find((stockItem: StockItem) => stockItem.name === itemName) as StockItem | undefined;
+            const item = completedChanges.value?.find((item: any) => item.name === itemName);
+            if (isRefillEverything.value) {
+                return 'bg-opacity-30';
+            }
+            else {
+                if (item !== undefined) {
+                    if (item?.stock === selectedStocks.value[itemName]) {
+                        return 'bg-opacity-30';
+                    }
+                    else {
+                        console.error('Stock is undefined or does not match selected stock.');
+
+                        return 'bg-opacity-100';
+                    }
+                }
+    
+                return selectedStocks.value[itemName] === stock?.stock ? 'bg-opacity-30' : 'bg-opacity-100';
+            }
+        }
+
+        const changeStock = (item: any, mainStock: number) => {
+            if (selectedFacility.value !== 'Main Stock') {
+                if (mainStock + item.stock - selectedStocks.value[item.name] >= 0) {
+                    if (!isNaN(selectedStocks.value[item.name]) && selectedStocks.value[item.name] >= item.stock && selectedStocks.value[item.name] <= item.maxStock) {
+                        checkedStocks.value[item.name] = selectedStocks.value[item.name];
+                        isStockChanged.value = true;
+                        perviousStocks.value[item.name] = selectedStocks.value[item.name];
+                        if (completedChanges.value.length === 0) {
+                        completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+                        }
+                        for (let i = 0; i < completedChanges.value.length; i++) {
+                            if (completedChanges.value[i].name === item.name) {
+                                completedChanges.value[i].stock = selectedStocks.value[item.name];
+                            }
+                            else {
+                                completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+                            }
+                        }
+                    } else {
+                        console.error(`Invalid stock value for ${item.name}`);
+                    }
+                }
+                else {
+                    console.error(`Invalid stock value for ${item.name} in de main stock`);
+                }
+            } 
+            else {
+                if (!isNaN(selectedStocks.value[item.name]) && selectedStocks.value[item.name] >= item.stock && selectedStocks.value[item.name] <= item.maxStock) {
+                    checkedStocks.value[item.name] = selectedStocks.value[item.name];
+                    isStockChanged.value = true;
+                    perviousStocks.value[item.name] = selectedStocks.value[item.name];
+                    if (completedChanges.value.length === 0) {
+                        completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+                    }
+                    for (let i = 0; i < completedChanges.value.length; i++) {
+                        if (completedChanges.value[i].name === item.name) {
+                            completedChanges.value[i].stock = selectedStocks.value[item.name];
+                        }
+                        else {
+                            completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+                        }
+                    }
+
+                } else {
+                    console.error(`Invalid stock value for ${item.name}`);
+                }
+            }
+        }
+        
+        const refillStock = (item:any, bellewaerdeStock: number) => {
+            if (selectedFacility.value !== 'Main Stock') {
+                if (bellewaerdeStock + item.stock < item.maxStock) {
+                    selectedStocks.value[item.name] = item.stock + bellewaerdeStock;
+                    checkedStocks.value[item.name] = item.stock + bellewaerdeStock;
+                    perviousStocks.value[item.name] = item.stock + bellewaerdeStock;
+                    isStockChanged.value = true;
+                } else {
+                    selectedStocks.value[item.name] = item.maxStock;
+                    checkedStocks.value[item.name] = item.maxStock;
+                    perviousStocks.value[item.name] = item.maxStock;
+                    isStockChanged.value = true;
+                }
+            } else {
+                selectedStocks.value[item.name] = item.maxStock;
+                checkedStocks.value[item.name] = item.maxStock;
+                perviousStocks.value[item.name] = item.maxStock;
+                isStockChanged.value = true;
+            }
+            if (completedChanges.value.length === 0) {
+                completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+            }
+            for (let i = 0; i < completedChanges.value.length; i++) {
+                if (completedChanges.value[i].name === item.name) {
+                    completedChanges.value[i].stock = selectedStocks.value[item.name];
+                }
+                else {
+                    completedChanges.value.push({"name": item.name, "stock": selectedStocks.value[item.name]});
+                }
+            }
+        }
+
+        const refilEverything = (stocks: any, mainStocks: any) => {
+            for (const bellewaerdeItem of mainStocks) {
+                if (selectedFacility.value === 'Main Stock') {
+                    selectedStocks.value[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
+                    checkedStocks.value[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
+                    perviousStocks.value[bellewaerdeItem.name] = bellewaerdeItem.maxStock;
+                }
+                else {
+                    const correspondingStock = stocks.find((stockItem: any) => stockItem.name === bellewaerdeItem.name);
+
+                    if (correspondingStock.maxStock > bellewaerdeItem.stock + correspondingStock.stock) {
+                        selectedStocks.value[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
+                        checkedStocks.value[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
+                        perviousStocks.value[bellewaerdeItem.name] = bellewaerdeItem.stock + correspondingStock.stock;
+                    } else {
+                        selectedStocks.value[bellewaerdeItem.name] = correspondingStock.maxStock;
+                        checkedStocks.value[bellewaerdeItem.name] = correspondingStock.maxStock;
+                        perviousStocks.value[bellewaerdeItem.name] = correspondingStock.maxStock;
+                    }
+                }
+            }
+            isStockChanged.value = true;
+            isRefillEverything.value = true;
+        }
 
 
         return {
@@ -440,7 +445,13 @@ export default {
             selectedFacility,
             isOrderChanged,
             completedChanges,
-            isRefillEverything
+            isRefillEverything,
+            calculateColor,
+            getButtonClass,
+            changeStock,
+            refillStock,
+            refilEverything,
+
         }
     }   
 }

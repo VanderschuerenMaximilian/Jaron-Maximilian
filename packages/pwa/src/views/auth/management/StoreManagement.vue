@@ -1,7 +1,7 @@
 <template>
   <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
       <DashboardTitle currentRoute="Store Management" />
-      <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
+      <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee" :$emit="$emit" />
         <div class="flex-col mb-10 ">
           <button @click="toggleTasks" class="text-primary-green cursor-pointer hover:opacity-80 button-focus">
             <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
@@ -99,28 +99,6 @@
       ChevronDown,
       XCircle
     },
-    data() {
-      return {
-        showPopup: false
-      }
-    },
-    computed: {
-      filteredTasks() {
-        return this.socketTasks.filter((item: any) => this.shouldShowTask(item));
-      },
-      filteredCompletedTasks() {
-        return this.socketTasks.filter((item: any) => item.completed == true);
-      },
-    },
-    methods: {
-      closeAssignPersonPopup() {
-        this.showPopup = false;
-      },
-      shouldShowTask(item: any) {
-        return item.completed !== true && item.completed !== undefined || item.completed == null &&
-          !this.removedTasks.includes(item.id as never);
-      },
-    },
     setup() {
       const { result: tasksResult, loading: taskLoading } = useQuery(GET_TASKS)
       const { mutate: updateTaskInput } = useMutation(UPDATE_TASK)
@@ -135,6 +113,14 @@
       const showCompletedTasks = ref(true)
       const isSocketTasksMade = ref(false)  
 
+      const filteredTasks = computed(() => {
+        return socketTasks.value.filter((item: any) => shouldShowTask(item));
+      });
+
+      const filteredCompletedTasks = computed(() => {
+        return socketTasks.value.filter((item: { completed: boolean; }) => item.completed == true);
+      });
+
       const reversedCompletedTasks = computed(() => {
         return [...socketTasks.value].reverse();
       });
@@ -142,6 +128,14 @@
       watch(addedTasks, (data: any) => {
         socketTasks.value.push(data.taskAdded);
       });
+
+      const closeAssignPersonPopup = () => {
+        showPopup.value = false;
+      }
+      const shouldShowTask = (item: any) => {
+        return item.completed !== true && item.completed !== undefined || item.completed == null &&
+          !removedTasks.value.includes(item.id as never);
+      }
 
       watchEffect(() => {
         if (!isSocketTasksMade.value) {
@@ -361,8 +355,6 @@
           }
       };
 
-
-  
       return {
         firebaseUser,
         customPerson,
@@ -384,7 +376,12 @@
         reversedCompletedTasks,
         undoTask,
         removeAssignPerson,
-        taskLoading
+        taskLoading,
+        closeAssignPersonPopup,
+        filteredTasks,
+        filteredCompletedTasks,
+        shouldShowTask
+
       }
     }
   }

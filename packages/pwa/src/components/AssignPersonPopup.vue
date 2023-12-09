@@ -117,29 +117,7 @@ export default {
         X,
         ArrowLeft 
     },
-    data() {
-        return {
-            showPopup: false
-        }
-    },
-    methods: {
-        closeAssignPersonPopup() {
-            this.showPopup = false;
-        },
-        handleShowPassport(employee: any) {
-            this.isShowPassport = true;
-            this.passportData = employee;
-            
-        },
-
-        handleChooseEmployee(employee: any) {
-            this.$emit('choose-employee', employee);
-            this.$emit('close');
-        }
-
-    },
-    
-    setup() {
+    setup( props, {emit} ) {
         const search = ref<String>('')
         const jobEnumArray = ref<JobType[]>(Object.values(JobType))
         const selectedJobType = ref<JobType>(JobType.ALL)
@@ -147,16 +125,31 @@ export default {
         const { document, result: searchEmployees, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
-        console.log(search.value)
         const isShowPassport = ref(false)
         const skeletons = ref<number[]>(Array(10))
         const passportData = ref<any>(null)
+        const showPopup = ref(false)
 
         watch(search, () => {
             load(document.value, {
                 searchString: search.value
             })
         })
+
+        const closeAssignPersonPopup = () => {
+            showPopup.value = false;
+        }
+
+        const handleShowPassport = (employee: any) => {
+            isShowPassport.value = true;
+            passportData.value = employee;
+            emit('show-passport', employee);
+        };
+
+        const handleChooseEmployee = (employee: any) => {
+            emit('choose-employee', employee);
+            emit('close');
+        };
 
         return {
             employeesLoading,
@@ -169,7 +162,11 @@ export default {
             selectedJobType,
             skeletons,
             isShowPassport,
-            passportData
+            passportData,
+
+            handleShowPassport,
+            handleChooseEmployee,
+            closeAssignPersonPopup
         }
     }   
 }
