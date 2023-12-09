@@ -246,6 +246,7 @@
                     <p>Name: ${customPerson.value?.fullName}</p>
                     <p>Created At: ${formatDateTime(item.createdAt)}</p>
                     <p>Execution At: ${new Date().toLocaleString()}</p>
+                    <p>Executed by: ${item.persons[0]?.fullName}</p>
                     <table>
                         <thead>
                             <tr>
@@ -285,6 +286,7 @@
       }
      
       const completeTask = (item: any) => {
+        let isPendingRemoved = ref(false);
         const stockItems = item.stockItems.map((stockItem: any) => {
           return {
             name: stockItem.name,
@@ -295,7 +297,14 @@
         const itemId = item.id;
         removePendingResult
           .then((result: any) => {
-            console.log(result)
+            isPendingRemoved.value = true;
+           
+          })
+          .catch((error: { message: any; }) => {
+            isPendingRemoved.value = false;
+            alert(error.message);
+          }); 
+          if (isPendingRemoved) {
             if (!removedTasks.value.includes(itemId as never)) {
             removedTasks.value.push(itemId as never);
           }
@@ -308,14 +317,12 @@
             if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
               task.completed = true;
             }
-          }, 500);  
-          })
-          .catch((error: { message: any; }) => {
-            alert(error.message);
-          }); 
+          }, 500); 
+          }
       };
 
       const undoTask = (item: any) => {
+        let isPendingRemoved = ref(false);
         const stockItems = item.stockItems.map((stockItem: any) => {
           return {
             name: stockItem.name,
@@ -326,6 +333,15 @@
         const itemId = item.id;
         removePendingResult
           .then((result: any) => {
+            isPendingRemoved.value = true;
+            
+          })
+          .catch((error: { message: any; }) => {
+            isPendingRemoved.value = false;
+            alert(error.message);
+          }); 
+
+          if (isPendingRemoved) {
             const itemId = item.id;
             updateTaskInput({updateTaskInput: {
               id: itemId,
@@ -342,10 +358,7 @@
             if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
               task.completed = false;
             }
-          })
-          .catch((error: { message: any; }) => {
-            alert(error.message);
-          }); 
+          }
       };
 
 
