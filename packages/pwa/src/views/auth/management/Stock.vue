@@ -257,6 +257,7 @@ export default {
         let originalFacilityName = 'Main Stock';
         let perviousStocks = ref<any>({});
         let isFacilityChanged = ref(true);
+        let completedChanges = ref<any>([]);
 
         const handleFacilityChange = (newFacilityName: string) => {
             if (isStockChanged.value) {
@@ -280,6 +281,20 @@ export default {
 
             }
         };
+
+        const getButtonClass = (itemName: string, stocks: any) => {
+            const stock = stocks.find((stockItem: StockItem) => stockItem.name === itemName) as StockItem;
+            const item = completedChanges.find((item: any) => item.name === itemName);
+            if (item) {
+                if (item.stock === selectedStocks[itemName]) {
+                    return 'bg-opacity-30';
+                }
+                else {
+                    return 'bg-opacity-100';
+                }
+            }
+            return selectedStocks[itemName] === stock.stock ? 'bg-opacity-30' : 'bg-opacity-100';
+        }
 
         const handleSaveStock = async (stocks: any) => {
             //Alles met de main stock en de pending validation werkt normaal gezien
@@ -379,6 +394,8 @@ export default {
             isStockChanged,
             selectedFacility,
             isOrderChanged,
+            getButtonClass,
+            completedChanges,
         }
     }   
 }
