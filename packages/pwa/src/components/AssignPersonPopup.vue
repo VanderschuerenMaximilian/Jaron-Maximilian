@@ -167,4 +167,4 @@ export default {
         }
     }   
 }
-</script>
+</script>@/interfaces/IPerson

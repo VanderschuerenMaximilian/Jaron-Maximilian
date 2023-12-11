@@ -1,4 +1,4 @@
-import type { Person } from './IPersons';
+import type { Person } from './IPerson';
 
 export interface Alert {
     id?: string;

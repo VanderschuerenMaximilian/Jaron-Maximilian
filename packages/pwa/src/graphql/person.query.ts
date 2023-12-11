@@ -1,6 +1,7 @@
-import gql from 'graphql-tag';
+import { gql, type TypedDocumentNode } from "@apollo/client/core";
+import type { Person as IPerson } from "@/interfaces/IPerson";
 
-export const ALL_PERSONS = gql`
+export const ALL_PERSONS: TypedDocumentNode<{ persons: IPerson[] }> = gql`
     query {
         persons {
             id
@@ -20,7 +21,7 @@ export const ALL_PERSONS = gql`
     }
 `;
 
-export const FIND_PERSON_BY_ID = gql`
+export const FIND_PERSON_BY_ID: TypedDocumentNode<{ id: string }> = gql`
     query person($id: String!){
         person(id: $id) {
             id
@@ -40,7 +41,7 @@ export const FIND_PERSON_BY_ID = gql`
     }
 `;
 
-export const FIND_PERSON_BY_UID = gql`
+export const FIND_PERSON_BY_UID: TypedDocumentNode<{ uid: string }> = gql`
     query ($uid: String!) {
         personByUid(uid: $uid) {
             id
@@ -61,7 +62,7 @@ export const FIND_PERSON_BY_UID = gql`
     }
 `;
 
-export const ALL_EMPLOYEES = gql`
+export const ALL_EMPLOYEES: TypedDocumentNode<{ persons: IPerson[] }> = gql`
     query personsByPersonType($personType: String!) {
         personsByPersonType(personType: $personType) {
             id
@@ -78,7 +79,7 @@ export const ALL_EMPLOYEES = gql`
     }
 `;
 
-export const FIND_EMPLOYEES_BY_SEARCH = gql`
+export const FIND_EMPLOYEES_BY_SEARCH: TypedDocumentNode<{ persons: IPerson[] }> = gql`
     query ($searchString: String!) {
         personsBySearchString(searchString: $searchString) {
             id
@@ -94,7 +95,7 @@ export const FIND_EMPLOYEES_BY_SEARCH = gql`
     }
 `;
 
-export const FIND_EMPLOYEES_BY_JOB_TYPE = gql`
+export const FIND_EMPLOYEES_BY_JOB_TYPE: TypedDocumentNode<{ persons: IPerson[] }> = gql`
     query ($jobType: String!) {
         personsByJobType(jobType: $jobType) {
             id
@@ -105,18 +106,6 @@ export const FIND_EMPLOYEES_BY_JOB_TYPE = gql`
             personType
             jobType
             phone
-        }
-    }
-`;
-
-// export const UPDATE_PERSON = gql`
-
-// `;
-
-export const DELETE_PERSON = gql`
-    mutation ($id: String!) {
-        removePerson(id: $id) {
-            __typename
         }
     }
 `;

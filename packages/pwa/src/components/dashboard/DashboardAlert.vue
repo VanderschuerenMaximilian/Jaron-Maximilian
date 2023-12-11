@@ -119,4 +119,4 @@ export default {
 .c-draggable::-webkit-scrollbar {
     height: 8px;
 }
-</style>
+</style>@/interfaces/IPerson

@@ -210,4 +210,4 @@ export default {
         }
     }
 }
-</script>../bootstrap
+</script>../bootstrap@/interfaces/IPerson

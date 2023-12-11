@@ -3,7 +3,7 @@ import { FIND_PERSON_BY_UID } from '@/graphql/person.query';
 import { ref } from 'vue';
 import useFirebase from './useFirebase';
 import useGraphql from './useGraphql';
-import type { Person } from '@/interfaces/IPersons'
+import type { Person } from '@/interfaces/IPerson'
 
 const customPerson = ref<Person>();
 
