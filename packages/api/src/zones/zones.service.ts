@@ -38,13 +38,13 @@ export class ZonesService {
       return this.zoneRepository.findOne({ _id: new ObjectId(id) })
   }
 
-  update(id: number, updateZoneInput: UpdateZoneInput) {
-    return `This action updates a #${id} zone`;
-  }
+  // update(id: number, updateZoneInput: UpdateZoneInput) {
+  //   return `This action updates a #${id} zone`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} zone`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} zone`;
+  // }
 
   // functions for seeding
 

@@ -31,33 +31,41 @@ export class AlertsResolver {
     }
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'alerts' })
   findAll() {
     return this.alertsService.findAll();
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => Alert, { name: 'alert' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.alertsService.findOneById(id);
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'nonResolvedAlertsByEmployee' })
   findNonResolvedAlertsByEmployee(@Args('employeeId', { type: () => String }) employeeId: string) {
     return this.alertsService.findNonResolvedAlertsByEmployee(employeeId);
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'nonAssignedAlerts' })
   findNonAssignedAlerts() {
     return this.alertsService.findNonAssignedAlerts();
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => [Alert], { name: 'nonResolvedAlertsByCreatedBy' })
   findNonResolvedAlertsByCreatedBy(@Args('createdBy', { type: () => String }) createdBy: string) {
     return this.alertsService.findNonResolvedAlertsByCreatedBy(createdBy);
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
   updateAlert(
     @Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
@@ -88,12 +96,14 @@ export class AlertsResolver {
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
   removeAlert(@Args('id', { type: () => ID }) id: string) {
     return this.alertsService.remove(id);
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Subscription(() => Alert)
   alertAdded() {
     return pubSub.asyncIterator('alertAdded')

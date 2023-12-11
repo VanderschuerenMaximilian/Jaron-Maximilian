@@ -83,7 +83,8 @@ export class PersonsResolver {
     return this.personsService.updateLocale(id, locale);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.ADMIN)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Person)
   removePerson(@Args('id', { type: () => String }) id: string) {
     return this.personsService.remove(id);
