@@ -80,7 +80,7 @@ import router from '@/bootstrap'
 import { Eye, EyeOff  } from 'lucide-vue-next';
 import { CREATE_PERSON } from '../graphql/person.mutation'
 import { useMutation } from '@vue/apollo-composable'
-import type { Person } from '@/interfaces/IPersons'
+import type { Person } from '@/interfaces/IPerson'
 import { Loader2 } from 'lucide-vue-next'
 
 export default {

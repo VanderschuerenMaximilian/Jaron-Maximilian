@@ -67,14 +67,16 @@ export class AlertsResolver {
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
-  updateAlert(
+  async updateAlert(
     @Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
   ) {
     try {
-      return this.alertsService.update(updateAlertInput);
+      const updatedAlert = await this.alertsService.update(updateAlertInput);
+      console.log('updatedAlert', updatedAlert)
+      pubSub.publish('alertUpdated', { alertUpdated: updatedAlert })
+      return updatedAlert
     }
     catch (error) {
-      console.log(error)
       return error
     }
   }
@@ -82,13 +84,29 @@ export class AlertsResolver {
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
-  addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
+  async addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
     @Args('personId', { type: () => String }) personId: string, 
   ) {
     try {
-      const assignedPerson = this.alertsService.addPersonToAlert(alertId, personId);
+      const assignedPerson = await this.alertsService.addPersonToAlert(alertId, personId);
       pubSub.publish('personAssignedToAlert', { personAssignedToAlert: assignedPerson })
       return assignedPerson
+    }
+    catch (error) {
+      return error
+    }
+  }
+
+  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  // @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @Mutation(() => Alert)
+  async removePersonFromAlert(@Args('alertId', { type: () => String }) alertId: string,
+    @Args('personId', { type: () => String }) personId: string,
+  ) {
+    try {
+      const removedPerson = await this.alertsService.removePersonFromAlert(alertId, personId);
+      pubSub.publish('personRemovedFromAlert', { personRemovedFromAlert: removedPerson })
+      return removedPerson
     }
     catch (error) {
       return error
@@ -102,8 +120,6 @@ export class AlertsResolver {
     return this.alertsService.remove(id);
   }
 
-  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Subscription(() => Alert)
   alertAdded() {
     return pubSub.asyncIterator('alertAdded')
@@ -112,5 +128,10 @@ export class AlertsResolver {
   @Subscription(() => Alert)
   personAssignedToAlert() {
     return pubSub.asyncIterator('personAssignedToAlert')
+  }
+
+  @Subscription(() => Alert)
+  personRemovedFromAlert() {
+    return pubSub.asyncIterator('personRemovedFromAlert')
   }
 }

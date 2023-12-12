@@ -1,6 +1,6 @@
 <template>
     <main class="pt-[70px] min-h-screen flex flex-col items-center md:justify-center justify-between gap-6">
-      <div class="w-full flex md:justify-center items-center h-2/3 md:pt-0 pt-12">
+      <div class="w-full flex md:justify-center items-center h-[90vh] md:pt-0 pt-16">
         <qrcode-stream class="max-w-2xl" :paused="paused" @detect="onDetect" @error="onError" @camera-on="resetValidationState">
             <div v-if="isValid" 
             class="absolute w-full h-full bg-white bg-opacity-80 flex flex-col justify-center items-center gap-6">

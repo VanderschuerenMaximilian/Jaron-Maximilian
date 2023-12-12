@@ -58,7 +58,7 @@
     </main>
 </template>
 <script lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { X, MoveLeft, Loader2 } from 'lucide-vue-next';
 import { CREATE_TICKETS } from '@/graphql/ticket.mutation';
 import { useMutation } from '@vue/apollo-composable';

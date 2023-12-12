@@ -61,8 +61,12 @@
                 </section>
             </section>
             <section class="flex flex-col items-center">
-                <section v-if="alertsLoading">
-                    <p>Alerts are loading...</p>
+                <section v-if="alertsLoading" class="flex flex-col gap-2 px-6">
+                        <div v-for="skeleton in skeletons"
+                        class="animate-pulse flex flex-col gap-2 w-full bg-gray-200 h-32 py-2 px-6 rounded-md">
+                            <div class="bg-neutral-300 h-8 rounded-sm"></div>
+                            <div class="bg-neutral-300 h-16 w-72 rounded-sm"></div>
+                        </div>
                 </section>
                 <section v-else-if="alertsError">
                     <p>Error: {{ alertsError.message }}</p>
@@ -131,7 +135,7 @@ export default {
         const { document, result: searchEmployeesResult, load } = useLazyQuery<IPersons>(FIND_EMPLOYEES_BY_SEARCH, () => ({
             searchString: search.value
         }))
-        const { result: alertAdded } = useSubscription(CREATED_ALERT)
+        const { result: alertAdded } = useSubscription<IAlert>(CREATED_ALERT)
         const skeletons = ref<number[]>(Array(10))
         const employees = computed(() => {
             return employeesResult.value?.personsByPersonType
@@ -152,7 +156,8 @@ export default {
             }
         }, { immediate: true })
 
-        watch(alertAdded, (data) => {
+        watch(alertAdded, (data: any) => {
+            console.log(data)
             if (data?.alertAdded) {
                 alerts.value = [data.alertAdded, ...alerts.value]
             }

@@ -5,9 +5,8 @@
 </template>
 
 <script lang="ts">
-import type { Person as IPerson } from '@/interfaces/IPersons';
+import type { Person as IPerson } from '@/interfaces/IPerson';
 import { onMounted } from 'vue';
-
 
 export default {
     props: {
@@ -26,7 +25,7 @@ export default {
                 props.onInput(props.employee);
             }
         });
-
+        console.log(props.employee);
         const getInitials = (name: string) => {
             const names = name.split(' ');
             let initials = names[0].substring(0, 1).toUpperCase();
@@ -43,4 +42,4 @@ export default {
         }
     }
 }
-</script>@/interfaces/IPerson
+</script>
