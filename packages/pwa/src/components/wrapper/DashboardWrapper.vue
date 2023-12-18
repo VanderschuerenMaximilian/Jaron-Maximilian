@@ -171,7 +171,7 @@ export default {
 },
     setup() {
         const { signOutUser } = useFirebase()
-        const { customPerson } = useCustomPerson()
+        const { customPerson, restoreCustomPerson } = useCustomPerson()
         const path = ref('overview')
         const router = useRouter()
         const navContainerState = ref<boolean>(true)
@@ -194,7 +194,10 @@ export default {
         }
         
         const handleSignOut = () => {
-            signOutUser(router)
+            signOutUser().then(() => {
+                customPerson.value = undefined
+                if (customPerson.value === undefined) router.push('/login')
+            })
         }
 
         onMounted(() => {

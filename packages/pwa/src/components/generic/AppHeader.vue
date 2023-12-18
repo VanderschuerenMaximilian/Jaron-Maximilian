@@ -165,7 +165,7 @@ export default {
     },
     setup() {
         const { firebaseUser, signOutUser } = useFirebase()
-        const { customPerson } = useCustomPerson()
+        const { customPerson, restoreCustomPerson } = useCustomPerson()
         const { setLocale } = useLanguage()
         const { locale } = useI18n()
         const currentLocale = ref<string>(customPerson.value?.locale || locale.value)
@@ -183,8 +183,11 @@ export default {
         }
 
         const handleLogout = () => {
-            signOutUser(router)
-            clickedProfile.value = false
+            signOutUser().then(() => {
+                clickedProfile.value = false
+                customPerson.value = undefined
+                router.push("/login")
+            })
         }
 
         const setLanguage = (event: Event) => {

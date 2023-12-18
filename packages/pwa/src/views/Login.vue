@@ -104,9 +104,21 @@ export default {
 
             if (!dirties.value.email && !dirties.value.password) {
                 login(loginCredentials.value.email, loginCredentials.value.password, router)
-                    .then(() => {
-                        restoreCustomPerson();
+                    .then(async (firebaseUser) => {
                         dirties.value.account = false;
+                        await restoreCustomPerson();
+                        const Useremail = firebaseUser.email
+                        const splitEmail = Useremail?.split("@")
+                        if (firebaseUser.email === "admin@admin.bellewaerde.be") {
+                            router.push("/auth/management/" + firebaseUser.uid + "/dashboard/overview")
+                        }
+                        else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
+                            router.push("/auth/employee/" + firebaseUser.uid + '/profile')
+                        } else if (splitEmail?.[1].includes("management.bellewaerde.be")) {
+                            router.push("/auth/management/" + firebaseUser.uid + "/dashboard/overview")
+                        } else {
+                            router.push("/auth/visitor/" + firebaseUser.uid + "/mytickets")
+                        }
                     })
                     .catch((error) => {
                         dirties.value.account = true;

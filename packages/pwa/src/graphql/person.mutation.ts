@@ -45,8 +45,10 @@ export const UPDATE_NAV_CONTAINER_STATE: TypedDocumentNode<{
 `;
 
 export const UPDATE_LOCALE: TypedDocumentNode<
-{ personId: string },
-{ locale: string }
+{ 
+    personId: string,
+    locale: string 
+}
 > = gql`
 mutation updateLocale($personId: String!, $locale: String!){
 	updateLocale (id:$personId, locale: $locale) {

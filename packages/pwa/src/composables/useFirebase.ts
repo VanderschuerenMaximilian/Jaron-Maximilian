@@ -43,18 +43,6 @@ const login = async (email: string, password: string, router: Router): Promise<U
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 firebaseUser.value = userCredential.user
-                const Useremail = firebaseUser.value?.email
-                const splitEmail = Useremail?.split("@")
-                if (firebaseUser.value?.email === "admin@admin.bellewaerde.be") {
-                    router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
-                }
-                else if (splitEmail?.[1].includes("employee.bellewaerde.be")) {
-                    router.push("/auth/employee/" + firebaseUser.value?.uid + '/profile')
-                } else if (splitEmail?.[1].includes("management.bellewaerde.be")) {
-                    router.push("/auth/management/" + firebaseUser.value?.uid + "/dashboard/overview")
-                } else {
-                    router.push("/auth/visitor/" + firebaseUser.value?.uid + "/mytickets")
-                }
                 resolve(userCredential.user)
             })
             .catch((error) => {
@@ -63,12 +51,10 @@ const login = async (email: string, password: string, router: Router): Promise<U
     })
 };
 
-const signOutUser = async (router: Router) => {
+const signOutUser = async () => {
     return new Promise((resolve, reject) => {
         signOut(auth).then(() => {
             firebaseUser.value = null
-            // customPerson.value = undefined
-            router.push("/login")
             resolve(null)
         })
         .catch((error) => {
