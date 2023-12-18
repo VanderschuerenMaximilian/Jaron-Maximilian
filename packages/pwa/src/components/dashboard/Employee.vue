@@ -32,13 +32,12 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
+import { ref, toRefs } from 'vue';
 
 export default {
     props: ['employee', 'selectedJobType'], 
     setup(props, { emit }) {
-        const employee = ref(props.employee);
-        const selectedJobType = ref(props.selectedJobType);
+        const { employee, selectedJobType } = toRefs(props);
         const showPassport = () => {
             emit('show-passport', employee.value);
         }
