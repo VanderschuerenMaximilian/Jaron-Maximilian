@@ -7,19 +7,20 @@ import { UseGuards } from '@nestjs/common';
 import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
 import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 @Resolver(() => Ingredient)
 export class IngredientsResolver {
   constructor(private readonly ingredientsService: IngredientsService) {}
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Ingredient)
   createIngredient(@Args('createIngredientInput') createIngredientInput: CreateIngredientInput) {
     return this.ingredientsService.create(createIngredientInput);
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Ingredient)
   async updateIngredientStock(
@@ -30,14 +31,14 @@ export class IngredientsResolver {
   }
 
   
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Ingredient], { name: 'ingredients' })
   findAll() {
     return this.ingredientsService.findAll();
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Ingredient, { name: 'ingredientByName' })
   async getIngredientByName(
@@ -46,21 +47,21 @@ export class IngredientsResolver {
     return this.ingredientsService.findByName(name)
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Ingredient, { name: 'ingredient' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.ingredientsService.findOne(id);
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Ingredient)
   updateIngredient(@Args('updateIngredientInput') updateIngredientInput: UpdateIngredientInput) {
     return this.ingredientsService.update(updateIngredientInput.id, updateIngredientInput);
   }
   
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Ingredient)
   removeIngredient(@Args('id', { type: () => Int }) id: number) {
