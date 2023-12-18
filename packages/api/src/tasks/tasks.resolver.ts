@@ -11,6 +11,7 @@ import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator'
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
 //@ts-ignore
 import { PubSub } from 'graphql-subscriptions';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 const pubSub = new PubSub();
 
@@ -21,7 +22,7 @@ export class TasksResolver {
     private readonly personsService: PersonsService,
   ) {}
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   async createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput) {
@@ -30,21 +31,21 @@ export class TasksResolver {
     return task;
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Query(() => [Task], { name: 'tasks' })
   findAll() {
     return this.tasksService.findAll();
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Query(() => Task, { name: 'task' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.tasksService.findOne(id);
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   updateTask(@Args('updateTaskInput') updateTaskInput: UpdateTaskInput) {
@@ -53,7 +54,7 @@ export class TasksResolver {
     return task;
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @Mutation(() => Task)
   removeTask(@Args('id', { type: () => Int }) id: number) {

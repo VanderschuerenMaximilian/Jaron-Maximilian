@@ -10,6 +10,7 @@ import { UseGuards } from '@nestjs/common';
 import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
 import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
 import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 
 @Resolver(() => Order)
@@ -20,7 +21,7 @@ export class OrdersResolver {
     private readonly stocksService: StocksService,
   ) {}
 
-    @UseGuards(FirebaseGuard)
+    @UseGuards(FirebaseGuard, PersonTypeGuard)
     @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
     @Mutation(() => Order)
     async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {      
@@ -109,28 +110,28 @@ export class OrdersResolver {
       }
   }
     
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Order], { name: 'orders' })
   findAll() {
     return this.ordersService.findAll();
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Order, { name: 'order' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.ordersService.findOne(id);
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   updateOrder(@Args('updateOrderInput') updateOrderInput: UpdateOrderInput) {
     return this.ordersService.update(updateOrderInput.id, updateOrderInput);
   }
 
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   removeOrder(@Args('id', { type: () => Int }) id: number) {
