@@ -9,9 +9,9 @@
                     <div v-if="loading"> LOADING</div>
                     <div v-if="error"></div>
                     <div v-else class="absolute bg-slate-100 left-0 p-10 pt-20 mt-15 h-screen z-10">
-                        <div  class="flex flex-col gap-4 ml-10">
-                            <RouterLink :to="'/auth/employee/' + firebaseUser.uid + '/shops'">
-                                <div class="flex border-4 border-primary-green hover:border-green-900 rounded-lg p-2 w-70 justify-center">
+                        <div class="flex flex-col gap-4 ml-10">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser.uid + '/shops'" class="roudend-lg button-focus">
+                                <div class="flex border-4 border-primary-green rounded-lg p-2 w-70 justify-center">
                                     <ChevronLeft class="text-primary-green" />
                                     <p class="text-primary-green pr-2">{{ shopName }}</p>
                                 </div>  
@@ -19,7 +19,7 @@
                             <div v-if="loading">Loading...</div>
                             <div v-if="error">{{ error }}</div>
                             <div v-else class=" flex flex-col">
-                                <button v-for="category of shop.category" :class="{ 'bg-primary-green': selectedCategory === category.name, 'bg-slate-200': selectedCategory !== category.name }" @click="handleClick(category.name)" class="w-70 h-40 border-primary-green hover:bg-primary-green hover:bg-opacity-60 bg-opacity-70 rounded-lg mb-4">
+                                <button v-for="category of shop.category" :class="{ 'bg-primary-green': selectedCategory === category.name, 'bg-slate-200': selectedCategory !== category.name }" @click="handleClick(category.name)" class="w-70 h-40 border-primary-green hover:bg-primary-green hover:bg-opacity-80 bg-opacity-70 rounded-lg mb-4 button-focus">
                                     <div class="flex flex-col h-full justify-center">
                                         <img :src="category.image" :alt="category.name + ' image'" class="h-20 mx-auto">
                                         <p class="text-center font-bold text-6">{{category.name}}</p>
@@ -35,8 +35,8 @@
                     <div v-if="error"></div>
                     <div v-else class="ml-4 mt-25">
                         <div class="flex flex-col gap-4">
-                            <RouterLink :to="'/auth/employee/' + firebaseUser.uid + '/shops'">
-                                <div class="flex border-4 border-primary-green hover:border-green-900 rounded-lg p-2 w-70 justify-center">
+                            <RouterLink :to="'/auth/employee/' + firebaseUser.uid + '/shops'" class="button-focus rounded-lg">
+                                <div class="flex border-4 border-primary-green hover:opacity-80 rounded-lg p-2 w-70 justify-center">
                                     <ChevronLeft class="text-primary-green" />
                                     <p class="text-primary-green pr-2">{{ shopName }}</p>
                                 </div>  
@@ -44,7 +44,7 @@
                             <div v-if="loading">Loading...</div>
                             <div v-if="error">{{ error }}</div>
                             <div v-else class=" flex flex-col">
-                                <button v-for="category of shop.category" :class="{ 'bg-primary-green': selectedCategory === category.name, 'bg-slate-200': selectedCategory !== category.name }" @click="handleClick(category.name)" class="w-70 h-40 border-primary-green hover:bg-primary-green hover:bg-opacity-60 bg-opacity-70 rounded-lg mb-4">
+                                <button v-for="category of shop.category" :class="{ 'bg-primary-green': selectedCategory === category.name, 'bg-slate-200': selectedCategory !== category.name }" @click="handleClick(category.name)" class="w-70 h-40 border-primary-green hover:bg-primary-green hover:bg-opacity-80 bg-opacity-70 rounded-lg mb-4 button-focus">
                                     <div class="flex flex-col h-full justify-center">
                                         <img :src="category.image" :alt="category.name + ' image'" class="h-20 mx-auto">
                                         <p class="text-center font-bold text-6">{{category.name}}</p>
@@ -59,7 +59,7 @@
                 <main class="mt-25 flex flex-wrap justify-center max-h-85vh overflow-auto max-w-full mx-auto lg:max-w-70vw gap-5 translate-x-[2px] px-15 lg:px-0"> 
                     <template v-for="product in shop.products">
                         <div v-if="product.category === selectedCategory" :key="product.id">
-                            <div :class="{'relative': true,'flex': true,'flex-col': true,'border-4': true,'border-primary-green': true,'rounded-lg': true,'w-70': true,'h-90': true,'justify-center': true,'items-center': true,'gap-5': true,'cursor-pointer': getIngredientWithMinStock(product, soldProducts) >= 1,'cursor-not-allowed': getIngredientWithMinStock(product, soldProducts) < 1,'custom-class': getIngredientWithMinStock(product, soldProducts) >= 1}" :style="{ opacity: getIngredientWithMinStock(product, soldProducts) >= 1 ? '1' : '0.5' }">                    
+                            <div :class="{'relative': true,'flex': true,'flex-col': true,'border-4': true,'border-primary-green': true,'rounded-lg': true,'w-70': true,'h-90': true,'justify-center': true,'items-center': true,'gap-5': true,'cursor-pointer': getIngredientWithMinStock(product, soldProducts) >= 1,'cursor-not-allowed focus:outline-none': getIngredientWithMinStock(product, soldProducts) < 1,'custom-class': getIngredientWithMinStock(product, soldProducts) >= 1}" :style="{ opacity: getIngredientWithMinStock(product, soldProducts) >= 1 ? '1' : '0.5' }">                    
                                 <img :src="product.image" :alt="`${product.name} image`" class="h-30 mx-auto mt-[-40px]">
                             <div class="text-center">
                                 <p class="font-bold text-5 max-w-65 overflow-hidden h-15 max-h-15">{{ product.name }}</p>
@@ -76,7 +76,7 @@
                                 <div v-if="product.size.length > 1">
                                     <div  class="flex justify-center gap-2">
                                         <button v-for="size of product.size" @click="handleSizeClick(product, size)" 
-                                                :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold', getSelectedClass(product.id, size)]">
+                                                :class="['w-10 h-10 rounded-full flex items-center justify-center bg-primary-green text-white font-bold hover:opacity-80 button-focus', getSelectedClass(product.id, size)]">
                                             {{ size[0] }}
                                         </button>
                                     </div>
@@ -84,12 +84,12 @@
 
                             </div>
                                 <div v-if="product.size.length > 1"  class="absolute bottom-4 mx-auto">
-                                    <button v-if="Math.floor(getIngredientWithMinStock(product, soldProducts)) >= 1" @click="HandleOrder(product)" class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
-                                    <button v-else class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900 cursor-not-allowed">ADD TO CART</button>
+                                    <button v-if="Math.floor(getIngredientWithMinStock(product, soldProducts)) >= 1" @click="HandleOrder(product)" class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:opacity-80 button-focus">ADD TO CART</button>
+                                    <button v-else class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:opacity-80 cursor-not-allowed focus:outline-none">ADD TO CART</button>
                                 </div>
                                 <div v-else class="absolute bottom-4 mx-auto">
-                                    <button v-if="Math.floor(getIngredientWithMinStock(product, soldProducts)) >= 1" @click="openPopup(product)" class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900">ADD TO CART</button>
-                                    <button v-else class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:bg-green-900 cursor-not-allowed">ADD TO CART</button>
+                                    <button v-if="Math.floor(getIngredientWithMinStock(product, soldProducts)) >= 1" @click="openPopup(product)" class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:opacity-80 button-focus">ADD TO CART</button>
+                                    <button v-else class="bg-primary-green px-8 py-2 rounded-full font-bold text-slate-100 hover:opacity-80 cursor-not-allowed focus:outline-none">ADD TO CART</button>
                                 </div>
                             </div>
                         </div>
@@ -123,16 +123,16 @@
                                 <p class="text-3 text-primary-green font-bold mt-2">{{ "€ " + ((soldProduct.price + soldProduct.extraCost) * soldProduct.amount).toFixed(2) }}</p>
                             </div>
                             <div class="flex mt-8 absolute right-4 bottom-4">
-                                <MinusCircle v-if="soldProduct.amount == 1" @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none opacity-50"/>
-                                <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
+                                <MinusCircle v-if="soldProduct.amount == 1" @click="handleMinusClick(soldProduct)" class="text-primary-green cursor-pointer select-none opacity-50 hover:opacity-80 w-full h-full rounded-full button-focus"/>
+                                <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none hover:opacity-80"/>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 && isStockAvailable && checkSauces(soldProduct, listSauces) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 && isStockAvailable && checkSauces(soldProduct, listSauces) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)" class="hover:opacity-80 w-full h-full rounded-full button-focus"/>
+                                    <PlusCircle v-else class="text-primary-green cursor-not-allowed focus:outline-none select-none opacity-50 hover:opacity-80  w-full h-full rounded-full"/>
                                 </div>
                                 <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 && isStockAvailable" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 && isStockAvailable" @click="handlePlusClick(soldProduct)" class="hover:opacity-80 w-full h-full rounded-full focus-full"/>
+                                    <PlusCircle v-else class="text-primary-green cursor-not-allowed focus:outline-none select-none opacity-50 hover:opacity-80  w-full h-full rounded-full"/>
                                     </div>
                                 </div>
                             <X class="absolute top-4 right-4 cursor-pointer" @click="handleDeleteSoldProduct(soldProduct)"/>
@@ -149,7 +149,7 @@
                         <p>Total:</p>
                         <p>{{"€ " + totalPrice.toFixed(2) }}</p>
                     </div>
-                    <button @click="handleCheckout" class="w-85 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+                    <button @click="handleCheckout" class="w-85 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:opacity-80 button-focus">Chekout</button>
                     <p v-if="isCartEmpty" class="absolute right-20 text-red-600 font-medium select-none ">There are no items in the cart</p> 
                     </div>
                 </div>
@@ -182,19 +182,33 @@
                                 <p class="text-3 text-primary-green font-bold mt-2">{{ "€ " + ((soldProduct.price + soldProduct.extraCost) * soldProduct.amount).toFixed(2) }}</p>
                             </div>
                             <div class="flex mt-8 absolute right-4 bottom-4">
-                                <MinusCircle v-if="soldProduct.amount == 1" @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none opacity-50"/>
-                                <MinusCircle v-else @click="handleMinusClick(soldProduct)" class="w-6 h-6 text-primary-green cursor-pointer select-none"/>
+                                <button v-if="soldProduct.amount == 1" @click="handleMinusClick(soldProduct)" class="text-primary-green select-none opacity-50 cursor-not-allowed focus:outline-none">
+                                    <MinusCircle/>
+                                </button>
+                                <button v-else @click="handleMinusClick(soldProduct)" class="text-primary-green cursor-pointer select-none hover:opacity-80 button-focus w-full h-full rounded-full">
+                                    <MinusCircle/>
+                                </button>
                                 <p class="text-3 mx-1 my-auto">{{ soldProduct.amount }}</p>
                                 <div v-if="soldProduct.size != 'Small'" class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 && isStockAvailable && checkSauces(soldProduct, listSauces) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    <button v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 1 && isStockAvailable && checkSauces(soldProduct, listSauces) && checkToppings(soldProduct) > 0" @click="handlePlusClick(soldProduct)" class="hover:opacity-80 button-focus  w-full h-full rounded-full">
+                                        <PlusCircle/>
+                                    </button>
+                                    <button v-else class="text-primary-green cursor-not-allowed select-none opacity-50 focus:outline-none">
+                                        <PlusCircle/>
+                                    </button>
                                 </div>
                                 <div v-else class="w-6 h-6 text-primary-green cursor-pointer select-none">
-                                    <PlusCircle v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 && isStockAvailable" @click="handlePlusClick(soldProduct)"/>
-                                    <PlusCircle v-else class="w-6 h-6 text-primary-green cursor-not-allowed select-none opacity-50"/>
+                                    <button v-if="getIngredientWithMinStock(soldProduct, soldProducts) >= 0.8 && isStockAvailable" @click="handlePlusClick(soldProduct)" class="hover:opacity-80 button-focus w-full h-full rounded-full">
+                                        <PlusCircle/>
+                                    </button>
+                                    <button v-else class="text-primary-green cursor-not-allowed select-none opacity-50 focus:outline-none">
+                                        <PlusCircle/>
+                                    </button>
                                     </div>
                                 </div>
-                            <X class="absolute top-4 right-4 cursor-pointer" @click="handleDeleteSoldProduct(soldProduct)"/>
+                                <button class="absolute top-4 right-4 cursor-pointer hover:opacity-80 button-focus" @click="handleDeleteSoldProduct(soldProduct)">
+                                    <X/>
+                                </button>
                         </div> 
                     </div>
                     <div v-else class="">
@@ -208,7 +222,7 @@
                         <p>Total:</p>
                         <p>{{"€ " + totalPrice.toFixed(2) }}</p>
                     </div>
-                    <button @click="handleCheckout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900">Chekout</button>
+                    <button @click="handleCheckout" class="w-90 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:opacity-80 button-focus">Chekout</button>
                     <p v-if="isCartEmpty" class="absolute right-20 text-red-600 font-medium select-none ">There are no items in the cart</p> 
                     </div>
                 </div>
@@ -440,7 +454,6 @@ export default {
         const updateSoldProducts = (newSoldProduct: any, state: boolean) => {
             for (let i = 0; i < soldProducts.value.length; i++) {
                 const soldProduct = soldProducts.value[i]; 
-                console.log(soldProduct.name)
                 if (
                     soldProduct.name === newSoldProduct.name &&
                     soldProduct.productName === newSoldProduct.productName &&
@@ -532,7 +545,7 @@ export default {
                     })),
                 };
                 await mutate({ orderInput: order }).catch((error) => {
-                    console.log(error);
+                    console.error(error);
                 });
                 await setTimeout(() => {
                     location.reload();

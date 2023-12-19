@@ -6,35 +6,6 @@ import { SeedService } from './seed.service'
 export class DatabaseSeedCommand {
   constructor(private readonly seedService: SeedService) {}
 
-  // ------------ ALL COMMANDS - REMOVE ------------
-  // npx nestjs-command seed:reset:persons
-  // npx nestjs-command seed:reset:alerts
-  // npx nestjs-command seed:reset:shops
-  // npx nestjs-command seed:reset:categories
-  // npx nestjs-command seed:reset:products
-  // npx nestjs-command seed:reset:ingredients
-  // npx nestjs-command seed:reset:sold-products
-  // npx nestjs-command seed:reset:orders
-  // npx nestjs-command seed:reset:stocks
-  // npx nestjs-command seed:reset:tasks
-  // npx nestjs-command seed:reset:zones
-  // npx nestjs-command seed:reset:ticket-prices
-
-  // ------------ ALL COMMANDS - ADD ------------
-  // npx nestjs-command seed:database:persons
-  // npx nestjs-command seed:database:alerts
-  // npx nestjs-command seed:database:shops
-  // npx nestjs-command seed:database:categories
-  // npx nestjs-command seed:database:products
-  // npx nestjs-command seed:database:ingredients
-  // npx nestjs-command seed:database:sold-products
-  // npx nestjs-command seed:database:orders
-  // npx nestjs-command seed:database:stocks
-  // npx nestjs-command seed:database:tasks
-  // npx nestjs-command seed:database:zones
-  // npx nestjs-command seed:database:ticket-prices
-
-
   // ------------ Person ------------
   // npx nestjs-command seed:database:persons
   // npx nestjs-command seed:reset:persons
@@ -309,6 +280,49 @@ export class DatabaseSeedCommand {
     await this.seedService.deleteAllTasks()
     console.info('🪶 Removed tasks')
   }
+
+  // ------------ All ------------
+  // npx nestjs-command seed:database:all
+  // npx nestjs-command seed:reset:all
+  @Command({
+    command: 'seed:database:all',
+    describe: 'Seed the entire database',
+  })
+  async seedAll() {
+    console.info('🌱 Start seeding of the database');
+    await this.seedPersons();
+    await this.seedAlerts();
+    await this.seedZones();
+    await this.seedTicketPrices();
+    await this.seedShops();
+    await this.seedCategories();
+    await this.seedProducts();
+    await this.seedIngredients();
+    await this.seedSoldProducts();
+    await this.seedStocks();
+    console.info('🌱 Database seeding completed.');
+  }
+  @Command({
+    command: 'seed:reset:all',
+    describe: 'Delete all data from the entire database',
+  })
+  async deleteAll() {
+    console.info('🔪 Start deleting all data from the database');
+    await this.deletePersons();
+    await this.deleteAlerts();
+    await this.deleteZones();
+    await this.deleteTicketPrices();
+    await this.deleteShops();
+    await this.deleteCategories();
+    await this.deleteProducts();
+    await this.deleteIngredients();
+    await this.deleteSoldProducts();
+    await this.deleteOrders();
+    await this.deleteStocks();
+    await this.deleteTasks();
+    console.info('🔪 Database deletion completed.');
+  }
+
 
 }
 

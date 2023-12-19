@@ -7,6 +7,11 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { Category } from 'src/categories/entities/category.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { ProductsService } from 'src/products/products.service';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
 
 @Resolver(() => Shop)
 export class ShopsResolver {
@@ -17,32 +22,43 @@ export class ShopsResolver {
     
     ) {}
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Shop)
   createShop(@Args('createShopInput') createShopInput: CreateShopInput) {
-    console.log(createShopInput)
     return this.shopsService.create(createShopInput)
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Shop], { name: 'shops' })
   findAll() {
     return this.shopsService.findAll()
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Shop, { name: 'shop' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.shopsService.findOne(id)
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Shop, { name: 'shopByName' })
   async getShopByName(@Args('name') name: string): Promise<Shop | null> {
     return this.shopsService.findByName(name)
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Shop)
   updateShop(@Args('updateShopInput') updateShopInput: UpdateShopInput) {
     return this.shopsService.update(updateShopInput.id, updateShopInput)
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Shop)
   removeShop(@Args('id', { type: () => Int }) id: number) {
     return this.shopsService.remove(id)

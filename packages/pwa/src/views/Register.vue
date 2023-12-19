@@ -1,30 +1,30 @@
 <template>
     <p>{{ error }}</p>
     <div class="flex justify-center items-center min-h-screen drop-shadow-lg">
-        <div class="bg-white border-t-12 border-[#047143] mt-20 rounded-md">
+        <div class="bg-white border-t-12 border-primary-green mt-20 rounded-md w-full sm:w-120">
             <h1 class="text-[30px] font-bold mt-[44px] flex justify-center">{{ $t('signup.title') }}</h1>
             <div v-show="dirties.account" class="mx-auto p-4 bg-[#FFDFE2] border-red-600 border-3 mt-3 max-w-sm rounded-lg">
                     <p class="text-center font-medium text-red-600">{{ $t('signup.popUp.error') }}</p>
                 </div>
             <form @submit.prevent="handleRegister" class="flex flex-col gap-[20px] mt-[20px] mx-[40px]" novalidate>
-                <div class="flex sm:flex-row flex-col justify-between">
+                <div class="flex sm:flex-row flex-col justify-between gap-4">
                     <div class="flex flex-col gap-1">
-                        <label for="First name">{{ $t('signup.firstName.label') }}</label>
-                        <input type="text" name="FirstName" id="FirstName" class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
+                        <label for="FirstName">{{ $t('signup.firstName.label') }}</label>
+                        <input type="text" name="FirstName" id="FirstName" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus"
                         v-model="newUser.FirstName" :placeholder="$t('signup.firstName.placeholder')">
                         <p v-show="dirties.FirstName" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.firstName.error') }}</p>
                     </div>
                     <div class="flex flex-col gap-1">
                         <label for="LastName">{{ $t('signup.lastName.label') }}</label>
                         <input type="text" name="LastName" id="LastName"
-                        class="w-[239px] bg-[#E7E7E7] h-[51px] p-3 rounded-md" v-model="newUser.LastName"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus" v-model="newUser.LastName"
                         :placeholder="$t('signup.lastName.placeholder')">
                         <p v-show="dirties.LastName" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.lastName.error') }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label for="email">{{ $t('signup.email.label') }}</label>
-                    <input type="email" name="email" id="email" class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 rounded-md"
+                    <input type="email" name="email" id="email" class="w-[100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus"
                     v-model="newUser.email" :placeholder="$t('signup.email.placeholder')" />
                     <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.email.error') }}</p>
                 </div>
@@ -32,12 +32,16 @@
                     <label for="password">{{ $t('signup.password.label') }}</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
-                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.password"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.password"
                         :placeholder="$t('signup.password.placeholder')" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="togglePasswordVisibility()">
-                        <Eye id="eye" class="select-none"/>
-                        <EyeOff id="eye-off" class="hidden select-none"/>
+                        <button id="eye" type="button" class="select-none hover:opacity-80 button-focus">
+                            <Eye/>
+                        </button>
+                        <button id="eye-off" type="button" class="hidden select-none hover:opacity-80 button-focus">
+                            <EyeOff/>
+                        </button>
                     </div>
                 </div>
                 <p v-show="dirties.password" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.password.error') }}</p>
@@ -46,18 +50,22 @@
                     <label for="Confirmpassword">{{ $t('signup.confirmPassword.label') }}</label>
                     <div class="relative">
                         <input type="password" name="Confirmpassword" id="Confirmpassword"
-                        class="w-[498px] bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md" v-model="newUser.Confirmpassword"
+                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.Confirmpassword"
                         :placeholder="$t('signup.confirmPassword.placeholder')" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="toggleConfirmPasswordVisibility()">
-                        <Eye id="eye2" class="select-none"/>
-                        <EyeOff id="eye2-off" class="hidden select-none"/>
+                        <button id="eye2" type="button" class="select-none hover:opacity-80 button-focus">
+                            <Eye/>
+                        </button>
+                        <button id="eye2-off" type="button" class="hidden select-none hover:opacity-80 button-focus">
+                            <EyeOff/>
+                        </button>
                     </div>
                 </div>
                 <p v-show="dirties.Confirmpassword" class="text-red-500 text-3 flex justify-end">{{ $t('signup.confirmPassword.error') }}</p>
                 </div>
 
-                <button type="submit" class="bg-[#047143] text-white w-100% h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center"
+                <button type="submit" class="bg-primary-green text-white w-100% h-[51px] rounded-md disabled:opacity-50 flex items-center justify-center hover:opacity-80 button-focus"
                 :disabled="addUserLoading">
                     <template v-if="!addUserLoading">{{ $t('signup.register') }}</template>
                     <Loader2 v-else class="animate-spin"/>
@@ -65,7 +73,7 @@
             </form>
             <div class="mt-[10px] flex justify-center gap-1 mb-[40px]">
                 <p>{{ $t('signup.hasAccount') }}</p>
-                <RouterLink to="/login" class=" color-[#047143] underline font-bold">{{ $t('signup.logIn') }}</RouterLink>
+                <RouterLink to="/login" class=" color-primary-green underline font-bold hover:opacity-80 button-focus">{{ $t('signup.logIn') }}</RouterLink>
             </div>
         </div>
     </div>

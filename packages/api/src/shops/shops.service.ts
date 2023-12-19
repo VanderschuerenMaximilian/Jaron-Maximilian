@@ -26,8 +26,7 @@ export class ShopsService {
       s.name = createShopInput.name
       s.shopType = createShopInput.shopType
       s.zone = createShopInput.zone
-      console.log(s)
-
+      
       return this.shopRepository.save(s)
     } catch (error) {
       throw error

@@ -1,9 +1,9 @@
 <template>
   <main v-if="firebaseUser" class="flex flex-col pl-4 pr-4 pt-14 sm:pl-20 sm:pr-4 sm:pt-12 bg-slate-100 flex-1 rounded-l-3xl h-screen overflow-y-auto overflow-x-auto whitespace-nowrap">
       <DashboardTitle currentRoute="Store Management" />
-      <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee"/>      
+      <AssignPersonPopup v-if="showPopup" @close="closeAssignPersonPopup" @choose-employee="handleAssignEmployee" :$emit="$emit" />
         <div class="flex-col mb-10 ">
-          <button @click="toggleTasks" class="text-primary-green cursor-pointer">
+          <button @click="toggleTasks" class="text-primary-green cursor-pointer hover:opacity-80 button-focus">
             <ChevronDown class="inline-block" :class="showTasks? 'rotate-180' : 'rotate-0'"/>
             {{ showTasks ? 'Hide Tasks' : 'Show Tasks' }} 
           </button>
@@ -17,18 +17,18 @@
                     </div>
 
                     <div class="flex gap-5">
-                      <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green color-white font-medium rounded-lg">Assign an employee</button>
+                      <button v-if="!item.persons[0]?.profilePicture" @click="assignTask(item?.id)" class="py-4 w-48 text-3 xl:text-4 sm:text-3 xl:w-75 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Assign an employee</button>
                       <div v-else class="flex gap-2">
-                        <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Print overview</button>
-                        <button @click="completeTask(item.id)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green color-white font-medium rounded-lg">Done</button>
+                        <button @click="printPDF(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Print overview</button>
+                        <button @click="completeTask(item)" class="p-4 w-16 xl:w-30 text-3 my-auto xl:text-4 max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Done</button>
                       </div>
                       <div class="relative w-12 h-12 mt-1">
                         <UserCircle2 class="absolute w-full h-full"/>
                         <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
-                        <div>
-                          <img v-if="item.persons[0]?.profilePicture" :src=item.persons[0]?.profilePicture class="absolute w-full h-full rounded-full object-cover" />
-                          <XCircle v-if="item.persons[0]?.profilePicture" @click="removeAssignPerson(item)" class="absolute w-full h-full opacity-0 hover:opacity-100 bg-white bg-opacity-20 rounded-full"/>
-                        </div>
+                        <button v-if="item.persons[0]?.profilePicture" @click="removeAssignPerson(item)" class="group w-full h-full rounded-full focus:outline-none">
+                          <img  :src=item.persons[0]?.profilePicture class="absolute w-full h-full left-0 top-0 rounded-full focus object-cover" />
+                          <XCircle class="absolute w-full h-full left-0 top-0 opacity-0 group-focus:opacity-100 hover:opacity-100 bg-white bg-opacity-20 rounded-full"/>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -41,7 +41,7 @@
             <div class="min-w-130 bg-slate-200 h-25 rounded-lg mt-5 animate-pulse"></div>
           </div>
         </div>
-        <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left">
+        <button @click="toggleCompletedTasks" class="text-primary-green cursor-pointer mt-2 text-left hover:opacity-80 w-fit p-1 button-focus">
           <ChevronDown class="inline-block" :class="showCompletedTasks? 'rotate-180' : 'rotate-0'"/>
           {{ showCompletedTasks ? 'Hide completed tasks' : 'Show completed tasks' }}
         </button>
@@ -54,7 +54,7 @@
                 <p class="text-3 opacity-50 text-2">{{ formatDateTime(item.createdAt) }}</p>
               </div>
               <div class="flex gap-5">
-                <button @click="undoTask(item?.id)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green color-white font-medium rounded-lg">Undo Task</button>
+                <button @click="undoTask(item)" class="p-4 w-30 xl:w-43 text-3 xl:text-4 my-auto max-h-14 bg-primary-green hover:opacity-80 color-white font-medium rounded-lg button-focus">Undo Task</button>
                 <div class="relative w-12 h-12 mt-1">
                   <UserCircle2 class="absolute w-full h-full"/>
                   <div class="hidden absolute w-full h-full bg-black rounded-full"></div>
@@ -82,6 +82,7 @@
   import { UPDATED_TASKS, ADDED_TASKS } from '@/graphql/task.subscription'
   import { GET_TASKS } from '@/graphql/task.query' 
   import { UPDATE_TASK } from '@/graphql/task.mutation'
+  import { REMOVE_PENDING } from '@/graphql/stock.query'
   import { useMutation } from '@vue/apollo-composable'
   import { UserCircle2, ChevronDown, XCircle } from 'lucide-vue-next'
   import { computed, ref, watch, watchEffect } from 'vue';
@@ -98,33 +99,12 @@
       ChevronDown,
       XCircle
     },
-    data() {
-      return {
-        showPopup: false
-      }
-    },
-    computed: {
-      filteredTasks() {
-        return this.socketTasks.filter((item: any) => this.shouldShowTask(item));
-      },
-      filteredCompletedTasks() {
-        return this.socketTasks.filter((item: any) => item.completed == true);
-      },
-    },
-    methods: {
-      closeAssignPersonPopup() {
-        this.showPopup = false;
-      },
-      shouldShowTask(item: any) {
-        return item.completed !== true && item.completed !== undefined || item.completed == null &&
-          !this.removedTasks.includes(item.id as never);
-      },
-    },
     setup() {
       const { result: tasksResult, loading: taskLoading } = useQuery(GET_TASKS)
       const { mutate: updateTaskInput } = useMutation(UPDATE_TASK)
       const { result: updatedTasks } = useSubscription(UPDATED_TASKS)
       const { result: addedTasks } = useSubscription(ADDED_TASKS)
+      const { mutate: removePending } = useMutation(REMOVE_PENDING) as any;
       const removedTasks = ref([])
       const showPopup = ref(false);
       const currentTaskId = ref('');
@@ -133,14 +113,29 @@
       const showCompletedTasks = ref(true)
       const isSocketTasksMade = ref(false)  
 
+      const filteredTasks = computed(() => {
+        return socketTasks.value.filter((item: any) => shouldShowTask(item));
+      });
+
+      const filteredCompletedTasks = computed(() => {
+        return socketTasks.value.filter((item: { completed: boolean; }) => item.completed == true);
+      });
+
       const reversedCompletedTasks = computed(() => {
-        console.log([...socketTasks.value].reverse())
         return [...socketTasks.value].reverse();
       });
 
       watch(addedTasks, (data: any) => {
         socketTasks.value.push(data.taskAdded);
       });
+
+      const closeAssignPersonPopup = () => {
+        showPopup.value = false;
+      }
+      const shouldShowTask = (item: any) => {
+        return item.completed !== true && item.completed !== undefined || item.completed == null &&
+          !removedTasks.value.includes(item.id as never);
+      }
 
       watchEffect(() => {
         if (!isSocketTasksMade.value) {
@@ -169,34 +164,6 @@
           persons: null
         }})
       }
-      
-      const completeTask = (itemId: any) => {
-        if (!removedTasks.value.includes(itemId as never)) {
-          removedTasks.value.push(itemId as never);
-        }
-        setTimeout(() => {
-        updateTaskInput({updateTaskInput: {
-          id: itemId,
-            completed: true
-          }})
-          const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-          if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-            task.completed = true;
-          }
-        }, 500);
-      };
-
-      const undoTask = (itemId: any) => {
-        updateTaskInput({updateTaskInput: {
-          id: itemId,
-          completed: false
-        }})
-        removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
-        const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
-        if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
-          task.completed = false;
-        }
-      };
 
       watch(updatedTasks, (data: any) => {
           const updatedTask = data.tasksUpdated as any;
@@ -270,8 +237,9 @@
                 </head>
                 <body>
                     <h1>Stock Overview - ${item.shopName}</h1>
-                    <p>Name: ${customPerson.value?.fullName}</p>
+                    <p>Created By: ${customPerson.value?.fullName}</p>
                     <p>Created At: ${formatDateTime(item.createdAt)}</p>
+                    <p>Executed by: ${item.persons[0]?.fullName}</p>
                     <p>Execution At: ${new Date().toLocaleString()}</p>
                     <table>
                         <thead>
@@ -310,9 +278,83 @@
         currentTaskId.value = id;
         showPopup.value = true;
       }
+     
+      const completeTask = (item: any) => {
+        let isPendingRemoved = ref(false);
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
+          }
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: false, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            isPendingRemoved.value = true;
+           
+          })
+          .catch((error: { message: any; }) => {
+            isPendingRemoved.value = false;
+            alert(error.message);
+          }); 
+          if (isPendingRemoved) {
+            if (!removedTasks.value.includes(itemId as never)) {
+            removedTasks.value.push(itemId as never);
+          }
+          setTimeout(() => {
+          updateTaskInput({updateTaskInput: {
+            id: itemId,
+              completed: true
+            }})
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = true;
+            }
+          }, 500); 
+          }
+      };
 
+      const undoTask = (item: any) => {
+        let isPendingRemoved = ref(false);
+        const stockItems = item.stockItems.map((stockItem: any) => {
+          return {
+            name: stockItem.name,
+            difference: stockItem.difference
+          }
+        })
+        const removePendingResult = removePending({facilityName: item.shopName, isUndone: true, stockItems: stockItems})
+        const itemId = item.id;
+        removePendingResult
+          .then((result: any) => {
+            isPendingRemoved.value = true;
+            
+          })
+          .catch((error: { message: any; }) => {
+            isPendingRemoved.value = false;
+            alert(error.message);
+          }); 
 
-  
+          if (isPendingRemoved) {
+            const itemId = item.id;
+            updateTaskInput({updateTaskInput: {
+              id: itemId,
+              completed: false
+            }})
+            const items = item.stockItems.map((stockItem: any) => {
+              return {
+                name: stockItem.name,
+                difference: stockItem.difference
+              }
+            })
+            removedTasks.value.splice(removedTasks.value.indexOf(itemId as never), 1);
+            const task = socketTasks.value.find((task: { id: any }) => task.id === itemId)
+            if (socketTasks.value.findIndex((task: { id: any }) => task.id === itemId) !== -1) {
+              task.completed = false;
+            }
+          }
+      };
+
       return {
         firebaseUser,
         customPerson,
@@ -334,7 +376,12 @@
         reversedCompletedTasks,
         undoTask,
         removeAssignPerson,
-        taskLoading
+        taskLoading,
+        closeAssignPersonPopup,
+        filteredTasks,
+        filteredCompletedTasks,
+        shouldShowTask
+
       }
     }
   }

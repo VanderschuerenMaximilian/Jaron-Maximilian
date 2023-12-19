@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { Task } from './entities/task.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { createTaskInputStub, updateTaskInputStub, taskStub } from './stubs/task.stub';
 
 describe('TasksService', () => {
   let tasksService: TasksService;
@@ -31,7 +32,7 @@ describe('TasksService', () => {
 
   describe('findAll', () => {
     it('should return an array of tasks', async () => {
-      const tasks: Task[] = [];
+      const tasks: Task[] = [taskStub()];
       jest.spyOn(taskRepository, 'find').mockResolvedValueOnce(tasks);
 
       const result = await tasksService.findAll();
@@ -49,21 +50,10 @@ describe('TasksService', () => {
 
   describe('create', () => {
     it('should create and return a task', async () => {
-      const createTaskInput: CreateTaskInput = {
-        title: 'Example Task',
-        description: 'Example description',
-        persons: null,
-        shopName: 'Boomerang Snack',
-        stockItems: [
-          { name: 'Item1', difference: 10 },
-          { name: 'Item2', difference: 5 },
-        ],
-        workblockId: '',
-        createdAt: undefined
-      };
-
-      const mockedTask: Task = new Task();
+      const createTaskInput: CreateTaskInput = createTaskInputStub();
+      const mockedTask: Task = taskStub();
       const saveSpy = jest.spyOn(taskRepository, 'save').mockResolvedValueOnce(mockedTask);
+
       const result = await tasksService.create(createTaskInput);
 
       expect(result).toBeInstanceOf(Task);
@@ -74,18 +64,7 @@ describe('TasksService', () => {
       const errorMock = new Error('Save failed');
       jest.spyOn(taskRepository, 'save').mockRejectedValueOnce(errorMock);
 
-      const createTaskInput: CreateTaskInput = {
-        title: 'Example Task',
-        description: 'Example description',
-        persons: null,
-        shopName: 'Boomerang Snack',
-        stockItems: [
-          { name: 'Item1', difference: 10 },
-          { name: 'Item2', difference: 5 },
-        ],
-        workblockId: '',
-        createdAt: undefined
-      };
+      const createTaskInput: CreateTaskInput = createTaskInputStub();
 
       await expect(tasksService.create(createTaskInput)).rejects.toThrowError('Save failed');
     });
@@ -93,34 +72,26 @@ describe('TasksService', () => {
 
   describe('update', () => {
     it('should update a task and return the updated task', async () => {
-      const taskId = '1';
-      const updateTaskInput: UpdateTaskInput = {
-        id: taskId,
-        persons: ['John Doe', 'Jane Doe'],
-        completed: true,
-      };
-  
-      const existingTask: Task = new Task();
-      existingTask.id = taskId;
-  
+      const updateTaskInput: UpdateTaskInput = updateTaskInputStub();
+      const existingTask: Task = taskStub();
+      existingTask.id = updateTaskInput.id;
+    
       jest.spyOn(tasksService, 'findOneById').mockResolvedValueOnce(existingTask);
-  
       const saveSpy = jest.spyOn(taskRepository, 'save').mockResolvedValueOnce(existingTask);
-  
+    
       const result = await tasksService.update(updateTaskInput);
-  
-      expect(result).toBeInstanceOf(Task);
-      expect(result.id).toBe(taskId);
+    
+      expect(result).toEqual(existingTask);
+      expect(result.id).toBe(updateTaskInput.id);
       expect(result.persons).toEqual(updateTaskInput.persons);
-  
+    
       expect(tasksService.findOneById).toHaveBeenCalledWith(updateTaskInput.id);
       expect(saveSpy).toHaveBeenCalledWith(existingTask);
     });
   
     it('should throw an error if no update parameters are provided', async () => {
-      const taskId = '1';
       const updateTaskInput: UpdateTaskInput = {
-        id: taskId,
+        id: '1',
       };
   
       jest.spyOn(tasksService, 'findOneById').mockResolvedValueOnce(new Task());
@@ -128,8 +99,4 @@ describe('TasksService', () => {
       await expect(tasksService.update(updateTaskInput)).rejects.toThrowError('No update parameters provided');
     });
   });
-  
 });
-  
-  
-

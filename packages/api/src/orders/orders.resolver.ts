@@ -6,6 +6,12 @@ import { UpdateOrderInput } from './dto/update-order.input';
 import { ProductsService } from 'src/products/products.service';
 import { StocksService } from 'src/stocks/stocks.service';
 import { SoldProduct } from 'src/sold-products/entities/sold-product.entity';
+import { UseGuards } from '@nestjs/common';
+import { FirebaseGuard } from 'src/authentication/services/guards/firebase.guard';
+import { AllowedPersonTypes } from 'src/persons/decorators/personType.decorator';
+import { PersonType as IPersonType } from 'src/interfaces/IPersonType';
+import { PersonTypeGuard } from 'src/persons/guards/personType.guard';
+
 
 @Resolver(() => Order)
 export class OrdersResolver {
@@ -15,12 +21,13 @@ export class OrdersResolver {
     private readonly stocksService: StocksService,
   ) {}
 
+    @UseGuards(FirebaseGuard, PersonTypeGuard)
+    @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
     @Mutation(() => Order)
     async createOrder(@Args('createOrderInput') createOrderInput: CreateOrderInput) {      
       try {
         const totalIngredients: Record<string, number> = {};
 
-        // Add all ingredients, extras, removeables and sauces to the totalIngredients list
         for (const product of createOrderInput.soldProducts) {
           const p = await this.productsService.findByName(product.productName);
           if (p.category !== "Drinks") {
@@ -80,7 +87,6 @@ export class OrdersResolver {
           }
         }
 
-        // Check if there is enough stock for all products in the order
         for (const ingredient of Object.keys(totalIngredients)) {
           const stockItem = await this.stocksService.findByName(ingredient);
           if (stockItem.stock < totalIngredients[ingredient]) {
@@ -88,14 +94,12 @@ export class OrdersResolver {
           }
         }
 
-        // Update the stock of all ingredients, extras, removeables and sauces of all products in the order
         for (const ingredient of Object.keys(totalIngredients)) {
           const stockItem = await this.stocksService.findByName(ingredient);
           stockItem.stock = stockItem.stock - totalIngredients[ingredient];
           await this.stocksService.updateStockByName(stockItem.name, stockItem.stock);
         }
 
-        // Create the order
         const order = await this.ordersService.create(createOrderInput);
         return order;
 
@@ -106,23 +110,29 @@ export class OrdersResolver {
       }
   }
     
-
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => [Order], { name: 'orders' })
   findAll() {
     return this.ordersService.findAll();
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Query(() => Order, { name: 'order' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.ordersService.findOne(id);
   }
 
-
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   updateOrder(@Args('updateOrderInput') updateOrderInput: UpdateOrderInput) {
     return this.ordersService.update(updateOrderInput.id, updateOrderInput);
   }
 
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
   @Mutation(() => Order)
   removeOrder(@Args('id', { type: () => Int }) id: number) {
     return this.ordersService.remove(id);
