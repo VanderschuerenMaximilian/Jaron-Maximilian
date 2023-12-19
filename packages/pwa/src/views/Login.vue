@@ -9,14 +9,14 @@
                 
                 <div class="flex flex-col gap-1">
                     <label for="email">{{ $t('login.email.label') }}</label>
-                    <input type="email" name="email" id="email" v-model="loginCredentials.email" :placeholder="$t('login.email.placeholder')" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus">
+                    <input type="email" name="email" id="email" v-model="loginCredentials.email" :placeholder="$t('login.email.placeholder')" class="w-100% bg-light-slate h-[51px] p-3 rounded-md button-focus">
                     <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('login.email.error') }}</p>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label for="password">{{ $t('login.password.label') }}</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
-                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md button-focus" v-model="loginCredentials.password"
+                        class="w-100% bg-light-slate h-[51px] p-3 pr-10 rounded-md button-focus" v-model="loginCredentials.password"
                         :placeholder="$t('login.password.placeholder')" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="togglePasswordVisibility()">

@@ -9,7 +9,7 @@
             </div>
                 <div class="flex flex-col gap-1">
                     <label for="email">{{ $t('forgot.email.label') }}</label>
-                    <input type="email" name="email" id="email" v-model="email" :placeholder="$t('forgot.email.placeholder')" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus" />
+                    <input type="email" name="email" id="email" v-model="email" :placeholder="$t('forgot.email.placeholder')" class="w-100% bg-light-slate h-[51px] p-3 rounded-md button-focus" />
                     <p v-show="dirties.email" class="text-red-500 text-3 flex justify-end">{{ $t('forgot.email.error') }}</p>
                 </div>
                 <button type="submit" class="bg-primary-green text-white w-100% h-[51px] rounded-md hover:opacity-80 button-focus">{{ $t('forgot.reset') }}</button>

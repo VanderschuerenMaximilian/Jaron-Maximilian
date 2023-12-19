@@ -3,8 +3,8 @@ import presetUno from '@unocss/preset-uno'
 
 export default defineConfig({
   shortcuts: {
-    'nav-link': 'hover:text-green-800 hover:underline text-lg',
-    'menu-link': 'text-slate-100 hover:underline',
+    'nav-link': 'hover:text-green-800 hover:underline text-lg rounded-lg focus:outline-none focus:ring-primary-green focus:ring-2 focus:shadow-xl',
+    'menu-link': 'text-slate-100 hover:underline rounded-sm focus:outline-none focus:ring-slate-100 focus:ring-2 focus:shadow-xl',
     'dashboard-link': 'text-slate-100 w-full flex justify-center hover:bg-secondary-green py-4 rounded-lg',
     h1: 'text-h1 font-bold',
     'h1-green': 'text-h1 font-bold text-primary-green',
@@ -46,6 +46,7 @@ export default defineConfig({
       'secondary-green': '#028043',
       'light-green': '#669949',
       'lighter-green': '#B1BD5F',
+      'light-slate': '#E7E7E7',
     },
     fontSize: {
       h1: '2.5rem',
