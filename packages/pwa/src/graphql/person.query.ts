@@ -21,7 +21,12 @@ export const ALL_PERSONS: TypedDocumentNode<{ persons: IPerson[] }> = gql`
     }
 `;
 
-export const FIND_PERSON_BY_ID: TypedDocumentNode<{ id: string }> = gql`
+export const FIND_PERSON_BY_ID: TypedDocumentNode<
+{ 
+    id: string,
+    person: IPerson
+}
+> = gql`
     query person($id: String!){
         person(id: $id) {
             id

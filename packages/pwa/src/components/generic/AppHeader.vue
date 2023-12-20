@@ -192,8 +192,6 @@ export default {
         const closeProfileSection = (event: Event) => {
             const profileSection = document.querySelector('.profile-section');
             const selectedElement = event.target as HTMLElement;
-            console.log(event.target)
-            console.log(selectedElement.classList.contains('profile-section'))
             if (profileSection && !selectedElement.classList.contains('profile-section')) {
                 clickedProfile.value = false;
                 document.removeEventListener('click', closeProfileSection);

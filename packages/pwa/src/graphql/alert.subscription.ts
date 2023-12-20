@@ -41,3 +41,24 @@ subscription personAssignedToAlert {
     }
 }
 `;
+
+export const PERSON_REMOVED_FROM_ALERT: TypedDocumentNode<{ personRemovedFromAlert: IAlert }> = gql`
+subscription personRemovedFromAlert {
+    personRemovedFromAlert {
+        id
+        title
+        description
+        zoneId
+        state
+        persons {
+            id
+            firstName
+            lastName
+            fullName
+            workEmail
+            personType
+            jobType
+        }
+    }
+}
+`;

@@ -8,7 +8,7 @@
             <Bell class="text-slate-100"/>
         </button>
         
-        <div class="c-alerts_scroll space-y-2 bg-secondary-green min-h-[525px] max-h-[525px] overflow-y-scroll p-2 shadow-xl rounded-b-md rounded-tl-md origin-top-right -translate-y-1 -translate-x-.25 duration-200 ease-in-out"
+        <div class="c-alerts_scroll space-y-2 bg-secondary-green min-h-fit max-h-[525px] overflow-y-scroll p-2 shadow-xl rounded-b-md rounded-tl-md origin-top-right -translate-y-1 -translate-x-.25 duration-200 ease-in-out"
         :class="showAlerts? 'scale-100 transform transition-transform delay-100':'scale-0 transform transition-transform'">
             <Alert :alert="alert" v-for="alert in assignedAlerts" :key="alert.id" @alertCompleted="removeResolvedAlert" />
         </div>
@@ -38,7 +38,7 @@ import { ref, watch } from 'vue';
 import useCustomPerson from '@/composables/useCustomPerson';
 import { useQuery, useSubscription } from '@vue/apollo-composable';
 import { GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE } from '@/graphql/alert.query';
-import { PERSON_ASSIGNED_TO_ALERT } from '@/graphql/alert.subscription';
+import { PERSON_ASSIGNED_TO_ALERT, PERSON_REMOVED_FROM_ALERT } from '@/graphql/alert.subscription';
 import type { Alert as IAlert } from '@/interfaces/IAlert';
 import { PersonType as IPersonType } from '@/interfaces/IPersonType';
 import Alert from '@/components/profile/Alert.vue';
@@ -57,6 +57,7 @@ export default {
             employeeId: customPerson.value?.id,
         }));
         const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
+        const { result: employeeRemoved } = useSubscription(PERSON_REMOVED_FROM_ALERT)
         const showAlerts = ref<boolean>(false);
 
         watch(loading, () => {
@@ -68,6 +69,12 @@ export default {
         watch(employeeAssigned, (value: any) => {
             if (value && value.personAssignedToAlert.persons?.find((person: IPerson) => person.id === customPerson.value?.id)) {
                 assignedAlerts.value = [value.personAssignedToAlert, ...assignedAlerts.value]
+            }
+        })
+
+        watch(employeeRemoved, (value: any) => {
+            if (value && !value.personRemovedFromAlert.persons?.find((person: IPerson) => person.id === customPerson.value?.id)) {
+                assignedAlerts.value = assignedAlerts.value.filter((alert: IAlert) => alert.id !== value.personRemovedFromAlert.id)
             }
         })
 

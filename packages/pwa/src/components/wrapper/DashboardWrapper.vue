@@ -71,7 +71,7 @@
         </aside>
         <aside class="relative lg:hidden bg-slate-100">
             <Menu class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-200" :class="{'opacity-0 ease-in-out duration-200':isMenuOpen}"/>
-            <X  @click="HandleMenu()" class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-75 color-slate-200" :class="{'opacity-0 ease-in-out duration-75':!isMenuOpen}"/>
+            <X  @click="handleMenu()" class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-75 color-slate-200" :class="{'opacity-0 ease-in-out duration-75':!isMenuOpen}"/>
             <div class="absolute w-100 h-screen bg-primary-green z-4 translate-x-[-100%] ease-in-out duration-75" :class="{'translate-x-[0%] ease-in-out duration-75':isMenuOpen }">
                 <ul class="c-dash-nav absolute top-20 flex flex-col w-full gap-6 overflow-y-scroll h-[calc(100vh-100px)]">
                     <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
@@ -130,8 +130,8 @@
             </div>
         </aside>
         <RouterView />
-        <section v-if="successfullAssignedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
-            <AlertAssignment v-for="alert in successfullAssignedEmployees" :alert="alert" :key="alert.id" />
+        <section v-if="successfullChangedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
+            <AlertAssignment v-for="alert in successfullChangedEmployees" :alert="alert" :key="alert.id" />
         </section>
     </section>
 </template>
@@ -171,15 +171,16 @@ export default {
 },
     setup() {
         const { signOutUser } = useFirebase()
-        const { customPerson, restoreCustomPerson } = useCustomPerson()
+        const { customPerson } = useCustomPerson()
         const path = ref('overview')
         const router = useRouter()
         const navContainerState = ref<boolean>(true)
         const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
         const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
         const isMenuOpen = ref<boolean>(false)
+        const successfullChangedEmployees = ref<IAlert[]>([])
 
-        const HandleMenu = () => {
+        const handleMenu = () => {
             isMenuOpen.value = !isMenuOpen.value
         }
 
@@ -187,7 +188,6 @@ export default {
             path.value = route    
             isMenuOpen.value = false
         }
-        const successfullAssignedEmployees = ref<IAlert[]>([])
 
         const handleNavContainer = () => {
             navContainerState.value = !navContainerState.value
@@ -222,23 +222,21 @@ export default {
         // handles the pop up when an employee is succesfully assigned to an alert
         watch(employeeAssigned, (data: any) => {
             if (data.personAssignedToAlert) {
-                successfullAssignedEmployees.value = [...successfullAssignedEmployees.value, data.personAssignedToAlert]
+                successfullChangedEmployees.value = [...successfullChangedEmployees.value, data.personAssignedToAlert]
             }
         })
 
         return {
+            isMenuOpen,
             navContainerState,
             path,
-            successfullAssignedEmployees,
-            isMenuOpen,
+            successfullChangedEmployees,
 
             checkPath,
             handleNavContainer,
             handleSignOut,
-            HandleMenu,
-
+            handleMenu,
         }
     }
 }
-
 </script>

@@ -72,7 +72,6 @@ export class AlertsResolver {
   ) {
     try {
       const updatedAlert = await this.alertsService.update(updateAlertInput);
-      console.log('updatedAlert', updatedAlert)
       pubSub.publish('alertUpdated', { alertUpdated: updatedAlert })
       return updatedAlert
     }
@@ -97,8 +96,8 @@ export class AlertsResolver {
     }
   }
 
-  // @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  // @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
   async removePersonFromAlert(@Args('alertId', { type: () => String }) alertId: string,
     @Args('personId', { type: () => String }) personId: string,

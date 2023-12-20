@@ -13,18 +13,25 @@
         </div>
         <div class="space-y-2">
             <p class="text-sm font-medium">Assigned Employees:</p>
-            <draggableComponent
-            :list="assignedEmployees"
-            item-key="id"
-            tag="section"
-            group="employees"
-            class="c-draggable flex items-center gap-2 min-h-[50px] bg-slate-100 bg-opacity-70 px-2 py-2"
-            :class="assignedEmployees.length > 7 ? 'overflow-x-scroll' : 'overflow-x-hidden'"
-            @change="onInput">
-                <template #item="{element: employee}">
-                    <AssignedEmployee :employee="employee" :onInput="onInput" :key="employee.id"/>
-                </template>
-            </draggableComponent>
+            <template v-if="alert.state === 'OPEN'">
+                <draggableComponent
+                :list="assignedEmployees"
+                item-key="id"
+                tag="section"
+                group="employees"
+                class="c-draggable flex items-center gap-2 min-h-[50px] bg-slate-100 bg-opacity-70 px-2 py-2"
+                :class="assignedEmployees.length > 7 ? 'overflow-x-scroll' : 'overflow-x-hidden'"
+                @change="onInput">
+                    <template #item="{element: employee}">
+                        <AssignedEmployee :employee="employee" :onInput="onInput" :key="employee.id"/>
+                    </template>
+                </draggableComponent>
+            </template>
+            <template v-else>
+                <div class="flex flex-col gap-2">
+                    <AssignedEmployee :assignedPersonId="alert.assignedPersonId" :key="alert.assignedPersonId"/>
+                </div>
+            </template>
         </div>
     </section> 
 </template>
@@ -71,7 +78,6 @@ export default {
             } else {
                 hasChanged.value = false
             }
-            console.log(assignedEmployees.value)
         }
 
         // this function adds the already assigned employees to the assignedEmployees array when the alert is called

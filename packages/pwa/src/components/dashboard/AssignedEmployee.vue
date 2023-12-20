@@ -1,7 +1,9 @@
 <template>
-    <button class="rounded-full px-[10px] py-2 bg-secondary-green">
-        <span class="text-slate-100">{{ getInitials(employee.fullName) }}</span>
-    </button>
+    <template v-if="employee">
+        <button class="rounded-full bg-secondary-green overflow-hidden">
+            <img class="h-8 w-8" :src="employee.profilePicture" alt="">
+        </button>
+    </template>
 </template>
 
 <script lang="ts">
@@ -12,11 +14,15 @@ export default {
     props: {
         employee: {
             type: Object as () => IPerson,
-            required: true,
+            required: false,
         },
         onInput: {
             type: Function,
-            required: true,
+            required: false,
+        },
+        assignedPersonId: {
+            type: String,
+            required: false,
         },
     },
     setup(props) {
@@ -25,20 +31,8 @@ export default {
                 props.onInput(props.employee);
             }
         });
-        console.log(props.employee);
-        const getInitials = (name: string) => {
-            const names = name.split(' ');
-            let initials = names[0].substring(0, 1).toUpperCase();
-
-            if (names.length > 1) {
-                initials += names[names.length - 1].substring(0, 1).toUpperCase();
-            }
-
-            return initials;
-        }
 
         return {
-            getInitials,
         }
     }
 }
