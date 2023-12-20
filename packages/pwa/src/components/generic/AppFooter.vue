@@ -7,11 +7,11 @@
         <section>
             <h5 class="h5-white mb-8">{{ $t('footer.titleAbout') }}</h5>
             <ul class="space-y-2">
-                <li><RouterLink to="/map" class="hover:underline">{{ $t('footer.attractions') }}</RouterLink></li>
-                <li><RouterLink to="/map" class="hover:underline">{{ $t('footer.animals') }}</RouterLink></li>
-                <li><RouterLink to="/map" class="hover:underline">{{ $t('footer.nature') }}</RouterLink></li>
-                <li><RouterLink to="/map" class="hover:underline">{{ $t('footer.shops') }}</RouterLink></li>
-                <li><RouterLink to="/events" class="hover:underline">{{ $t('footer.events') }}</RouterLink></li>
+                <li><RouterLink to="/map" class="hover:underline menu-link">{{ $t('footer.attractions') }}</RouterLink></li>
+                <li><RouterLink to="/map" class="hover:underline menu-link">{{ $t('footer.animals') }}</RouterLink></li>
+                <li><RouterLink to="/map" class="hover:underline menu-link">{{ $t('footer.nature') }}</RouterLink></li>
+                <li><RouterLink to="/map" class="hover:underline menu-link">{{ $t('footer.shops') }}</RouterLink></li>
+                <li><RouterLink to="/events" class="hover:underline menu-link">{{ $t('footer.events') }}</RouterLink></li>
             </ul>
         </section>
         <section class="md:w-3/12 sm:w-1/2 w-3/4">
@@ -22,7 +22,8 @@
                     <p>{{ $t('footer.phonenumber') }}</p>
                 </div>
                 <RouterLink to="/contact" class="bg-slate-100 w-fit text-primary-green py-3 px-4 rounded-full
-                border-2 outline-primaty-green hover:bg-primary-green transition-colors hover:text-slate-100 hover:outline-slate-100">
+                border-2 outline-primaty-green hover:bg-primary-green transition-colors hover:text-slate-100 hover:outline-slate-100
+                hover:underline focus:outline-none focus:ring-slate-100 focus:ring-2 focus:ring-offset-4 focus:ring-offset-primary-green focus:shadow-xl">
                     {{ $t('footer.button') }}
                 </RouterLink>
             </section>
