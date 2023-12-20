@@ -50,11 +50,24 @@
                     <p v-if="errorFields?.email && errorFields?.email[0].fieldValue" class="text-red-500 text-sm">{{ errorFields?.email[0].message }}</p>
                     <p v-if="errorFields?.email && !errorFields?.email[0].fieldValue" class="text-red-500 text-sm">{{ errorFields?.email[0].message }}</p>
                 </div>
-
-                <button type="submit" :disabled="!pass" class="button-focus sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
-                    <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin mx-auto"/>
-                    <span v-else>{{ $t('tickets.checkout') }}</span>
-                </button>
+                <template v-if="isBougth">
+                    <button type="submit" :disabled="!pass" class="button-focus sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                        <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin mx-auto"/>
+                        <span v-else>{{ $t('tickets.checkout') }}</span>
+                    </button>
+                </template>
+                <template v-else>
+                    <template v-if="firebaseUser">
+                        <RouterLink :to ="'/auth/visitor/' + firebaseUser?.uid + '/mytickets'" class="button-focus text-center py-3 sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                            {{ $t('navigation.myTickets') }}
+                        </RouterLink>
+                    </template>
+                    <template v-else>
+                        <RouterLink to="/login" class="button-focus text-center py-3 sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                            {{ $t('navigation.login') }}
+                        </RouterLink> 
+                    </template>
+                </template>
             </form>
         </section>
     </main>
@@ -67,11 +80,11 @@ import { useMutation } from '@vue/apollo-composable';
 import Ticket from '@/components/Ticket.vue';
 import SoldTicket from '@/components/SoldTicket.vue';
 import useCustomPerson from '@/composables/useCustomPerson';
+import useFirebase from '@/composables/useFirebase';
 import useTicketPurchase from '@/composables/useTicketPurchase';
 import { RouterLink } from 'vue-router';
 import type { Rules } from 'async-validator'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
-import router from '@/bootstrap';
 
 export default {
     components: {
@@ -121,9 +134,11 @@ export default {
         }
         const { pass, errorFields } = useAsyncValidator(newTicketData, rules)
         const { customPerson } = useCustomPerson();
+        const { firebaseUser } = useFirebase()
         const { calcTotalPrice, soldTickets, result, ticketPriceLoading, isTickets, toPay } = useTicketPurchase();
         const loadingTickets = ref<number[]>([1,2])
         const chooseDate = ref<boolean>(false);
+        const isBougth = ref<boolean>(true);
         const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
 
         watchEffect(() => {
@@ -170,16 +185,15 @@ export default {
         };
 
         onDone(() => {
-            setTimeout(() => {
-                if (customPerson.value) router.push(`/auth/visitor/${customPerson.value?.id}/mytickets`);
-                else router.push('/')
-            }, 1000);
+            isBougth.value = false;
         });
 
         return {
             chooseDate,
             customPerson,
             errorFields, 
+            firebaseUser,
+            isBougth,
             isTickets,
             loading,
             loadingTickets,
