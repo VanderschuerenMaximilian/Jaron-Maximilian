@@ -1,14 +1,14 @@
 <template v-if="customPerson.personType === IPersonType.EMPLOYEE">
     <section v-if="assignedAlerts && assignedAlerts.length > 0" class="z-50 absolute flex md:right-5 right-1 top-[86px] flex-col items-end max-w-md">
-        <p class="absolute z-50 -translate-y-1 translate-x-1 text-xs text-slate-100 bg-primary-green px-1 rounded-full"
+        <p class="alert-section absolute z-50 -translate-y-1 translate-x-1 text-xs text-slate-100 bg-primary-green px-1 rounded-full"
         :class="showAlerts? 'opacity-0 transform transition-opacity':'opacity-100 transform transition-opacity'">{{ assignedAlerts.length }}</p>
         
-        <button @click="toggleAlerts" class="p-2 shadow-xl bg-secondary-green ease-in-out duration-200 hover:bg-primary-green"
+        <button @click="toggleAlerts" class="alert-section p-2 shadow-xl bg-secondary-green ease-in-out duration-200 hover:bg-primary-green"
         :class="showAlerts? 'rounded-t-md transform transition-all':'rounded-full transform transition-all delay-100'">
-            <Bell class="text-slate-100"/>
+            <Bell class="alert-section text-slate-100"/>
         </button>
         
-        <div class="c-alerts_scroll space-y-2 bg-secondary-green min-h-fit max-h-[525px] overflow-y-scroll p-2 shadow-xl rounded-b-md rounded-tl-md origin-top-right -translate-y-1 -translate-x-.25 duration-200 ease-in-out"
+        <div class="c-alerts_scroll alert-section space-y-2 bg-secondary-green min-h-fit max-h-[525px] overflow-y-scroll p-2 shadow-xl rounded-b-md rounded-tl-md origin-top-right -translate-y-1 -translate-x-.25 duration-200 ease-in-out"
         :class="showAlerts? 'scale-100 transform transition-transform delay-100':'scale-0 transform transition-transform'">
             <Alert :alert="alert" v-for="alert in assignedAlerts" :key="alert.id" @alertCompleted="removeResolvedAlert" />
         </div>
@@ -34,7 +34,7 @@
 </style>
 
 <script lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onBeforeUnmount } from 'vue';
 import useCustomPerson from '@/composables/useCustomPerson';
 import { useQuery, useSubscription } from '@vue/apollo-composable';
 import { GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE } from '@/graphql/alert.query';
@@ -80,12 +80,32 @@ export default {
 
         const toggleAlerts = () => {
             showAlerts.value = !showAlerts.value;
+            
+            if (showAlerts.value) {
+                document.addEventListener('click', closeAlerts);
+            } else {
+                document.removeEventListener('click', closeAlerts);
+            }
+        }
+
+        const closeAlerts = (event: Event) => {
+            const profileSection = document.querySelector('.alert-section');
+            const selectedElement = event.target as HTMLElement;
+            console.log(selectedElement.classList)
+            if (profileSection && !selectedElement.classList.contains('alert-section')) {
+                showAlerts.value = false;
+                document.removeEventListener('click', closeAlerts);
+            }
         }
 
         const removeResolvedAlert = (completedAlert: IAlert) => {
             const updateAlerts = assignedAlerts.value.filter((alert) => alert.id !== completedAlert.id)
             assignedAlerts.value = [...updateAlerts]
         }
+
+        onBeforeUnmount(() => {
+            document.removeEventListener('click', closeAlerts);
+        });
 
         return {
             assignedAlerts,
