@@ -33,7 +33,7 @@ export class PersonsResolver {
 
   @UseGuards(FirebaseGuard)
   @Query(() => Person, { name: 'personById', nullable: true })
-  findOne(@Args('string', { type: () => String}) id: string): Promise<Person> {
+  findOne(@Args('id', { type: () => String}) id: string): Promise<Person> {
     return this.personsService.findOneById(id);
   }
 

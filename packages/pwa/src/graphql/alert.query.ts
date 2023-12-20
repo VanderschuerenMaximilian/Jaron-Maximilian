@@ -21,6 +21,7 @@ export const ALL_ALERTS: TypedDocumentNode<{ alerts: IAlert[] }> = gql`
                 jobType
             }
             createdBy
+            assignedPersonId
     }
     }
 `;

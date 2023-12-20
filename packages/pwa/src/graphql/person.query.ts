@@ -24,26 +24,26 @@ export const ALL_PERSONS: TypedDocumentNode<{ persons: IPerson[] }> = gql`
 export const FIND_PERSON_BY_ID: TypedDocumentNode<
 { 
     id: string,
-    person: IPerson
+    personById: IPerson
 }
 > = gql`
-    query person($id: String!){
-        person(id: $id) {
-            id
-            userId
-            firstName
-            lastName
-            fullName
-            profilePicture
-            personType
-            jobType
-            personalEmail
-            workEmail
-            phone
-            assignedAlerts
-            navContainerState
-        }
-    }
+query person($id: String!) {
+  personById(id: $id) {
+  id
+  uid
+  firstName
+  lastName
+  fullName
+  profilePicture
+  personType
+  jobType
+  personalEmail
+	workEmail
+  phone
+  assignedAlerts
+  navContainerState
+  }
+}
 `;
 
 export const FIND_PERSON_BY_UID: TypedDocumentNode<{ uid: string }> = gql`

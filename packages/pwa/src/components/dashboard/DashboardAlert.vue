@@ -12,7 +12,7 @@
             </button>
         </div>
         <div class="space-y-2">
-            <p class="text-sm font-medium">Assigned Employees:</p>
+            <p class="text-sm font-medium">Assigned Employee(s):</p>
             <template v-if="alert.state === 'OPEN'">
                 <draggableComponent
                 :list="assignedEmployees"

@@ -1,25 +1,25 @@
 <template>
-    <section v-if="isVisible && currentAlert.state !== IAlertState.RESOLVED" class="relative flex flex-col items-center justify-between shadow-xl rounded-md py-4 px-6 w-[350px] min-h-[175px] bg-[#D9D9D9]"
+    <section v-if="isVisible && currentAlert.state !== IAlertState.RESOLVED" class="alert-section relative flex flex-col items-center justify-between shadow-xl rounded-md py-4 px-6 w-[350px] min-h-[175px] bg-[#D9D9D9]"
     :class="currentAlert.state !== IAlertState.RESOLVED && customPerson?.personType === IPersonType.VISITOR? 'hover:shadow-2xl transform transition-shadows':'transition-all'">
-        <div class="w-full flex justify-between">
-            <div class="w-10/12 flex flex-col justify-between h-full gap-1">
-                <h5 class="h5">{{ currentAlert.title }}</h5>
-                <p class="font-semibold text-sm">{{ currentZone?.name }}</p>
-                <p v-if="customPerson && customPerson.personType === IPersonType.VISITOR">State: <span class="font-semibold">{{ currentAlert.state }}</span></p>
-                <p class="line-clamp-2 break-all">{{ currentAlert.description }}</p>
+        <div class="alert-section w-full flex justify-between">
+            <div class="alert-section w-10/12 flex flex-col justify-between h-full gap-1">
+                <h5 class="alert-section h5">{{ currentAlert.title }}</h5>
+                <p class="alert-section font-semibold text-sm">{{ currentZone?.name }}</p>
+                <p v-if="customPerson && customPerson.personType === IPersonType.VISITOR">State: <span class="alert-section font-semibold">{{ currentAlert.state }}</span></p>
+                <p class="alert-section line-clamp-2 break-all">{{ currentAlert.description }}</p>
             </div>
         </div>
         <template v-if="customPerson && customPerson.personType === IPersonType.EMPLOYEE">
             <button v-if="currentAlert.state === IAlertState.OPEN" @click="acceptAlert" :disable="!mutatingAlert" 
-            class="flex justify-center bg-secondary-green hover:bg-primary-green disabled:bg-opacity-50 transition-colors p-2 rounded-md w-1/2"
+            class="alert-section flex justify-center bg-secondary-green hover:bg-primary-green disabled:bg-opacity-50 transition-colors p-2 rounded-md w-1/2"
             >
-                <p v-if="!mutatingAlert" class="text-slate-100">Accept</p>
-                <Loader2 v-else class="w-6 h-6 text-slate-100 animate-spin"/>
+                <p v-if="!mutatingAlert" class="alert-section text-slate-100">Accept</p>
+                <Loader2 v-else class="alert-section w-6 h-6 text-slate-100 animate-spin"/>
             </button>
-            <button v-else @click="completeAlert" :disable="!mutatingAlert" class="flex justify-center bg-secondary-green hover:bg-primary-green disabled:bg-opacity-50 transition-colors p-2 rounded-md w-1/2"
+            <button v-else @click="completeAlert" :disable="!mutatingAlert" class="alert-section flex justify-center bg-secondary-green hover:bg-primary-green disabled:bg-opacity-50 transition-colors p-2 rounded-md w-1/2"
             >
-                <p v-if="!mutatingAlert" class="text-slate-100">Complete</p>
-                <Loader2 v-else class="w-6 h-6 text-slate-100 animate-spin"/>
+                <p v-if="!mutatingAlert" class="alert-section text-slate-100">Complete</p>
+                <Loader2 v-else class="alert-section w-6 h-6 text-slate-100 animate-spin"/>
             </button>
         </template>
     </section>

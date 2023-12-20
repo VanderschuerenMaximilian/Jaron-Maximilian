@@ -91,7 +91,6 @@ export default {
         const closeAlerts = (event: Event) => {
             const profileSection = document.querySelector('.alert-section');
             const selectedElement = event.target as HTMLElement;
-            console.log(selectedElement.classList)
             if (profileSection && !selectedElement.classList.contains('alert-section')) {
                 showAlerts.value = false;
                 document.removeEventListener('click', closeAlerts);
