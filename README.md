@@ -66,6 +66,8 @@ Run commands:
     rootfolder: npm run export:translations
     i18n-export folder: npm run export
 
+When you plan on using your own translation there is a possibility that when you get your transaltions for a second time you could get an error. This means that the token of your google account in i18n-export is not usable anymore. Delete it and you will be able to fetch your translations again.
+
 ## PWA
 
 To make use of the login system of this project will have to make a Firebase project.
