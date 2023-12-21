@@ -39,7 +39,9 @@
                     <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
                         <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">{{ $t('navigation.dashboard') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">{{ $t('navigation.profile') }}</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">{{ $t('navigation.shops') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.MANAGER" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">{{ $t('navigation.dashboard') }}</RouterLink>
@@ -107,7 +109,9 @@
                     <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
                         <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">{{ $t('navigation.dashboard') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">{{ $t('navigation.profile') }}</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/shops'" class="menu-link" @click="clickProfile">{{ $t('navigation.shops') }}</RouterLink>
+                            <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/qrscanner'" class="menu-link" @click="clickProfile">QRScanner</RouterLink>
                         </div>
                         <div v-else-if="customPerson.personType === PersonType.MANAGER" class="flex flex-col gap-2">
                             <RouterLink to="'/auth/management/' + 'firebaseUser.value?.uid' + '/dashboard/overview'" class="menu-link" @click="clickProfile">{{ $t('navigation.dashboard') }}</RouterLink>

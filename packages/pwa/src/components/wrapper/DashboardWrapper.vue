@@ -21,40 +21,22 @@
                         <span>Overview</span>
                 </li>
                 </RouterLink>
-                <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Finances</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
+                <RouterLink v-if="customPerson?.personType === 'ADMIN'" to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Employees</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Visitors</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Attrations</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Store Management</span>
                     </li>
                 </RouterLink>
                 <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Stock</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Store Management</span>
                     </li>
                 </RouterLink>
                 <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
@@ -80,40 +62,22 @@
                             <span>Overview</span>
                         </li>
                     </RouterLink>
-                    <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Finances</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
+                    <RouterLink v-if="customPerson?.personType === 'ADMIN'" to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
                         <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[10%]" />
                             <span>Employees</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Visitors</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Attrations</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Store Management</span>
                         </li>
                     </RouterLink>
                     <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
                         <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[10%]" />
                             <span>Stock</span>
+                         </li>
+                    </RouterLink>
+                    <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Store Management</span>
                         </li>
                     </RouterLink>
                     <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
@@ -228,6 +192,7 @@ export default {
 
         return {
             isMenuOpen,
+            customPerson,
             navContainerState,
             path,
             successfullChangedEmployees,
