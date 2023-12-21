@@ -16,7 +16,7 @@ export const createAlertInputStub = (): CreateAlertInput => {
 export const updateAlertInputStub = () => {
     const updateAlertInput = new UpdateAlertInput()
     updateAlertInput.id = '6526a80bdc62ef69ffc7fde7'
-    updateAlertInput.state = AlertState.ACKNOWLEDGED
+    updateAlertInput.state = AlertState.OPEN
     updateAlertInput.assignedPersonId = '6523c13a5abc7f17748bd6b9'
     return updateAlertInput
 }
