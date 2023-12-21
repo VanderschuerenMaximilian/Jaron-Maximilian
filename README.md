@@ -1,6 +1,12 @@
 # Jaron-Maximilian
 Project Advanced Full Stack Developement.
 
+Make sure to have the node version that is shown in the .nvmrc file or higher (https://nodejs.org)
+
+This project makes use of a docker compose file. For this you will need Docker Desktop on your computer (https://www.docker.com/products/docker-desktop/).
+
+To access the data this project you will need MongoDBCompass (https://www.mongodb.com/try/download/compass).
+
 Link to a video example: https://youtu.be/1ec2LDcLbk4
 
 ## Statup Command (for the whole project)
