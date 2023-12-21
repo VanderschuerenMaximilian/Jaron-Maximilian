@@ -5,7 +5,7 @@
                 <p class="font-bold max-w-[215px]">{{ alert.title }}</p>
                 <p class="text-xs break-words max-w-[225px] opacity-80">{{ alert.description }}</p>
             </div>
-            <button @click="completeAssignment" :disabled="!hasChanged" class="mr-2 w-24 h-10 rounded-md flex justify-center items-center bg-secondary-green"
+            <button v-if="alert.state === 'OPEN'" @click="completeAssignment" :disabled="!hasChanged" class="mr-2 w-24 h-10 rounded-md flex justify-center items-center bg-secondary-green"
             :class="hasChanged ? 'transition-colors hover:bg-primary-green' : 'disabled:bg-opacity-60'">
                 <Loader2 v-if="adding || removing" class="text-slate-100 animate-spin"/>
                 <span v-else class="text-slate-100">Add</span>

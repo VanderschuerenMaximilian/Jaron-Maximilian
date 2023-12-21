@@ -45,7 +45,7 @@
     
                             <div class="w-full flex justify-center">
                                 <button type="submit" :disabled="loading || !pass"
-                                    class="flex justify-center items-center bg-secondary-green hover:bg-primary-green px-4 py-2 font-bold text-6 button-focus sm:w-90 w-full h-15 rounded-sm 
+                                    class="flex justify-center items-center bg-secondary-green hover:bg-primary-green px-4 py-2 font-bold text-6 button-focus sm:w-90 w-full h-15 rounded-lg
                                     text-slate-100 disabled:bg-opacity-40">
                                     <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin"/>
                                     <span v-else>{{ $t('alerts.submit') }}</span>
