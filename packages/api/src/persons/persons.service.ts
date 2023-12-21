@@ -27,6 +27,7 @@ export class PersonsService {
       p.personalEmail = createPersonInput.personalEmail
       p.workEmail = createPersonInput.workEmail
       p.locale = createPersonInput.locale ?? 'en'
+      p.profilePicture = 'https://randomuser.me/api/portraits/lego/6.jpg'
       p.phone = createPersonInput.phone
       p.createdAt = new Date()
       p.updatedAt = new Date()

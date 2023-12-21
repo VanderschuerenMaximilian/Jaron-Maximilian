@@ -9,6 +9,7 @@ export const createAlertInputStub = (): CreateAlertInput => {
     createAlertInput.title = 'Alert title'
     createAlertInput.description = 'Alert description'
     createAlertInput.createdBy = '6523c13a5abc7f17748bd6b9'
+    createAlertInput.zoneId = '6523c13a5abc7f17748bd6b9'
     return createAlertInput
 }
 
@@ -27,6 +28,7 @@ export const alertStub = () => {
     alert.description = 'Alert description'
     alert.state = AlertState.OPEN
     alert.createdBy = '6523c13a5abc7f17748bd6b9'
-    alert.createdAt = new Date()
-    alert.updatedAt = new Date()
+    alert.zoneId = '6523c13a5abc7f17748bd6b9'
+    alert.persons = []
+    return alert
 }

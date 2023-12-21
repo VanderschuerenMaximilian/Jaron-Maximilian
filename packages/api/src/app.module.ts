@@ -45,17 +45,17 @@ import { PersonsService } from './persons/persons.service';
       useUnifiedTopology: true,
     }),
 
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.mail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: 'bearbanner00@mail.com',
-          pass: 'bannerbear00',
-        },
-      }
-    }),
+    // MailerModule.forRoot({
+    //   transport: {
+    //     host: 'smtp.mail.com',
+    //     port: 587,
+    //     secure: false,
+    //     auth: {
+    //       user: 'bearbanner00@mail.com',
+    //       pass: 'bannerbear00',
+    //     },
+    //   }
+    // }),
     
     AlertsModule,
     AuthenticationModule,

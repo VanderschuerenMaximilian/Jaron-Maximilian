@@ -99,6 +99,19 @@ export class DatabaseSeedCommand {
     console.info('❌ Removed ticket-prices')
   }
 
+  // ------------ Tickets ------------
+  // npx nestjs-command seed:reset:tickets
+
+  @Command({
+    command: 'seed:reset:tickets',
+    describe: 'Delete all data from the tickets table',
+  })
+  async deleteTickets() {
+    console.info('🔪 Start deleting tickets')
+    await this.seedService.deleteAllTickets()
+    console.info('❌ Removed tickets')
+  }
+
   // ------------ Shop ------------
   // npx nestjs-command seed:database:shops
   // npx nestjs-command seed:reset:shops
@@ -312,6 +325,7 @@ export class DatabaseSeedCommand {
     await this.deleteAlerts();
     await this.deleteZones();
     await this.deleteTicketPrices();
+    await this.deleteTickets();
     await this.deleteShops();
     await this.deleteCategories();
     await this.deleteProducts();

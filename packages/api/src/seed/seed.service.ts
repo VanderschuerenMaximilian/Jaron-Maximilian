@@ -19,6 +19,9 @@ import { ZonesService } from 'src/zones/zones.service'
 import * as ticketPrices from './data/ticket-prices.json'
 import { TicketPrice } from 'src/ticket-prices/entities/ticket-price.entity'
 import { TicketPricesService } from 'src/ticket-prices/ticket-prices.service'
+// Ticket
+import { Ticket } from 'src/tickets/entities/ticket.entity'
+import { TicketsService } from 'src/tickets/tickets.service'
 // Shop
 import * as shops from './data/shops.json'
 import { Shop } from 'src/shops/entities/shop.entity'
@@ -59,6 +62,7 @@ export class SeedService {
     private alertsService: AlertsService,
     private zonesService: ZonesService,
     private ticketPricesService: TicketPricesService,
+    private ticketsService: TicketsService,
     private shopsService: ShopsService,
     private categoriesService: CategoriesService,
     private productsService: ProductsService,
@@ -159,6 +163,12 @@ export class SeedService {
 
   async deleteAllTicketPrices(): Promise<void> {
     return this.ticketPricesService.truncate()
+  }
+
+  // -------------------- Ticket --------------------
+
+  async deleteAllTickets(): Promise<void> {
+    return this.ticketsService.truncate()
   }
 
   // -------------------- Shop --------------------

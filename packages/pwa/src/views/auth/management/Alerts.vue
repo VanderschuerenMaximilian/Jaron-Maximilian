@@ -132,7 +132,7 @@ import {
     ALL_EMPLOYEES,
     FIND_EMPLOYEES_BY_SEARCH,
 } from '@/graphql/person.query'
-import { ALL_NON_ASSIGNED_ALERTS, ALL_ALERTS } from '@/graphql/alert.query'
+import { ALL_ALERTS } from '@/graphql/alert.query'
 import { CREATED_ALERT, PERSON_REMOVED_FROM_ALERT } from '@/graphql/alert.subscription'
 import { PersonType } from '../../../interfaces/IPersonType'
 import { JobType as IJobType } from '../../../interfaces/IJobType'

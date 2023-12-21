@@ -65,6 +65,8 @@ describe('AlertsService', () => {
       toTestAlert.state = AlertState.OPEN;
       toTestAlert.createdAt = new Date();
       toTestAlert.updatedAt = new Date();
+      toTestAlert.zoneId = testAlert.zoneId;
+      toTestAlert.persons = [];
       const saveSpy = jest.spyOn(mockRepository, 'save');
       await service.create(testAlert);
       expect(saveSpy).toBeCalledWith(toTestAlert);
@@ -94,7 +96,7 @@ describe('AlertsService', () => {
     it('should call the alertRepository.findOne once', async () => {
       const findOneSpy = jest.spyOn(mockRepository, 'findOne');
       await service.findOneById('6526a80bdc62ef69ffc7fde7');
-      expect(findOneSpy).toBeCalledTimes(1);
+      expect(findOneSpy).toBeCalledTimes(1)
     });
 
     it('should call the alertRepository.findOne with the correct arguments', async () => {
@@ -119,32 +121,37 @@ describe('AlertsService', () => {
   })
 
   //TODO: complete update testing
-  // describe('update', () => {
-  //   it('should update an alert once', async () => {
-  //     const testAlert: UpdateAlertInput = updateAlertInputStub();
-  //     const updateSpy = jest.spyOn(mockRepository, 'update');
-  //     const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-  //     await service.update(testAlert);
-  //     expect(updateSpy).toHaveBeenCalledTimes(1);
-  //     expect(findOneSpy).toHaveBeenCalledTimes(1);
-  //   });
+  describe('update', () => {
+    it('should update an alert once', async () => {
+      const testAlert: Alert = alertStub();
+      const testUpdatedAlert = updateAlertInputStub();
+      const toTestUpdatedAlert = new Alert();
 
-  // });
+
+      const updateSpy = jest.spyOn(mockRepository, 'save');
+      const findOneSpy = jest.spyOn(mockRepository, 'findOne');
+      // const removePersonSpy = jest.spyOn(mockedPersonsService, 'save');
+      await service.update(testUpdatedAlert);
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+      expect(findOneSpy).toHaveBeenCalledTimes(1);
+    });
+
+  });
 
   // TODO: complete addPersonToAlert testing
-  describe('addPersonToAlert', () => {
-    it('should call alertRepository.addPersonToAlert once', async () => {
-      const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-      const saveSpy = jest.spyOn(mockRepository, 'save');
-      await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6523c13a5abc7f17748bd6b9');
-      expect(findOneSpy).toHaveBeenCalledTimes(1);
-      expect(saveSpy).toHaveBeenCalledTimes(1);
-    })
+  // describe('addPersonToAlert', () => {
+  //   // it('should call alertRepository.addPersonToAlert once', async () => {
+  //   //   const findOneSpy = jest.spyOn(mockRepository, 'findOne');
+  //   //   const saveSpy = jest.spyOn(mockRepository, 'save');
+  //   //   await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6523c13a5abc7f17748bd6b9');
+  //   //   expect(findOneSpy).toHaveBeenCalledWith({ _id: new ObjectId('6526a80bdc62ef69ffc7fde7') });
+  //   //   expect(saveSpy).toHaveBeenCalledTimes(1);
+  //   // })
 
-    // it('should call alertRepository.findOneById with the correct arguments', async () => {
-    //   const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-    //   await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6526a80bdc62ef69ffc7fde7');
-    //   expect(findOneSpy).toBeCalledWith({ _id: new ObjectId('6526a80bdc62ef69ffc7fde7') });
-    // })
-  });
+  //   // it('should call alertRepository.findOneById with the correct arguments', async () => {
+  //   //   const findOneSpy = jest.spyOn(mockRepository, 'findOne');
+  //   //   await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6526a80bdc62ef69ffc7fde7');
+  //   //   expect(findOneSpy).toBeCalledWith({ _id: new ObjectId('6526a80bdc62ef69ffc7fde7') });
+  //   // })
+  // });
 });

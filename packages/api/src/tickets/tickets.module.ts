@@ -12,5 +12,6 @@ import { PersonsModule } from 'src/persons/persons.module';
     PersonsModule,
   ],
   providers: [TicketsResolver, TicketsService],
+  exports: [TicketsService]
 })
 export class TicketsModule {}

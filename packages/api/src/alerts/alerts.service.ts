@@ -30,7 +30,7 @@ export class AlertsService {
       a.updatedAt = new Date()
       return this.alertRepository.save(a)
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   }
 
@@ -53,7 +53,7 @@ export class AlertsService {
 
       return this.alertRepository.save(a)
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   }
 

@@ -8,7 +8,8 @@
     "dev:api": "npx lerna run --scope=api dev",
     "dev:pwa": "npx lerna run --scope=pwa dev",
     "seed:all": "npx lerna run --scope=api seed:all",
-    "seed:reset": "npx lerna run --scope=api seed:reset"
+    "seed:reset": "npx lerna run --scope=api seed:reset",
+    "test:all": "npx lerna run --scope=api test:all"
   },
   "keywords": [],
   "author": "Jaron Maximilian",
