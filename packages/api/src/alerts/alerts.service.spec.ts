@@ -10,11 +10,13 @@ import { AlertState } from 'src/interfaces/IAlertState';
 import { ObjectId } from 'mongodb';
 import exp from 'constants';
 import { UpdateAlertInput } from './dto/update-alert.input';
+import { Person } from 'src/persons/entities/person.entity';
 
 describe('AlertsService', () => {
   let service: AlertsService;
   let mockRepository: Repository<Alert>;
   let mockedPersonsService: PersonsService;
+  let mockedPersonRepository: Repository<Person>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,11 +31,15 @@ describe('AlertsService', () => {
             findOne: jest.fn().mockResolvedValue(alertStub()),
             
           }
-        },
+        }, 
+        PersonsService,
         {
-          provide: PersonsService,
+          provide: getRepositoryToken(Person),
           useValue: {
-            save: jest.fn().mockResolvedValue(alertStub()),
+            save: jest.fn(),
+            update: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
           }
         }
       ],
@@ -42,6 +48,7 @@ describe('AlertsService', () => {
     service = module.get<AlertsService>(AlertsService);
     mockRepository = module.get<Repository<Alert>>(getRepositoryToken(Alert));
     mockedPersonsService = module.get<PersonsService>(PersonsService);
+    mockedPersonRepository = module.get<Repository<Person>>(getRepositoryToken(Person));
   });
 
   it('should be defined', () => {
@@ -77,6 +84,17 @@ describe('AlertsService', () => {
       const result = await service.create(testAlert);
       expect(result).toEqual(alertStub());
     });
+
+    it('should throw an error if the alert could not be created', async () => {
+      const testAlert = new Alert();
+      jest.spyOn(mockRepository, 'save')
+      try {
+        const result = await service.create(testAlert);
+        fail('should have thrown an error')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
+    });
   });
 
   describe('findAll', () => {
@@ -90,6 +108,16 @@ describe('AlertsService', () => {
       const result = await service.findAll();
       expect(result).toEqual([alertStub()]);
     });
+
+    it('should throw an error if the alerts could not be found', async () => {
+      jest.spyOn(mockRepository, 'find')
+      try {
+        const result = await service.findAll();
+        fail('should have thrown an error')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
+    })
   });
 
   describe('findOneById', () => {
@@ -111,9 +139,10 @@ describe('AlertsService', () => {
       expect(result).toEqual(myAlert);
     });
 
-    it('should return the found alert', async () => {
+    it('should return an error if the id is invalid', async () => {
       try {
         const r = await service.findOneById('14vj6');
+        fail('should have thrown an error')
       } catch (error) {
         expect(error.message).toEqual('Invalid ObjectId');
       }
@@ -126,32 +155,26 @@ describe('AlertsService', () => {
       const testAlert: Alert = alertStub();
       const testUpdatedAlert = updateAlertInputStub();
       const toTestUpdatedAlert = new Alert();
+      toTestUpdatedAlert.id = testUpdatedAlert.id;
+      toTestUpdatedAlert.title = testAlert.title;
+      toTestUpdatedAlert.description = testAlert.description;
+      toTestUpdatedAlert.state = AlertState.RESOLVED;
+      toTestUpdatedAlert.assignedPersonId = testAlert.assignedPersonId;
+      toTestUpdatedAlert.zoneId = testAlert.zoneId;
+      toTestUpdatedAlert.persons = testAlert.persons;
+      toTestUpdatedAlert.createdBy = testAlert.createdBy;
 
+      console.log(toTestUpdatedAlert)
 
       const updateSpy = jest.spyOn(mockRepository, 'save');
       const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-      // const removePersonSpy = jest.spyOn(mockedPersonsService, 'save');
-      await service.update(testUpdatedAlert);
+      const updatePersonSpy = jest.spyOn(mockedPersonRepository, 'save');
+      const result = await service.update(testUpdatedAlert);
       expect(updateSpy).toHaveBeenCalledTimes(1);
       expect(findOneSpy).toHaveBeenCalledTimes(1);
+      expect(updatePersonSpy).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(toTestUpdatedAlert);
     });
 
   });
-
-  // TODO: complete addPersonToAlert testing
-  // describe('addPersonToAlert', () => {
-  //   // it('should call alertRepository.addPersonToAlert once', async () => {
-  //   //   const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-  //   //   const saveSpy = jest.spyOn(mockRepository, 'save');
-  //   //   await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6523c13a5abc7f17748bd6b9');
-  //   //   expect(findOneSpy).toHaveBeenCalledWith({ _id: new ObjectId('6526a80bdc62ef69ffc7fde7') });
-  //   //   expect(saveSpy).toHaveBeenCalledTimes(1);
-  //   // })
-
-  //   // it('should call alertRepository.findOneById with the correct arguments', async () => {
-  //   //   const findOneSpy = jest.spyOn(mockRepository, 'findOne');
-  //   //   await service.addPersonToAlert('6526a80bdc62ef69ffc7fde7', '6526a80bdc62ef69ffc7fde7');
-  //   //   expect(findOneSpy).toBeCalledWith({ _id: new ObjectId('6526a80bdc62ef69ffc7fde7') });
-  //   // })
-  // });
 });

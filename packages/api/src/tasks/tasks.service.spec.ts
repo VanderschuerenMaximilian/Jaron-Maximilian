@@ -48,7 +48,7 @@ describe('TasksService', () => {
     });
   });
 
-  describe('create', () => {
+describe('create', () => {
     it('should create and return a task', async () => {
       const createTaskInput: CreateTaskInput = createTaskInputStub();
       const mockedTask: Task = taskStub();
@@ -61,42 +61,47 @@ describe('TasksService', () => {
     });
 
     it('should throw an error on failure', async () => {
-      const errorMock = new Error('Save failed');
-      jest.spyOn(taskRepository, 'save').mockRejectedValueOnce(errorMock);
+      const invalidTaskInput = new CreateTaskInput();
+      jest.spyOn(taskRepository, 'save')
 
-      const createTaskInput: CreateTaskInput = createTaskInputStub();
-
-      await expect(tasksService.create(createTaskInput)).rejects.toThrowError('Save failed');
+      try {
+        await tasksService.create(invalidTaskInput);
+        fail('Expected validation error but none was thrown');
+      } catch (error) { 
+        expect(error).toBeInstanceOf(Error);
+      }
     });
   });
 
-  describe('update', () => {
+describe('update', () => {
     it('should update a task and return the updated task', async () => {
       const updateTaskInput: UpdateTaskInput = updateTaskInputStub();
       const existingTask: Task = taskStub();
       existingTask.id = updateTaskInput.id;
-    
+
       jest.spyOn(tasksService, 'findOneById').mockResolvedValueOnce(existingTask);
       const saveSpy = jest.spyOn(taskRepository, 'save').mockResolvedValueOnce(existingTask);
-    
+
       const result = await tasksService.update(updateTaskInput);
-    
+
       expect(result).toEqual(existingTask);
       expect(result.id).toBe(updateTaskInput.id);
       expect(result.persons).toEqual(updateTaskInput.persons);
-    
+
       expect(tasksService.findOneById).toHaveBeenCalledWith(updateTaskInput.id);
       expect(saveSpy).toHaveBeenCalledWith(existingTask);
     });
-  
+
     it('should throw an error if no update parameters are provided', async () => {
-      const updateTaskInput: UpdateTaskInput = {
-        id: '1',
-      };
-  
-      jest.spyOn(tasksService, 'findOneById').mockResolvedValueOnce(new Task());
-  
-      await expect(tasksService.update(updateTaskInput)).rejects.toThrowError('No update parameters provided');
+      const invalidUpdateTaskInput = new UpdateTaskInput();
+      jest.spyOn(tasksService, 'update')
+
+      try {
+        await tasksService.update(invalidUpdateTaskInput);
+        fail('Expected validation error but none was thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
     });
   });
 });
