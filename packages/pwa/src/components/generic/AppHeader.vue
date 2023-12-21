@@ -24,19 +24,19 @@
                     <img class="profile-section" :src="profileLetter" :alt="customPerson?.fullName">
                 </button>
                 <section v-if="clickedProfile" class="profile-section transition-opacity rounded fixed top-12 right-18 w-72 bg-secondary-green text-slate-100 px-4 pt-4 space-y-2">
-                    <div class="border-b-2 pb-2">
-                        <h4 class="h5 mb-2">{{ $t('navigation.title') }}</h4>
-                        <div class="flex items-center w-full gap-4">
-                            <div class="w-8 h-8 rounded-full bg-slate-100 overflow-hidden">
-                                <img :src="profileLetter" :alt="customPerson?.fullName">
+                    <div class="profile-section border-b-2 pb-2">
+                        <h4 class="profile-section h5 mb-2">{{ $t('navigation.title') }}</h4>
+                        <div class="profile-section flex items-center w-full gap-4">
+                            <div class="profile-section w-8 h-8 rounded-full bg-slate-100 overflow-hidden">
+                                <img class="profile-section" :src="profileLetter" :alt="customPerson?.fullName">
                             </div>
-                            <div class="text-slate-100">
-                                <h3 class="font-bold m-0 text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.displayName }}</h3>
-                                <p class="text-sm text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.email }}</p>
+                            <div class="profile-section text-slate-100">
+                                <h3 class="profile-section font-bold m-0 text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.displayName }}</h3>
+                                <p class="profile-section text-sm text-start w-[200px] overflow-hidden truncate whitespace-nowrap">{{ firebaseUser?.email }}</p>
                             </div>
                         </div>
                     </div>
-                    <section class="border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
+                    <section class="profile-section border-b-2 pb-2 text-start" v-if="customPerson && firebaseUser">
                         <div v-if="customPerson.personType === PersonType.ADMIN" class="flex flex-col gap-2">
                             <RouterLink :to="'/auth/management/' + firebaseUser?.uid + '/dashboard/overview'" class="menu-link" @click="clickProfile">{{ $t('navigation.dashboard') }}</RouterLink>
                             <RouterLink :to="'/auth/employee/' + firebaseUser?.uid + '/profile'" class="menu-link" @click="clickProfile">{{ $t('navigation.profile') }}</RouterLink>
@@ -56,15 +56,15 @@
                             <RouterLink :to="'/auth/visitor/' + firebaseUser?.uid + '/myalerts'" class="menu-link" @click="clickProfile">My Alerts</RouterLink>
                         </div>
                     </section>
-                    <section class="text-start">
-                        <ul class="space-y-2">
-                            <li><RouterLink to="/" class="menu-link" @click="clickProfile">{{ $t('navigation.home') }}</RouterLink></li>
-                            <li><RouterLink to="/map" class="menu-link" @click="clickProfile">{{ $t('navigation.map') }}</RouterLink></li>
-                            <li><RouterLink to="/events" class="menu-link" @click="clickProfile">{{ $t('navigation.events') }}</RouterLink></li>
-                            <li><RouterLink to="/contact" class="menu-link" @click="clickProfile">{{ $t('navigation.contact') }}</RouterLink></li>
-                            <li><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">{{ $t('navigation.openingHours') }}</RouterLink></li>
-                            <li><RouterLink to="/tickets" class="menu-link" @click="clickProfile">{{ $t('navigation.tickets') }}</RouterLink></li>
-                            <li><RouterLink to="/alerts" class="menu-link" @click="clickProfile">{{ $t('navigation.alerts') }}</RouterLink></li>
+                    <section class="profile-section text-start">
+                        <ul class="profile-section space-y-2">
+                            <li class="profile-section"><RouterLink to="/" class="menu-link" @click="clickProfile">{{ $t('navigation.home') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/map" class="menu-link" @click="clickProfile">{{ $t('navigation.map') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/events" class="menu-link" @click="clickProfile">{{ $t('navigation.events') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/contact" class="menu-link" @click="clickProfile">{{ $t('navigation.contact') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/openinghours" class="menu-link" @click="clickProfile">{{ $t('navigation.openingHours') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/tickets" class="menu-link" @click="clickProfile">{{ $t('navigation.tickets') }}</RouterLink></li>
+                            <li class="profile-section"><RouterLink to="/alerts" class="menu-link" @click="clickProfile">{{ $t('navigation.alerts') }}</RouterLink></li>
                         </ul>
                     </section>
                     <button @click="handleLogout" class="menu-link py-2 border-t-2 w-full text-start">{{ $t('navigation.logOut') }}</button>
@@ -80,8 +80,8 @@
         </nav>
         <!-- mobile menu -->
         <section class="md:hidden block">
-            <button class="button-focus h-full flex items-center justify-center" @click="clickProfile">
-                <Menu class="w-8 h-8 text-primary-green" />
+            <button class="profile-section button-focus h-full flex items-center justify-center" @click="clickProfile">
+                <Menu class="profile-section w-8 h-8 text-primary-green" />
             </button>
             <div :class="{'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[100%] transition-transform hidden': !clickedProfile,
             'absolute top-0 right-0 z-50 w-1/2 bg-primary-green translate-x-[0%] transition-transform drop-shadow-2xl rounded-bl-xl': clickedProfile}">
@@ -177,7 +177,6 @@ export default {
         const router = useRouter()
         const clickedProfile = ref(false)
         const { mutate: updateLocale } = useMutation(UPDATE_LOCALE)
-        const rootElement = ref(null)
 
         watch(customPerson, ()=> {
             setLocale(customPerson.value?.locale || locale.value)
