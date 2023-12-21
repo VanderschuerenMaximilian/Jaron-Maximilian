@@ -6,7 +6,11 @@
     "dev": "npx lerna run --scope={pwa,api} dev",
     "export:translations": "npx lerna run --scope=i18n-export export",
     "dev:api": "npx lerna run --scope=api dev",
-    "dev:pwa": "npx lerna run --scope=pwa dev"
+    "dev:pwa": "npx lerna run --scope=pwa dev",
+    "seed:all": "npx lerna run --scope=api seed:all",
+    "seed:reset": "npx lerna run --scope=api seed:reset",
+    "seed:setup": "npx lerna run --scope=api seed:setup",
+    "test:all": "npx lerna run --scope=api test:all"
   },
   "keywords": [],
   "author": "Jaron Maximilian",

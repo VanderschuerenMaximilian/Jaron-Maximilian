@@ -163,7 +163,7 @@ router.beforeEach(async (to, from, next) => {
   else if (to.path.startsWith('/auth/employee/')) {
     if (firebaseUser.value !== null && firebaseUser.value?.email !== null) {
       const emailSplit: string[] = firebaseUser.value.email.split("@")
-      if (emailSplit[1].includes("employee.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
+      if (emailSplit[1].includes("employee.bellewaerde.be") || firebaseUser.value.email.includes("admin.bellewaerde.be")) {
         next()
       } else {
         next("/")
@@ -173,7 +173,7 @@ router.beforeEach(async (to, from, next) => {
   else if (to.path.startsWith('/auth/management/')) {
     if (firebaseUser.value !== null && firebaseUser.value?.email !== null) {
       const emailSplit: string[] = firebaseUser.value.email.split("@")
-      if (emailSplit[1].includes("management.bellewaerde.be") || firebaseUser.value.email === "admin@admin.bellewaerde.be") {
+      if (emailSplit[1].includes("management.bellewaerde.be") || firebaseUser.value.email.includes("admin.bellewaerde.be")) {
         next()
       } else {
         next("/")

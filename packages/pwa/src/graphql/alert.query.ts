@@ -1,6 +1,7 @@
-import gql from 'graphql-tag';
+import { gql, type TypedDocumentNode } from "@apollo/client/core";
+import type { Alert as IAlert } from "@/interfaces/IAlert";
 
-export const ALL_ALERTS = gql`
+export const ALL_ALERTS: TypedDocumentNode<{ alerts: IAlert[] }> = gql`
     query {
         alerts {
             id
@@ -20,11 +21,12 @@ export const ALL_ALERTS = gql`
                 jobType
             }
             createdBy
+            assignedPersonId
     }
     }
 `;
 
-export const ALL_NON_ASSIGNED_ALERTS = gql`
+export const ALL_NON_ASSIGNED_ALERTS: TypedDocumentNode<{ nonAssignedAlerts: IAlert[] }> = gql`
 query nonAssignedAlerts {
     nonAssignedAlerts {
         id
@@ -46,7 +48,7 @@ query nonAssignedAlerts {
 }
 `;
 
-export const FIND_ALERT_BY_ID = gql`
+export const FIND_ALERT_BY_ID: TypedDocumentNode<{ alert: IAlert }> = gql`
     query alertById($alertId: String!) {
         alert (id: $alertId) {
             id
@@ -63,7 +65,7 @@ export const FIND_ALERT_BY_ID = gql`
     }
 `;
 
-export const GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE = gql`
+export const GET_NON_RESOLVED_ALERTS_FROM_EMPLOYEE: TypedDocumentNode<{ nonResolvedAlertsByEmployee: IAlert[] }> = gql`
 query nonResolvedAlertsByEmployee($employeeId: String!) {
   nonResolvedAlertsByEmployee(employeeId: $employeeId) {
 	id
@@ -83,7 +85,7 @@ query nonResolvedAlertsByEmployee($employeeId: String!) {
   }
 }`;
 
-export const GET_NON_RESOLVED_ALERTS_FROM_CREATED_BY = gql`
+export const GET_NON_RESOLVED_ALERTS_FROM_CREATED_BY: TypedDocumentNode<{ nonResolvedAlertsByCreatedBy: IAlert[] }> = gql`
 query nonResolvedAlertsByCreatedBy($createdBy: String!) {
   nonResolvedAlertsByCreatedBy(createdBy: $createdBy) {
     id

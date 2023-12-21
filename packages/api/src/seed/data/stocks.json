@@ -433,7 +433,7 @@
     "name": "Joppie sauce",
     "facilityName" : "Main Stock",
     "price": 0.45,
-    "stock": 10000,
+    "stock": 6000,
     "pending": 0,
     "stockReduction": 25,
     "unit": "ml",

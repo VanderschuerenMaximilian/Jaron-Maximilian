@@ -1,4 +1,4 @@
-import type { Person } from './IPersons';
+import type { Person } from './IPerson';
 
 export interface Alert {
     id?: string;
@@ -6,7 +6,7 @@ export interface Alert {
     description: string;
     state?: string;
     persons?: Person[];
-    personId?: string;
+    assignedPersonId?: string;
     zoneId?: string;
     createdBy?: string;
     createdAt?: Date;

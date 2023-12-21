@@ -137,8 +137,7 @@ import useFirebase from '@/composables/useFirebase'
 import { ref, watchEffect, type Ref, watch } from 'vue'
 import { isTypeSystemDefinitionNode } from 'graphql';
 import useCustomPerson from '@/composables/useCustomPerson';
-// @ts-ignore
-import { StockItem } from '@/interfaces/ISoldItem';
+import type { StockItem } from '@/interfaces/ISoldItem';
 
 
 const { firebaseUser } = useFirebase()

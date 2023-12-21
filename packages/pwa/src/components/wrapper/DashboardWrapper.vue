@@ -21,40 +21,22 @@
                         <span>Overview</span>
                 </li>
                 </RouterLink>
-                <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Finances</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
+                <RouterLink v-if="customPerson?.personType === 'ADMIN'" to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Employees</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Visitors</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Attrations</span>
-                    </li>
-                </RouterLink>
-                <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
-                    <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[37%]" />
-                            <span>Store Management</span>
                     </li>
                 </RouterLink>
                 <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
                     <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[37%]" />
                             <span>Stock</span>
+                    </li>
+                </RouterLink>
+                <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
+                    <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[37%]" />
+                            <span>Store Management</span>
                     </li>
                 </RouterLink>
                 <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
@@ -71,7 +53,7 @@
         </aside>
         <aside class="relative lg:hidden bg-slate-100">
             <Menu class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-200" :class="{'opacity-0 ease-in-out duration-200':isMenuOpen}"/>
-            <X  @click="HandleMenu()" class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-75 color-slate-200" :class="{'opacity-0 ease-in-out duration-75':!isMenuOpen}"/>
+            <X  @click="handleMenu()" class="absolute w-10 h-10 left-5 top-5 z-10 ease-in-out duration-75 color-slate-200" :class="{'opacity-0 ease-in-out duration-75':!isMenuOpen}"/>
             <div class="absolute w-100 h-screen bg-primary-green z-4 translate-x-[-100%] ease-in-out duration-75" :class="{'translate-x-[0%] ease-in-out duration-75':isMenuOpen }">
                 <ul class="c-dash-nav absolute top-20 flex flex-col w-full gap-6 overflow-y-scroll h-[calc(100vh-100px)]">
                     <RouterLink to="overview" class="w-full dashboard-link" @click="checkPath('overview')" :class="{ 'bg-secondary-green': path === 'overview' }">
@@ -80,40 +62,22 @@
                             <span>Overview</span>
                         </li>
                     </RouterLink>
-                    <RouterLink to="finances" class="w-full dashboard-link" @click="checkPath('finances')" :class="{ 'bg-secondary-green': path === 'finances' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Finances</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
+                    <RouterLink v-if="customPerson?.personType === 'ADMIN'" to="employees" class="w-full dashboard-link" @click="checkPath('employees')" :class="{ 'bg-secondary-green': path === 'employees' }">
                         <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[10%]" />
                             <span>Employees</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="visitors" class="w-full dashboard-link" @click="checkPath('visitors')" :class="{ 'bg-secondary-green': path === 'visitors' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Visitors</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="attractions" class="w-full dashboard-link" @click="checkPath('attractions')" :class="{ 'bg-secondary-green': path === 'attractions' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Attrations</span>
-                        </li>
-                    </RouterLink>
-                    <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
-                        <li class="flex w-full gap-4">
-                            <Box class="w-6 h-6 ml-[10%]" />
-                            <span>Store Management</span>
                         </li>
                     </RouterLink>
                     <RouterLink to="stock" class="w-full dashboard-link" @click="checkPath('stock')" :class="{ 'bg-secondary-green': path === 'stock' }">
                         <li class="flex w-full gap-4">
                             <Box class="w-6 h-6 ml-[10%]" />
                             <span>Stock</span>
+                         </li>
+                    </RouterLink>
+                    <RouterLink to="storeManagement" class="w-full dashboard-link" @click="checkPath('storeManagement')" :class="{ 'bg-secondary-green': path === 'storeManagement' }">
+                        <li class="flex w-full gap-4">
+                            <Box class="w-6 h-6 ml-[10%]" />
+                            <span>Store Management</span>
                         </li>
                     </RouterLink>
                     <RouterLink to="alerts" class="w-full dashboard-link" @click="checkPath" :class="{ 'bg-secondary-green': path === 'alerts' }">
@@ -130,8 +94,8 @@
             </div>
         </aside>
         <RouterView />
-        <section v-if="successfullAssignedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
-            <AlertAssignment v-for="alert in successfullAssignedEmployees" :alert="alert" :key="alert.id" />
+        <section v-if="successfullChangedEmployees.length > 0" class="absolute bottom-12 right-2 space-y-2">
+            <AlertAssignment v-for="alert in successfullChangedEmployees" :alert="alert" :key="alert.id" />
         </section>
     </section>
 </template>
@@ -178,8 +142,9 @@ export default {
         const { mutate: updateNavContainerState } = useMutation(UPDATE_NAV_CONTAINER_STATE)
         const { result: employeeAssigned } = useSubscription(PERSON_ASSIGNED_TO_ALERT)
         const isMenuOpen = ref<boolean>(false)
+        const successfullChangedEmployees = ref<IAlert[]>([])
 
-        const HandleMenu = () => {
+        const handleMenu = () => {
             isMenuOpen.value = !isMenuOpen.value
         }
 
@@ -187,14 +152,16 @@ export default {
             path.value = route    
             isMenuOpen.value = false
         }
-        const successfullAssignedEmployees = ref<IAlert[]>([])
 
         const handleNavContainer = () => {
             navContainerState.value = !navContainerState.value
         }
         
         const handleSignOut = () => {
-            signOutUser(router)
+            signOutUser().then(() => {
+                customPerson.value = undefined
+                if (customPerson.value === undefined) router.push('/login')
+            })
         }
 
         onMounted(() => {
@@ -219,23 +186,22 @@ export default {
         // handles the pop up when an employee is succesfully assigned to an alert
         watch(employeeAssigned, (data: any) => {
             if (data.personAssignedToAlert) {
-                successfullAssignedEmployees.value = [...successfullAssignedEmployees.value, data.personAssignedToAlert]
+                successfullChangedEmployees.value = [...successfullChangedEmployees.value, data.personAssignedToAlert]
             }
         })
 
         return {
+            isMenuOpen,
+            customPerson,
             navContainerState,
             path,
-            successfullAssignedEmployees,
-            isMenuOpen,
+            successfullChangedEmployees,
 
             checkPath,
             handleNavContainer,
             handleSignOut,
-            HandleMenu,
-
+            handleMenu,
         }
     }
 }
-
 </script>

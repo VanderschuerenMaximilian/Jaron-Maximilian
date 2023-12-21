@@ -10,21 +10,21 @@
                 <div class="flex sm:flex-row flex-col justify-between gap-4">
                     <div class="flex flex-col gap-1">
                         <label for="FirstName">{{ $t('signup.firstName.label') }}</label>
-                        <input type="text" name="FirstName" id="FirstName" class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus"
+                        <input type="text" name="FirstName" id="FirstName" class="w-100% bg-light-slate h-[51px] p-3 rounded-md button-focus"
                         v-model="newUser.FirstName" :placeholder="$t('signup.firstName.placeholder')">
                         <p v-show="dirties.FirstName" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.firstName.error') }}</p>
                     </div>
                     <div class="flex flex-col gap-1">
                         <label for="LastName">{{ $t('signup.lastName.label') }}</label>
                         <input type="text" name="LastName" id="LastName"
-                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus" v-model="newUser.LastName"
+                        class="w-100% bg-light-slate h-[51px] p-3 rounded-md button-focus" v-model="newUser.LastName"
                         :placeholder="$t('signup.lastName.placeholder')">
                         <p v-show="dirties.LastName" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.lastName.error') }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <label for="email">{{ $t('signup.email.label') }}</label>
-                    <input type="email" name="email" id="email" class="w-[100% bg-[#E7E7E7] h-[51px] p-3 rounded-md button-focus"
+                    <input type="email" name="email" id="email" class="w-[100% bg-light-slate h-[51px] p-3 rounded-md button-focus"
                     v-model="newUser.email" :placeholder="$t('signup.email.placeholder')" />
                     <p v-show="dirties.email" class="text-red-500 text-3 mb-[-28px] flex justify-end">{{ $t('signup.email.error') }}</p>
                 </div>
@@ -32,7 +32,7 @@
                     <label for="password">{{ $t('signup.password.label') }}</label>
                     <div class="relative">
                         <input type="password" name="password" id="password"
-                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.password"
+                        class="w-100% bg-light-slate h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.password"
                         :placeholder="$t('signup.password.placeholder')" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="togglePasswordVisibility()">
@@ -50,7 +50,7 @@
                     <label for="Confirmpassword">{{ $t('signup.confirmPassword.label') }}</label>
                     <div class="relative">
                         <input type="password" name="Confirmpassword" id="Confirmpassword"
-                        class="w-100% bg-[#E7E7E7] h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.Confirmpassword"
+                        class="w-100% bg-light-slate h-[51px] p-3 pr-10 rounded-md button-focus" v-model="newUser.Confirmpassword"
                         :placeholder="$t('signup.confirmPassword.placeholder')" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                         @click="toggleConfirmPasswordVisibility()">
@@ -88,7 +88,7 @@ import router from '@/bootstrap'
 import { Eye, EyeOff  } from 'lucide-vue-next';
 import { CREATE_PERSON } from '../graphql/person.mutation'
 import { useMutation } from '@vue/apollo-composable'
-import type { Person } from '@/interfaces/IPersons'
+import type { Person } from '@/interfaces/IPerson'
 import { Loader2 } from 'lucide-vue-next'
 
 export default {
@@ -218,4 +218,4 @@ export default {
         }
     }
 }
-</script>../bootstrap
+</script>../bootstrap@/interfaces/IPerson

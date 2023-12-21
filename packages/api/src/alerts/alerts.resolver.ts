@@ -31,42 +31,51 @@ export class AlertsResolver {
     }
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'alerts' })
   findAll() {
     return this.alertsService.findAll();
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => Alert, { name: 'alert' })
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.alertsService.findOneById(id);
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'nonResolvedAlertsByEmployee' })
   findNonResolvedAlertsByEmployee(@Args('employeeId', { type: () => String }) employeeId: string) {
     return this.alertsService.findNonResolvedAlertsByEmployee(employeeId);
   }
 
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Query(() => [Alert], { name: 'nonAssignedAlerts' })
   findNonAssignedAlerts() {
     return this.alertsService.findNonAssignedAlerts();
   }
 
+  @UseGuards(FirebaseGuard)
   @Query(() => [Alert], { name: 'nonResolvedAlertsByCreatedBy' })
   findNonResolvedAlertsByCreatedBy(@Args('createdBy', { type: () => String }) createdBy: string) {
     return this.alertsService.findNonResolvedAlertsByCreatedBy(createdBy);
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER, IPersonType.EMPLOYEE)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
-  updateAlert(
+  async updateAlert(
     @Args('updateAlertInput') updateAlertInput: UpdateAlertInput,
   ) {
     try {
-      return this.alertsService.update(updateAlertInput);
+      const updatedAlert = await this.alertsService.update(updateAlertInput);
+      pubSub.publish('alertUpdated', { alertUpdated: updatedAlert })
+      return updatedAlert
     }
     catch (error) {
-      console.log(error)
       return error
     }
   }
@@ -74,11 +83,11 @@ export class AlertsResolver {
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
   @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
-  addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
+  async addPersonToAlert(@Args('alertId', { type: () => String }) alertId: string, 
     @Args('personId', { type: () => String }) personId: string, 
   ) {
     try {
-      const assignedPerson = this.alertsService.addPersonToAlert(alertId, personId);
+      const assignedPerson = await this.alertsService.addPersonToAlert(alertId, personId);
       pubSub.publish('personAssignedToAlert', { personAssignedToAlert: assignedPerson })
       return assignedPerson
     }
@@ -88,7 +97,23 @@ export class AlertsResolver {
   }
 
   @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
-  @UseGuards(FirebaseGuard)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
+  @Mutation(() => Alert)
+  async removePersonFromAlert(@Args('alertId', { type: () => String }) alertId: string,
+    @Args('personId', { type: () => String }) personId: string,
+  ) {
+    try {
+      const removedPerson = await this.alertsService.removePersonFromAlert(alertId, personId);
+      pubSub.publish('personRemovedFromAlert', { personRemovedFromAlert: removedPerson })
+      return removedPerson
+    }
+    catch (error) {
+      return error
+    }
+  }
+
+  @AllowedPersonTypes(IPersonType.ADMIN, IPersonType.MANAGER)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Alert)
   removeAlert(@Args('id', { type: () => ID }) id: string) {
     return this.alertsService.remove(id);
@@ -102,5 +127,10 @@ export class AlertsResolver {
   @Subscription(() => Alert)
   personAssignedToAlert() {
     return pubSub.asyncIterator('personAssignedToAlert')
+  }
+
+  @Subscription(() => Alert)
+  personRemovedFromAlert() {
+    return pubSub.asyncIterator('personRemovedFromAlert')
   }
 }

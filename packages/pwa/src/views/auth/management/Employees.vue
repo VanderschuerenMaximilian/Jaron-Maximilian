@@ -76,7 +76,7 @@ import { RouterLink } from 'vue-router'
 import { ChevronDown } from 'lucide-vue-next'
 import DashboardTitle from '@/components/dashboard/DashboardTitle.vue'
 import Employee from '@/components/dashboard/Employee.vue';
-import type { Persons as IPersons } from '@/interfaces/IPersons'
+import type { Persons as IPersons } from '@/interfaces/IPerson'
 
 import useFirebase from '@/composables/useFirebase'
 

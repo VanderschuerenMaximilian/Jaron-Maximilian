@@ -30,7 +30,7 @@ export class AlertsService {
       a.updatedAt = new Date()
       return this.alertRepository.save(a)
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   }
 
@@ -53,7 +53,7 @@ export class AlertsService {
 
       return this.alertRepository.save(a)
     } catch (error) {
-      throw error
+      throw new Error(error)
     }
   }
 
@@ -73,6 +73,33 @@ export class AlertsService {
         this.personService.assignAlertId(personId, alertId)
       }
       else throw new Error('Alert already has an assigned person')
+      
+      return this.alertRepository.save(alert)
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  @Post()
+  async removePersonFromAlert(@Param() alertId: string, @Param() personId: string): Promise<Alert> {
+    try {
+      const alert = await this.findOneById(alertId)
+
+      if (!alert) throw new Error('Alert not found')
+      
+      const personExists = await this.personService.findOneById(personId)
+
+      if (!personExists) throw new Error('Person not found')
+      
+      if (alert.persons) {
+        for (const person of alert.persons) {
+          if (person.id.toString() === personId) {
+            const slicing = alert.persons.splice(alert.persons.indexOf(person), 1)
+            this.personService.removeAssignedAlert(personId, alertId)
+          }
+        }
+      }
+      else throw new Error('Alert has no assigned employees')
       
       return this.alertRepository.save(alert)
     } catch (error) {

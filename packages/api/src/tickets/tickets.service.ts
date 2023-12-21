@@ -129,6 +129,12 @@ export class TicketsService {
     }
   }
 
+  // seeding tickets
+
+  async truncate () {
+    return await this.ticketRepository.clear()
+  }
+
   // ------ extra functions ------
 
   async generateQrCode(data: string): Promise<string> {

@@ -28,48 +28,63 @@
                         <p>{{ $t('tickets.total') }}</p>
                         <p>{{ "€ " + toPay }}</p>
                     </div>
-                    <button @click="goToDate" :disabled="!isTickets" class="sm:w-90 w-72 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-secondary-green disabled:bg-opacity-60 disabled:cursor-not-allowed">{{ $t('tickets.next') }}</button>
+                    <button @click="goToDate" :disabled="!isTickets" class="button-focus sm:w-90 w-72 h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-secondary-green disabled:bg-opacity-60 disabled:cursor-not-allowed">{{ $t('tickets.next') }}</button>
                 </div>
             </aside>
         </section>
         <section v-else class="mt-36 w-full flex justify-center">
-            <MoveLeft @click="returnToTickets" class="absolute left-12 top-25 scale-150 cursor-pointer hover:scale-[180%] transition-transform"/>
+            <button @click="returnToTickets" class="button-focus rounded-full absolute left-12 top-25 scale-150 cursor-pointer hover:scale-[180%] transition-transform">
+                <MoveLeft />
+            </button>
             <form @submit.prevent="handleCheckOut" class="flex flex-col items-center justify-between sm:w-fit w-84 h-3/4 bg-white py-8 px-6 rounded-md">
 
-                <div class="flex flex-col">
+                <div class="flex flex-col w-full">
                     <label for="usableOn">{{ $t('tickets.date.label') }}</label>
-                    <input type="date" name="usableOn" id="usableOn" v-model="newTicketData.usableOn" class="bg-[#E7E7E7] sm:w-[498px] w-full py-2 px-3 rounded-md" :class="{ 'border-red-500 border-2': errorFields?.usableOn }">
+                    <input type="date" name="usableOn" id="usableOn" v-model="newTicketData.usableOn" class="button-focus bg-light-slate sm:w-[498px] w-full py-2 px-3 rounded-md" :class="{ 'border-red-500 border-2': errorFields?.usableOn }">
                     <p v-if="errorFields?.usableOn && errorFields?.usableOn[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.usableOn[0].message }}</p>
                 </div>
 
                 <div class="flex flex-col sm:w-fit w-full">
                     <lable for="email">{{ $t('tickets.email.label') }}</lable>
-                    <input type="email" name="email" id="email" v-model="newTicketData.email" :placeholder="$t('tickets.email.placeholder')" class="bg-[#E7E7E7] sm:w-[498px] w-full py-2 px-3 rounded-md" :class="{ 'border-red-500 border-2': errorFields?.email }">
+                    <input type="email" name="email" id="email" v-model="newTicketData.email" :placeholder="$t('tickets.email.placeholder')" class="button-focus bg-light-slate sm:w-[498px] w-full py-2 px-3 rounded-md" :class="{ 'border-red-500 border-2': errorFields?.email }">
                     <p v-if="errorFields?.email && errorFields?.email[0].fieldValue" class="text-red-500 text-sm">{{ errorFields?.email[0].message }}</p>
                     <p v-if="errorFields?.email && !errorFields?.email[0].fieldValue" class="text-red-500 text-sm">{{ errorFields?.email[0].message }}</p>
                 </div>
-
-                <button type="submit" :disabled="!pass" class="sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
-                    <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin mx-auto"/>
-                    <span v-else>{{ $t('tickets.checkout') }}</span>
-                </button>
+                <template v-if="isBougth">
+                    <button type="submit" :disabled="!pass" class="button-focus sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                        <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin mx-auto"/>
+                        <span v-else>{{ $t('tickets.checkout') }}</span>
+                    </button>
+                </template>
+                <template v-else>
+                    <template v-if="firebaseUser">
+                        <RouterLink :to ="'/auth/visitor/' + firebaseUser?.uid + '/mytickets'" class="button-focus text-center py-3 sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                            {{ $t('navigation.myTickets') }}
+                        </RouterLink>
+                    </template>
+                    <template v-else>
+                        <RouterLink to="/login" class="button-focus text-center py-3 sm:w-90 w-full h-15 bg-primary-green border rounded-lg drop-shadow-lg text-white font-bold text-6 hover:bg-green-900 disabled:cursor-not-allowed disabled:bg-opacity-60">
+                            {{ $t('navigation.login') }}
+                        </RouterLink> 
+                    </template>
+                </template>
             </form>
         </section>
     </main>
 </template>
 <script lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { X, MoveLeft, Loader2 } from 'lucide-vue-next';
 import { CREATE_TICKETS } from '@/graphql/ticket.mutation';
 import { useMutation } from '@vue/apollo-composable';
 import Ticket from '@/components/Ticket.vue';
 import SoldTicket from '@/components/SoldTicket.vue';
 import useCustomPerson from '@/composables/useCustomPerson';
+import useFirebase from '@/composables/useFirebase';
 import useTicketPurchase from '@/composables/useTicketPurchase';
 import { RouterLink } from 'vue-router';
 import type { Rules } from 'async-validator'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
-import router from '@/bootstrap';
 
 export default {
     components: {
@@ -119,9 +134,11 @@ export default {
         }
         const { pass, errorFields } = useAsyncValidator(newTicketData, rules)
         const { customPerson } = useCustomPerson();
+        const { firebaseUser } = useFirebase()
         const { calcTotalPrice, soldTickets, result, ticketPriceLoading, isTickets, toPay } = useTicketPurchase();
         const loadingTickets = ref<number[]>([1,2])
         const chooseDate = ref<boolean>(false);
+        const isBougth = ref<boolean>(true);
         const { mutate, loading, onDone } = useMutation(CREATE_TICKETS)
 
         watchEffect(() => {
@@ -168,16 +185,15 @@ export default {
         };
 
         onDone(() => {
-            setTimeout(() => {
-                if (customPerson.value) router.push(`/auth/visitor/${customPerson.value?.id}/mytickets`);
-                else router.push('/')
-            }, 1000);
+            isBougth.value = false;
         });
 
         return {
             chooseDate,
             customPerson,
             errorFields, 
+            firebaseUser,
+            isBougth,
             isTickets,
             loading,
             loadingTickets,

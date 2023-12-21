@@ -6,7 +6,7 @@
                         <form @submit.prevent="handleSubmitAlert" class="flex flex-col justify-center gap-8 py-8"> 
                             <div v-if="isCreated" class="relative h-fit border-2 border-primary-green bg-secondary-green bg-opacity-25 py-4 px-3 rounded-md">
                                 <p class="text-primary-green font-semibold">{{ $t('alerts.popup.succes') }}</p>
-                                <button class="absolute top-2 right-3 cursor-pointer" @click="closePopUp">
+                                <button class="button-focus rounded-full absolute top-2 right-3 cursor-pointer" @click="closePopUp">
                                     <X class="h-6 w-6 text-primary-green p-1 rounded-full transition-all hover:bg-primary-green hover:bg-opacity-10"/>
                                 </button>
                             </div>
@@ -16,7 +16,7 @@
                                 <input type="text" name="title" id="title" v-model="newAlert.title"
                                 :placeholder="$t('alerts.title.placeholder')"
                                 :class="{ 'border-red-500': errorFields?.title }"
-                                class="bg-[#E7E7E7] w-[498px] py-2 px-3 rounded-md"
+                                class="button-focus bg-light-slate w-[498px] py-2 px-3 rounded-md"
                                 >
                                 <p v-if="errorFields?.title && errorFields?.title[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.title[0].message }}</p>
                                 <p v-if="errorFields?.title && isSubmitted" class="text-red-500 text-sm">{{ errorFields.title[0].message }}</p>
@@ -25,7 +25,7 @@
                             <div class="flex flex-col max-w-lg">
                                 <label for="zone">Zone</label>
                                 <select name="zone" id="zone" v-model="newAlert.zoneId"
-                                class="bg-[#E7E7E7] w-[498px] py-2 px-3 rounded-md">
+                                class="button-focus bg-light-slate w-[498px] py-2 px-3 rounded-md">
                                     <option value="" class="bg-white">{{ $t('alerts.zone.placeholder') }}</option>
                                     <option v-for="zone in zones?.zones" :key="zone.id" :value="zone.id" class="bg-white">{{ zone.name }}</option>
                                 </select>
@@ -38,14 +38,14 @@
                                 <textarea type="text" rows="5" name="description" id="description" v-model="newAlert.description"
                                 :placeholder="$t('alerts.description.placeholder')"
                                 :class="{ 'border-red-500': errorFields?.description }"
-                                class="bg-[#E7E7E7] w-[498px] py-2 px-3 rounded-md"></textarea>
+                                class="button-focus bg-light-slate w-[498px] py-2 px-3 rounded-md"></textarea>
                                 <p v-if="errorFields?.description && errorFields?.description[0].fieldValue" class="text-red-500 text-sm">{{ errorFields.description[0].message }}</p>
                                 <p v-if="errorFields?.description && isSubmitted" class="text-red-500 text-sm">{{ errorFields.description[0].message }}</p>
                             </div>
     
                             <div class="w-full flex justify-center">
                                 <button type="submit" :disabled="loading || !pass"
-                                    class="flex justify-center bg-secondary-green hover:bg-primary-green px-4 py-2 w-[250px] rounded-sm 
+                                    class="flex justify-center items-center bg-secondary-green hover:bg-primary-green px-4 py-2 font-bold text-6 button-focus sm:w-90 w-full h-15 rounded-lg
                                     text-slate-100 disabled:bg-opacity-40">
                                     <Loader2 v-if="loading" class="w-6 h-6 text-slate-100 animate-spin"/>
                                     <span v-else>{{ $t('alerts.submit') }}</span>
@@ -59,8 +59,8 @@
                     <h3 class="h3-green text-center mb-10">{{ $t('alerts.notify.title') }}</h3>
                     <div class="flex flex-col mr-24">
                         <p class="text-sm">{{ $t('alerts.notify.description') }}</p>
-                        <RouterLink to="/login">
-                            <button class="flex justify-center bg-secondary-green hover:bg-primary-green px-4 py-2 w-[150px] rounded-md 
+                        <RouterLink to="/login" class="link-focus rounded-lg">
+                            <button class="flex justify-center bg-secondary-green hover:bg-primary-green px-4 py-2 w-full rounded-md 
                             text-slate-100 disabled:bg-opacity-40">{{ $t('alerts.notify.logIn') }}</button>
                         </RouterLink>
                     </div>        

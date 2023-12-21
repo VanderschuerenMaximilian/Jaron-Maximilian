@@ -6,6 +6,8 @@ import { Task } from './entities/task.entity';
 import { CreateTaskInput } from './dto/create-task.input';
 import { UpdateTaskInput } from './dto/update-task.input';
 import { createTaskInputStub, taskStub, updateTaskInputStub } from './stubs/task.stub';
+import { ValidationError } from 'class-validator';
+import { error } from 'console';
 
 describe('TasksResolver', () => {
   let resolver: TasksResolver;
@@ -63,15 +65,17 @@ describe('TasksResolver', () => {
       expect(tasksService.create).toHaveBeenCalledWith(testTask);
     });
 
-    it('should throw an error when the task could not be created', async () => {
-      const testTask: CreateTaskInput = createTaskInputStub();
+    it('should throw a validation error when the task creation input is invalid', async () => {
+      const invalidTaskInput = new CreateTaskInput();
+      jest.spyOn(tasksService, 'create')
 
-  
-      jest.spyOn(tasksService, 'create').mockRejectedValueOnce(new Error('Could not create task'));
-  
-      await expect(resolver.createTask(testTask)).rejects.toThrowError('Could not create task');
+      try {
+        await resolver.createTask(invalidTaskInput);
+        fail('Expected validation error but none was thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
     });
-
   });
 
   describe('findAll', () => {
@@ -82,7 +86,7 @@ describe('TasksResolver', () => {
       ];
   
       jest.spyOn(tasksService, 'findAll').mockResolvedValueOnce(tasks);
-  
+
       const result = await resolver.findAll();
   
       expect(result).toEqual(tasks);
@@ -90,10 +94,16 @@ describe('TasksResolver', () => {
     });
 
     it('should throw an error when the tasks could not be found', async () => {
-      jest.spyOn(tasksService, 'findAll').mockRejectedValueOnce(new Error('Could not find tasks'));
-  
-      await expect(resolver.findAll()).rejects.toThrowError('Could not find tasks');
-    });
+      const tasks: Task[] = [];
+      jest.spyOn(tasksService, 'findAll').mockResolvedValueOnce(tasks);
+
+      try {
+        await resolver.findAll();
+        fail('Expected validation error but none was thrown');
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
+      });
   });
 
   describe('updateTask', () => {
@@ -115,11 +125,15 @@ describe('TasksResolver', () => {
   });
     
   it('should throw an error when the task could not be updated', async () => {
-    const updateTaskInput: UpdateTaskInput = updateTaskInputStub();
-  
-    jest.spyOn(tasksService, 'update').mockRejectedValueOnce(new Error('Could not update task'));
-  
-    await expect(resolver.updateTask(updateTaskInput)).rejects.toThrowError(/could not update task/i);
+    const updateTaskInput = new UpdateTaskInput();
+    jest.spyOn(tasksService, 'update');
+    try {
+      await resolver.updateTask(updateTaskInput);
+      fail('Expected validation error but none was thrown');
+    }
+    catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   });

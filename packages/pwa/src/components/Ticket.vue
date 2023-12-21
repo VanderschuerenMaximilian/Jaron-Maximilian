@@ -9,12 +9,14 @@
         </div>
         <div class="flex items-end justify-center w-1/3 gap-2">
             <button @click="removeTicket"
-                class="flex justify-between items-center px-3 py-2 rounded-xl bg-secondary-green hover:bg-primary-green transition-colors text-slate-100">
+                class="flex justify-between items-center px-3 py-2 rounded-xl bg-secondary-green 
+                button-focus hover:bg-primary-green transition-colors text-slate-100">
                 -
             </button>
             <div class="flex justify-center items-center px-3 py-2 bg-white text-primary-green">{{ soldTicketChange?.amount }}</div>
             <button @click="addTicket"
-                class="flex justify-between items-center px-3 py-2 rounded-xl bg-secondary-green hover:bg-primary-green transition-colors text-slate-100">
+                class="flex justify-between items-center px-3 py-2 rounded-xl bg-secondary-green 
+                button-focus hover:bg-primary-green transition-colors text-slate-100">
                 +
             </button>
         </div>

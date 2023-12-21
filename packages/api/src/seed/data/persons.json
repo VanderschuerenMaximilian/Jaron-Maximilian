@@ -144,14 +144,14 @@
   "phone": null
 },
 {
-  "uid": "YQOoOlrSD2e43ERx1WWmYDDdQkM2",
+  "uid": "OG5mvRRYoBdkGvQGs4h1HGUXr943",
   "personType": "ADMIN",
   "jobType": null,
   "firstName": "Admin",
   "lastName": "Admin",
   "fullName": "Admin Admin",
   "profilePicture": "https://randomuser.me/api/portraits/lego/0.jpg",
-  "personalEmail": "admin@admin.bellewaerde.be",
+  "personalEmail": "test@admin.bellewaerde.be",
   "workEmail": null,
   "locale": "en",
   "phone": null

@@ -1,9 +1,9 @@
 import { useQuery, provideApolloClient } from '@vue/apollo-composable';
 import { FIND_PERSON_BY_UID } from '@/graphql/person.query';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import useFirebase from './useFirebase';
 import useGraphql from './useGraphql';
-import type { Person } from '@/interfaces/IPersons'
+import type { Person } from '@/interfaces/IPerson'
 
 const customPerson = ref<Person>();
 
@@ -17,8 +17,8 @@ const restoreCustomPerson = async () => {
         const { onResult } = useQuery(FIND_PERSON_BY_UID, {
             uid: firebaseUser.value?.uid
         })
-        onResult((result) => {
-            if (result.data){
+        onResult((result: any) => {
+            if (result.data) {
                 customPerson.value = result.data?.personByUid
                 console.log('customPerson: ', customPerson.value)
                 resolve()
@@ -26,6 +26,12 @@ const restoreCustomPerson = async () => {
         })
     })
 }
+
+// watch(firebaseUser, async () => {
+//     if (firebaseUser.value?.uid) {
+//         await restoreCustomPerson()
+//     }
+// })
 
 export default () => {
 

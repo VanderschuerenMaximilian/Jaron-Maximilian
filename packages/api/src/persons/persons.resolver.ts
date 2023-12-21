@@ -33,7 +33,7 @@ export class PersonsResolver {
 
   @UseGuards(FirebaseGuard)
   @Query(() => Person, { name: 'personById', nullable: true })
-  findOne(@Args('string', { type: () => String}) id: string): Promise<Person> {
+  findOne(@Args('id', { type: () => String}) id: string): Promise<Person> {
     return this.personsService.findOneById(id);
   }
 
@@ -83,7 +83,8 @@ export class PersonsResolver {
     return this.personsService.updateLocale(id, locale);
   }
 
-  @UseGuards(FirebaseGuard)
+  @AllowedPersonTypes(PersonType.ADMIN)
+  @UseGuards(FirebaseGuard, PersonTypeGuard)
   @Mutation(() => Person)
   removePerson(@Args('id', { type: () => String }) id: string) {
     return this.personsService.remove(id);
