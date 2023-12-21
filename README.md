@@ -27,12 +27,22 @@ The google credentials are not needed to run this project. These are used to add
 Run commands:
 
     rootfolder: npm run dev:api
-
     api-folder: npm run dev
 
-Seeding command:
+# Seeding command:
 
-    api-folder: npx nestjs-command seed:database:all
+-   setup commands:
+        
+        rootfolder: npm run seed:setup
+        api-folder: npm run seed:setup
+-   reset commands:
+
+        rootfolder: npm run seed:reset
+        api-folder: npm run seed:reset
+-   seeding commands:
+
+        rootfolder: npm run seed:all
+        api-folder: npm run seed:all
 
 ## Translations (i18n)
 
@@ -54,7 +64,6 @@ The translations of this project where saved in a google spreadsheet. To make us
 Run commands: 
 
     rootfolder: npm run export:translations
-
     i18n-export folder: npm run export
 
 ## PWA
@@ -77,5 +86,4 @@ Enviroment values:
 Run commands:
 
     rootfolder: npm run dev:pwa
-    
     pwa-folder: npm run dev

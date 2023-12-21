@@ -9,6 +9,7 @@
     "build": "nest build",
     "seed:all": "npx nestjs-command seed:database:all",
     "seed:reset": "npx nestjs-command seed:reset:all",
+    "seed:setup": "npx nestjs-command seed:reset:all && npx nestjs-command seed:database:all",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
